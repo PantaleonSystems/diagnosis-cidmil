@@ -31,3 +31,8 @@ supabase/.branches
 *.njsproj
 *.sln
 *.sw?
+.vercel
+
+# Vercel CLI acrescentou ".env*", que também esconderia o modelo versionado
+.env*
+!.env.example
