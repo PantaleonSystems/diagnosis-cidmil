@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Identidade visual CIIDCMIL
+   Tokens extraídos do protótipo. Tailwind 4 gera as utilities
+   a partir daqui (bg-ciano, text-petroleo, border-linha, ...).
+   ============================================================ */
+@theme {
+  /* Marca */
+  --color-ciano: #02b9da;
+  --color-ciano-2: #0ca5c0;
+  --color-ciano-esc: #0a7c93;
+  --color-ciano-cl: #e8fafd;
+  --color-petroleo: #0b3d4a;
+
+  /* Texto e superfícies */
+  --color-tinta: #12303a;
+  --color-cinza: #5b6b72;
+  --color-cinza-cl: #8a9aa1;
+  --color-app-bg: #f4fafc;
+  --color-linha: #e1eef2;
+
+  /* Semântica de nota e prioridade */
+  --color-nota-alta: #e0603e;
+  --color-nota-media: #e6a93e;
+  --color-nota-baixa: #3db18c;
+  --color-nota-topo: #2c8465;
+
+  /* Avisos */
+  --color-aviso-bg: #fff6ec;
+  --color-aviso-borda: #f3d9b6;
+  --color-aviso-txt: #8a5a1e;
+
+  --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial,
+    sans-serif;
+
+  --radius-card: 14px;
+
+  --shadow-card: 0 1px 3px rgb(11 61 74 / 0.06), 0 6px 24px rgb(11 61 74 / 0.06);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--color-app-bg);
+    color: var(--color-tinta);
+    font-family: var(--font-sans);
+    line-height: 1.55;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  /* Remove as setinhas dos inputs numéricos — a coleta é de números puros */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+@utility mono {
+  font-variant-numeric: tabular-nums;
+}
