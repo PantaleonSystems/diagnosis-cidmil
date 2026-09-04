@@ -17,9 +17,17 @@ import { PILARES, type Metrica } from '../src/data/metricas.ts'
 import { calcularNota, type DadosBrutos, type Nota } from '../src/lib/calculos.ts'
 import { consolidar, NIVEIS, type NotasPorMetrica } from '../src/lib/isps.ts'
 
+/**
+ * Nome deliberadamente impossível de confundir com município real.
+ *
+ * O protótipo usava "Município de Aurora", mas existem Auroras reais (CE e
+ * SC) — e um print da tela com "Aurora · governança abaixo do mínimo" perde
+ * o rótulo de demonstração pelo caminho. "Modelo" também foi descartado:
+ * significa exemplar, o que brigaria com um diagnóstico fraco.
+ */
 const CIDADE = {
-  nome: 'Município de Aurora (demonstração)',
-  uf: 'SP',
+  nome: 'Município Exemplo (demonstração)',
+  uf: '--',
   pais: 'Brasil',
   populacao: 128_400,
 }
