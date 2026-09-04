@@ -30,7 +30,7 @@ export function Plano() {
   }
 
   const resultado = consolidar(notas)
-  const plano = montarPlano(resultado, notas, cidadeAtiva.nome)
+  const plano = montarPlano(resultado, respostas, cidadeAtiva.nome)
 
   return (
     <>
@@ -77,32 +77,61 @@ export function Plano() {
         <p className="text-sm text-tinta">{plano.resumo}</p>
       </Card>
 
-      <h3 className="mb-3.5 mt-2 text-[15px] text-petroleo">Ações priorizadas</h3>
+      <div className="mb-3.5 mt-2 flex flex-wrap items-baseline justify-between gap-2">
+        <h3 className="text-[15px] text-petroleo">Ações priorizadas</h3>
+        <p className="text-[11.5px] text-cinza-cl">
+          Ordenadas pelo que destrava nível primeiro, depois pelo impacto real de cada
+          ponto
+        </p>
+      </div>
 
       {plano.acoes.map((acao, i) => (
         <div
           key={i}
-          className="mb-3 flex flex-wrap gap-4 rounded-xl border border-linha bg-white p-4.5"
+          className="mb-3 rounded-xl border border-linha bg-white p-4.5"
+          style={{ borderLeft: `4px solid ${PRIO_COLORS[acao.prioridade]}` }}
         >
-          <div className="w-[90px] shrink-0">
-            <Pill
-              style={{
-                backgroundColor: `${PRIO_COLORS[acao.prioridade]}22`,
-                color: PRIO_COLORS[acao.prioridade],
-              }}
-            >
-              {acao.prioridade}
-            </Pill>
+          <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+            <div className="flex min-w-[240px] flex-1 items-start gap-3">
+              <Pill
+                className="mt-0.5 shrink-0"
+                style={{
+                  backgroundColor: `${PRIO_COLORS[acao.prioridade]}22`,
+                  color: PRIO_COLORS[acao.prioridade],
+                }}
+              >
+                {acao.prioridade}
+              </Pill>
+              <h4 className="text-[14.5px] text-petroleo">{acao.titulo}</h4>
+            </div>
+            <div className="shrink-0 text-right text-[11.5px] text-cinza-cl">
+              {acao.prazo}
+              <br />
+              <span className="text-cinza">{acao.responsavel}</span>
+            </div>
           </div>
-          <div className="min-w-[240px] flex-1">
-            <h4 className="mb-1 text-[14.5px] text-petroleo">{acao.titulo}</h4>
-            <p className="text-[13px] text-cinza">{acao.descricao}</p>
-          </div>
-          <div className="shrink-0 text-right text-[11.5px] text-cinza-cl">
-            {acao.prazo}
-            <br />
-            <span className="text-cinza">{acao.responsavel}</span>
-          </div>
+
+          <dl className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+            <div className="rounded-lg bg-app-bg px-3 py-2.5">
+              <dt className="mb-0.5 text-[10.5px] font-bold uppercase tracking-[0.8px] text-cinza-cl">
+                Onde está
+              </dt>
+              <dd className="text-[12.5px] text-tinta">{acao.situacaoAtual}</dd>
+            </div>
+            <div className="rounded-lg border border-ciano/25 bg-ciano-cl/50 px-3 py-2.5">
+              <dt className="mb-0.5 text-[10.5px] font-bold uppercase tracking-[0.8px] text-ciano-esc">
+                Próximo passo
+              </dt>
+              <dd className="text-[12.5px] font-medium text-tinta">
+                {acao.proximoPasso}
+              </dd>
+            </div>
+          </dl>
+
+          <p className="mt-2.5 flex items-start gap-1.5 text-[11.5px] text-cinza">
+            <span aria-hidden>↗</span>
+            {acao.ganho}
+          </p>
         </div>
       ))}
     </>
