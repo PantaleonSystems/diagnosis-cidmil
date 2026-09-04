@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "seed:gen": "tsx scripts/gen-seed.ts",
     "sql:bundle": "bash scripts/bundle-sql.sh",
+    "seed:demo": "tsx --tsconfig tsconfig.app.json --env-file=.env.local scripts/seed-cidade-demo.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"
