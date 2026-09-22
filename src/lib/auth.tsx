@@ -1,7 +1,6 @@
 import {
   createContext,
   use,
-  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -9,111 +8,93 @@ import {
 } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import type { Profile } from '@/types/db'
 
+/**
+ * BETA: acesso público, sem tela de login.
+ *
+ * O visitante não digita nada — o app abre uma sessão anônima do Supabase em
+ * segundo plano. Isso mantém a RLS ligada e preserva a autoria (`criado_por`,
+ * `avaliador_id`), coisa que liberar o papel `anon` sem sessão destruiria.
+ *
+ * A sessão fica no localStorage, então a mesma pessoa volta como o mesmo
+ * usuário enquanto não limpar o navegador.
+ *
+ * Para voltar ao acesso credenciado: `git revert` do commit que removeu o
+ * login e recriar as policies originais (ver a migration de BETA).
+ */
 interface AuthContextValue {
   session: Session | null
-  profile: Profile | null
+  /** true enquanto a sessão anônima ainda não foi estabelecida */
   loading: boolean
-  entrar: (email: string, senha: string) => Promise<void>
-  cadastrar: (dados: {
-    nome: string
-    organizacao: string
-    email: string
-    senha: string
-  }) => Promise<void>
-  sair: () => Promise<void>
-  recarregarPerfil: () => Promise<void>
+  /** falha ao alcançar o Supabase — o app não tem como funcionar sem sessão */
+  erro: string | null
+  tentarNovamente: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-async function buscarPerfil(userId: string): Promise<Profile | null> {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
-    .maybeSingle()
-
-  if (error) {
-    console.error('Falha ao carregar o perfil:', error.message)
-    return null
-  }
-  return data as Profile | null
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [erro, setErro] = useState<string | null>(null)
+  const [tentativa, setTentativa] = useState(0)
 
   useEffect(() => {
     let vivo = true
 
-    const aplicar = async (s: Session | null) => {
+    async function garantirSessao() {
+      setErro(null)
+
+      const { data, error } = await supabase.auth.getSession()
       if (!vivo) return
-      setSession(s)
-      setProfile(s ? await buscarPerfil(s.user.id) : null)
-      if (vivo) setLoading(false)
+
+      if (error) {
+        setErro(traduzErro(error.message))
+        setLoading(false)
+        return
+      }
+
+      if (data.session) {
+        setSession(data.session)
+        setLoading(false)
+        return
+      }
+
+      // primeira visita: cria a sessão anônima
+      const { data: nova, error: erroAnon } = await supabase.auth.signInAnonymously()
+      if (!vivo) return
+
+      if (erroAnon) {
+        setErro(traduzErro(erroAnon.message))
+      } else {
+        setSession(nova.session)
+      }
+      setLoading(false)
     }
 
-    supabase.auth.getSession().then(({ data }) => aplicar(data.session))
+    void garantirSessao()
 
     const { data: sub } = supabase.auth.onAuthStateChange((_evento, s) => {
-      // onAuthStateChange roda dentro do lock do SDK: não fazer await aqui.
-      void aplicar(s)
+      if (vivo) setSession(s)
     })
 
     return () => {
       vivo = false
       sub.subscription.unsubscribe()
     }
-  }, [])
-
-  const recarregarPerfil = useCallback(async () => {
-    if (!session) return
-    setProfile(await buscarPerfil(session.user.id))
-  }, [session])
-
-  const entrar = useCallback(async (email: string, senha: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password: senha,
-    })
-    if (error) throw new Error(traduzErro(error.message))
-  }, [])
-
-  const cadastrar = useCallback(
-    async ({
-      nome,
-      organizacao,
-      email,
-      senha,
-    }: {
-      nome: string
-      organizacao: string
-      email: string
-      senha: string
-    }) => {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password: senha,
-        // lido pelo trigger handle_new_user() para preencher profiles
-        options: { data: { nome, organizacao } },
-      })
-      if (error) throw new Error(traduzErro(error.message))
-    },
-    [],
-  )
-
-  const sair = useCallback(async () => {
-    await supabase.auth.signOut()
-    setProfile(null)
-  }, [])
+  }, [tentativa])
 
   const value = useMemo(
-    () => ({ session, profile, loading, entrar, cadastrar, sair, recarregarPerfil }),
-    [session, profile, loading, entrar, cadastrar, sair, recarregarPerfil],
+    () => ({
+      session,
+      loading,
+      erro,
+      tentarNovamente: () => {
+        setLoading(true)
+        setTentativa((t) => t + 1)
+      },
+    }),
+    [session, loading, erro],
   )
 
   return <AuthContext value={value}>{children}</AuthContext>
@@ -125,16 +106,23 @@ export function useAuth(): AuthContextValue {
   return ctx
 }
 
-/** Mensagens do Supabase Auth em português, para o avaliador entender. */
+/**
+ * Distingue serviço fora do ar de erro de configuração.
+ *
+ * Antes, qualquer falha virava a mesma mensagem genérica e as pessoas achavam
+ * que tinham errado a senha quando o Supabase é que estava pausado.
+ */
 function traduzErro(msg: string): string {
   const m = msg.toLowerCase()
-  if (m.includes('invalid login credentials')) return 'E-mail ou senha incorretos.'
-  if (m.includes('email not confirmed')) return 'Confirme o e-mail antes de entrar.'
-  if (m.includes('user already registered'))
-    return 'Já existe uma conta com este e-mail.'
-  if (m.includes('password should be at least'))
-    return 'A senha precisa ter ao menos 6 caracteres.'
+  if (
+    m.includes('failed to fetch') ||
+    m.includes('networkerror') ||
+    m.includes('load failed')
+  )
+    return 'Não foi possível alcançar o servidor. Verifique sua conexão — se o problema persistir, o serviço pode estar temporariamente indisponível.'
+  if (m.includes('anonymous sign-ins are disabled'))
+    return 'O acesso anônimo está desligado no Supabase. Habilite em Authentication → Providers → Anonymous.'
   if (m.includes('rate limit') || m.includes('too many'))
-    return 'Muitas tentativas. Aguarde um instante e tente de novo.'
+    return 'Muitos acessos em sequência. Aguarde um instante e recarregue a página.'
   return msg
 }

@@ -1,9 +1,8 @@
 import { NavLink } from 'react-router-dom'
 import type { ReactNode } from 'react'
-import { useAuth } from '@/lib/auth'
 import { useCidades } from '@/lib/cidadeAtiva'
 import { Marca } from '@/components/layout/Marca'
-import { cx } from '@/components/ui'
+import { cx, SeloBeta } from '@/components/ui'
 
 const SECOES = [
   { to: '/app', fim: true, rotulo: 'Visão geral', icone: <IconeGrid /> },
@@ -14,13 +13,13 @@ const SECOES = [
 ]
 
 export function Sidebar({ aoNavegar }: { aoNavegar?: () => void }) {
-  const { sair } = useAuth()
   const { cidadeAtiva, avaliacaoAtiva } = useCidades()
 
   return (
     <aside className="flex h-full min-h-screen w-[250px] shrink-0 flex-col bg-petroleo text-white">
-      <div className="border-b border-white/10 px-[22px] py-5">
+      <div className="flex items-center gap-2 border-b border-white/10 px-[22px] py-5">
         <Marca tamanho="sm" invertido />
+        <SeloBeta />
       </div>
 
       <div className="border-b border-white/10 px-[22px] py-[18px]">
@@ -68,12 +67,6 @@ export function Sidebar({ aoNavegar }: { aoNavegar?: () => void }) {
       <div className="border-t border-white/10 px-[22px] py-4 text-[11px] text-[#7FC4D2]">
         <div className="text-[#A9D8E2]">Powered by Pantaleon Systems</div>
         <div className="mt-0.5">Camada de verificação · em breve</div>
-        <button
-          onClick={() => void sair()}
-          className="mt-2.5 py-2 text-left text-xs font-semibold text-[#C4E4EC] hover:text-white"
-        >
-          ⏻ Sair
-        </button>
       </div>
     </aside>
   )

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { MODULOS, PILARES } from '@/data/metricas'
 import { RadarChart } from '@/components/charts/RadarChart'
 import { Marca } from '@/components/layout/Marca'
-import { Button, Eyebrow, cx } from '@/components/ui'
+import { Button, Eyebrow, SeloBeta, cx } from '@/components/ui'
 import { fmt } from '@/lib/theme'
 
 /** Valores ilustrativos do card do hero — exemplo, não dado de cidade real. */
@@ -36,7 +36,10 @@ export function Landing() {
   return (
     <div className="min-h-screen bg-white">
       <nav className="sticky top-0 z-20 flex items-center justify-between border-b border-linha bg-white px-[6vw] py-4.5">
-        <Marca />
+        <div className="flex items-center gap-2.5">
+          <Marca />
+          <SeloBeta />
+        </div>
         <div className="flex items-center gap-6 text-sm font-semibold text-cinza">
           <a href="#conceito" className="hidden hover:text-ciano-esc md:inline">
             O conceito
@@ -44,7 +47,7 @@ export function Landing() {
           <a href="#pilares" className="hidden hover:text-ciano-esc md:inline">
             Pilares
           </a>
-          <Link to="/login">
+          <Link to="/app">
             <Button variante="ghost">Acessar o sistema</Button>
           </Link>
         </div>
@@ -68,8 +71,8 @@ export function Landing() {
               </strong>
             </p>
             <div className="flex flex-wrap items-center gap-3.5">
-              <Link to="/login">
-                <Button>Acessar o sistema →</Button>
+              <Link to="/app">
+                <Button>Abrir o diagnóstico →</Button>
               </Link>
               <a href="#conceito">
                 <Button variante="ghost">Ver como funciona</Button>
@@ -202,18 +205,19 @@ export function Landing() {
         <div className="flex flex-wrap items-center justify-between gap-8 rounded-[18px] bg-[linear-gradient(120deg,#0B3D4A,#0A7C93)] px-12 py-11 text-white">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-[2px] text-[#9FE0EC]">
-              Acesso restrito
+              Versão beta · acesso aberto
             </span>
             <h3 className="mb-2 mt-1 text-2xl">
-              O sistema é de uso exclusivo de avaliadores credenciados
+              A plataforma está aberta para testes
             </h3>
             <p className="max-w-[520px] text-[14.5px] text-[#CDEEF4]">
-              Os diagnósticos, os dados das cidades e os planos de ação ficam disponíveis
-              apenas para a equipe autorizada do CIIDCMIL e parceiros habilitados.
+              Nesta fase não há cadastro nem senha: entre, cadastre uma cidade e percorra
+              o diagnóstico. Os dados são de teste e podem ser reiniciados a qualquer
+              momento enquanto o instrumento está sendo validado.
             </p>
           </div>
-          <Link to="/login">
-            <Button variante="claro">Entrar no sistema →</Button>
+          <Link to="/app">
+            <Button variante="claro">Abrir o diagnóstico →</Button>
           </Link>
         </div>
       </section>

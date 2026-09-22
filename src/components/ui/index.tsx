@@ -144,6 +144,22 @@ export function NotaBadge({ nota, cor }: { nota: number; cor: string }) {
   )
 }
 
+/** Selo de fase. A ferramenta está em testes e isso precisa estar à vista. */
+export function SeloBeta({ className }: { className?: string }) {
+  return (
+    <span
+      title="Versão em testes — dados e cálculos podem mudar"
+      className={cx(
+        'inline-flex items-center rounded-[20px] border border-ciano/40 bg-ciano/15',
+        'px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-[1.2px] text-ciano',
+        className,
+      )}
+    >
+      Beta
+    </span>
+  )
+}
+
 export function Eyebrow({
   children,
   className,

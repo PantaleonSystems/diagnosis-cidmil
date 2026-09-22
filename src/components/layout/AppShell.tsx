@@ -2,7 +2,6 @@ import { useState, type ReactNode } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { ModuleBar } from '@/components/layout/ModuleBar'
-import { useAuth } from '@/lib/auth'
 import { CidadesProvider, useCidades } from '@/lib/cidadeAtiva'
 import { CatalogoProvider, useCatalogo } from '@/lib/catalogo'
 import { Erro, Splash, cx } from '@/components/ui'
@@ -83,29 +82,13 @@ export function Topbar({
   sub: string
   acao?: ReactNode
 }) {
-  const { profile } = useAuth()
-  const iniciais = (profile?.nome ?? 'Avaliador')
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase())
-    .join('')
-
   return (
     <div className={cx('mb-6 flex flex-wrap items-start justify-between gap-4')}>
       <div>
         <h1 className="text-[26px] tracking-[-0.3px] text-petroleo">{titulo}</h1>
         <p className="mt-0.5 text-sm text-cinza">{sub}</p>
       </div>
-      <div className="flex items-center gap-3">
-        {acao}
-        <div className="flex items-center gap-2.5 text-[13px] text-cinza">
-          <span className="hidden sm:inline">{profile?.nome || 'Avaliador'}</span>
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-ciano text-sm font-bold text-white">
-            {iniciais || 'AV'}
-          </span>
-        </div>
-      </div>
+      <div className="flex items-center gap-3">{acao}</div>
     </div>
   )
 }
