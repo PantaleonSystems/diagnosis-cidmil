@@ -1,21 +1,15 @@
-import { useNavigate } from 'react-router-dom'
 import { Topbar } from '@/components/layout/AppShell'
-import { Button, Vazio } from '@/components/ui'
+import { PrimeirosPassos } from '@/components/layout/PrimeirosPassos'
 
-/** Estado inicial de todas as telas internas: nenhuma cidade selecionada. */
+/** Estado inicial das telas internas: nenhuma cidade selecionada. */
 export function SemCidade() {
-  const navigate = useNavigate()
   return (
     <>
       <Topbar
-        titulo="Nenhuma cidade selecionada"
-        sub="O diagnóstico é sempre de uma cidade — escolha ou cadastre uma para começar"
+        titulo="Bem-vindo ao diagnóstico Cidades MIL"
+        sub="O diagnóstico é sempre de uma cidade — comece cadastrando a sua"
       />
-      <Vazio
-        titulo="Comece cadastrando uma cidade"
-        descricao="A avaliação do módulo Saúde pertence a uma cidade. Cadastre a primeira para abrir o rascunho e iniciar a coleta de dados."
-        acao={<Button onClick={() => navigate('/app/cidades')}>Ir para Cidades</Button>}
-      />
+      <PrimeirosPassos />
     </>
   )
 }

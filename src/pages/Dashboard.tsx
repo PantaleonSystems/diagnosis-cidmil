@@ -8,11 +8,17 @@ import { useRespostas } from '@/lib/respostas'
 import { NIVEIS, consolidar, MINIMO_GOVERNANCA } from '@/lib/isps'
 import { fmt } from '@/lib/theme'
 import { Aviso, Button, Card, CardTitulo, Splash, Vazio, cx } from '@/components/ui'
+import {
+  PrimeirosPassos,
+  usePrecisaOnboarding,
+} from '@/components/layout/PrimeirosPassos'
 
 export function Dashboard() {
   const navigate = useNavigate()
   const { cidadeAtiva, avaliacaoAtiva } = useCidades()
   const { respostas, notas, carregando } = useRespostas(avaliacaoAtiva?.id ?? null)
+  // hooks antes de qualquer return condicional
+  const precisaOnboarding = usePrecisaOnboarding()
 
   if (!cidadeAtiva) return <SemCidade />
   if (carregando) return <Splash texto="Carregando o diagnóstico…" />
@@ -23,6 +29,7 @@ export function Dashboard() {
     return (
       <>
         <Topbar titulo="Módulo Saúde · Visão geral" sub={cidadeAtiva.nome} />
+        {precisaOnboarding && <PrimeirosPassos />}
         <Vazio
           titulo="Nenhum dado coletado ainda"
           descricao={`A avaliação de ${cidadeAtiva.nome} está em branco. Preencha as métricas para que o índice, o radar e o plano de ação apareçam aqui.`}
@@ -52,6 +59,8 @@ export function Dashboard() {
           ) : undefined
         }
       />
+
+      {precisaOnboarding && <PrimeirosPassos />}
 
       <div className="mb-5 grid gap-5 xl:grid-cols-[1.1fr_1.4fr]">
         {/* ------------------------------------------------------------ ISPS */}
