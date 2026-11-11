@@ -1,5 +1,5 @@
 /** Peças visuais reutilizáveis, com a identidade CIIDCMIL do protótipo. */
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from 'react'
+import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from 'react'
 
 export const cx = (...cls: (string | false | null | undefined)[]) =>
   cls.filter(Boolean).join(' ')
@@ -94,7 +94,7 @@ export function Field({
 export function Input({
   className,
   ...props
-}: InputHTMLAttributes<HTMLInputElement>) {
+}: ComponentProps<'input'>) {
   return (
     <input
       className={cx(

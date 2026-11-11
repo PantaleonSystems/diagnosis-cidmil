@@ -1,9 +1,12 @@
-import { useState, type FormEvent } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Topbar } from '@/components/layout/AppShell'
 import { useCidades } from '@/lib/cidadeAtiva'
-import { Modal } from '@/components/ui/Modal'
+import { Folha } from '@/components/mobile/Folha'
+import { SeletorLocalidade, type Localidade } from '@/components/localidade/SeletorLocalidade'
 import { Button, Card, Erro, Field, Input, Pill, Vazio, cx } from '@/components/ui'
+import { normalizar } from '@/lib/localidades'
+import type { Cidade } from '@/types/db'
 import { NIVEIS, nivelMaturidade } from '@/lib/isps'
 import { fmt } from '@/lib/theme'
 
@@ -112,9 +115,15 @@ export function Cidades() {
         </div>
       )}
 
-      <ModalNovaCidade
+      <NovaCidadeFolha
         aberto={modalAberto}
         aoFechar={() => setModalAberto(false)}
+        existentes={cidades}
+        aoUsarExistente={(c) => {
+          selecionar(c.id)
+          setModalAberto(false)
+          navigate('/app/avaliacao')
+        }}
         aoCriar={async (dados) => {
           await criarCidade(dados)
           setModalAberto(false)
@@ -125,41 +134,65 @@ export function Cidades() {
   )
 }
 
-function ModalNovaCidade({
+type DadosCidade = { nome: string; uf: string; pais: string; populacao: number | null }
+
+function NovaCidadeFolha({
   aberto,
   aoFechar,
   aoCriar,
+  aoUsarExistente,
+  existentes,
 }: {
   aberto: boolean
   aoFechar: () => void
-  aoCriar: (dados: {
-    nome: string
-    uf: string
-    pais: string
-    populacao: number | null
-  }) => Promise<void>
+  aoCriar: (dados: DadosCidade) => Promise<void>
+  aoUsarExistente: (c: Cidade) => void
+  existentes: Cidade[]
 }) {
-  const [nome, setNome] = useState('')
-  const [uf, setUf] = useState('')
-  const [pais, setPais] = useState('Brasil')
+  // o formulário fica dentro da folha: ao fechar, o estado dele zera sozinho
+  return (
+    <Folha aberto={aberto} aoFechar={aoFechar} titulo="Nova cidade">
+      <FormularioNovaCidade aoCriar={aoCriar} aoUsarExistente={aoUsarExistente} existentes={existentes} />
+    </Folha>
+  )
+}
+
+function FormularioNovaCidade({
+  aoCriar,
+  aoUsarExistente,
+  existentes,
+}: {
+  aoCriar: (dados: DadosCidade) => Promise<void>
+  aoUsarExistente: (c: Cidade) => void
+  existentes: Cidade[]
+}) {
+  const [loc, setLoc] = useState<Localidade | null>(null)
   const [populacao, setPopulacao] = useState('')
   const [erro, setErro] = useState<string | null>(null)
   const [enviando, setEnviando] = useState(false)
 
+  const existente = useMemo(
+    () =>
+      loc
+        ? existentes.find(
+            (c) => c.pais === loc.pais && c.uf === loc.uf && normalizar(c.nome) === normalizar(loc.nome),
+          )
+        : undefined,
+    [loc, existentes],
+  )
+
   async function enviar(e: FormEvent) {
     e.preventDefault()
+    if (!loc) return
     setErro(null)
     setEnviando(true)
     try {
       await aoCriar({
-        nome: nome.trim(),
-        uf: uf.trim().toUpperCase(),
-        pais: pais.trim(),
-        populacao: populacao ? Number(populacao) : null,
+        nome: loc.nome,
+        uf: loc.uf,
+        pais: loc.pais,
+        populacao: loc.populacao ?? (populacao ? Number(populacao) : null),
       })
-      setNome('')
-      setUf('')
-      setPopulacao('')
     } catch (err) {
       setErro(err instanceof Error ? err.message : 'Não foi possível cadastrar.')
     } finally {
@@ -168,61 +201,46 @@ function ModalNovaCidade({
   }
 
   return (
-    <Modal
-      aberto={aberto}
-      aoFechar={aoFechar}
-      titulo="Nova cidade"
-      descricao="Ao cadastrar, uma avaliação do módulo Saúde é aberta em rascunho."
-    >
-      <form onSubmit={enviar}>
-        <Erro>{erro}</Erro>
+    <form onSubmit={enviar} className="pb-3">
+      <p className="mb-4 text-legenda text-cinza">
+        Escolha o município numa lista oficial. Ao cadastrar, abrimos a avaliação do módulo Saúde.
+      </p>
+      <Erro>{erro}</Erro>
 
-        <Field label="Nome da cidade">
-          <Input
-            required
-            autoFocus
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            placeholder="Ex.: Município de Aurora"
-          />
-        </Field>
+      <SeletorLocalidade aoMudar={setLoc} />
 
-        <div className="grid gap-x-4 sm:grid-cols-2">
-          <Field label="UF">
-            <Input
-              value={uf}
-              maxLength={2}
-              onChange={(e) => setUf(e.target.value)}
-              placeholder="SP"
-            />
-          </Field>
-          <Field label="País">
-            <Input value={pais} onChange={(e) => setPais(e.target.value)} />
-          </Field>
+      {loc?.codigoIbge && (
+        <div className="mb-4 rounded-xl border border-linha bg-app-bg px-4 py-3 text-legenda text-cinza">
+          <div className="font-bold text-petroleo">
+            {loc.nome} · {loc.uf}
+          </div>
+          <div className="mt-0.5">
+            {loc.populacao ? `${loc.populacao.toLocaleString('pt-BR')} habitantes (Censo 2022) · ` : ''}
+            Código IBGE {loc.codigoIbge}
+          </div>
         </div>
+      )}
 
-        <Field
-          label="População"
-          hint="Usada nas métricas de densidade (ex.: espaços por 10 mil hab.)."
-        >
-          <Input
-            type="number"
-            min={0}
-            value={populacao}
-            onChange={(e) => setPopulacao(e.target.value)}
-            placeholder="100000"
-          />
+      {loc && !loc.populacao && (
+        <Field label="População (opcional)" hint="Usada nas métricas de densidade (ex.: espaços por 10 mil hab.).">
+          <Input type="number" inputMode="numeric" min={0} value={populacao} onChange={(e) => setPopulacao(e.target.value)} placeholder="100000" />
         </Field>
+      )}
 
-        <div className="mt-6 flex justify-end gap-3">
-          <Button type="button" variante="ghost" onClick={aoFechar}>
-            Cancelar
-          </Button>
-          <Button type="submit" disabled={enviando}>
-            {enviando ? 'Cadastrando…' : 'Cadastrar e avaliar'}
+      {existente ? (
+        <div className="rounded-xl border border-aviso-borda bg-aviso-bg p-4">
+          <p className="text-corpo text-aviso-txt">
+            <strong>{existente.nome}</strong> já está cadastrada.
+          </p>
+          <Button type="button" className="alvo mt-3 w-full" onClick={() => aoUsarExistente(existente)}>
+            Usar esta cidade
           </Button>
         </div>
-      </form>
-    </Modal>
+      ) : (
+        <Button type="submit" className="alvo w-full" disabled={!loc || enviando}>
+          {enviando ? 'Cadastrando…' : 'Cadastrar e avaliar'}
+        </Button>
+      )}
+    </form>
   )
 }

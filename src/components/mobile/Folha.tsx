@@ -2,6 +2,9 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNo
 import { createPortal } from 'react-dom'
 import { animarMola, elastico, projetar, useReducedMotion } from '@/lib/movimento'
 
+/** Folhas abertas, da mais antiga para a mais nova: Esc fecha só a do topo. */
+const pilha: symbol[] = []
+
 /**
  * Folha deslizante (bottom sheet).
  *
@@ -18,11 +21,14 @@ export function Folha({
   aberto,
   aoFechar,
   titulo,
+  alta = false,
   children,
 }: {
   aberto: boolean
   aoFechar: () => void
   titulo: string
+  /** altura fixa de 90% da tela (seletores com lista que filtra) */
+  alta?: boolean
   children: ReactNode
 }) {
   const reduzido = useReducedMotion()
@@ -35,10 +41,19 @@ export function Folha({
   const velocidadeFechar = useRef(0)
   const arrasto = useRef<{ id: number; offset: number; pontos: { t: number; y: number }[] } | null>(null)
   const foco = useRef<HTMLElement | null>(null)
+  // aoFechar costuma ser uma função nova a cada render do pai; guardamos a última
+  // para os efeitos não se refazerem (o que bagunçava a pilha do Esc e a rolagem).
+  const fecharRef = useRef(aoFechar)
+  useLayoutEffect(() => {
+    fecharRef.current = aoFechar
+  })
   // Durante o fechamento o pai pode já ter tirado o conteúdo: mantemos o último
   // visto para a folha não encolher enquanto desce.
   const ultimo = useRef({ titulo, children })
   if (aberto) ultimo.current = { titulo, children }
+
+  /** Posição "fechada": a altura ATUAL da folha (o conteúdo pode ter crescido) + folga da sombra. */
+  const fechada = useCallback(() => (folhaRef.current?.offsetHeight ?? altura.current) + 56, [])
 
   const aplicar = useCallback((y: number) => {
     posicao.current = y
@@ -84,13 +99,13 @@ export function Folha({
       // elemento novo: sempre entra de baixo. Reabrir no meio do fechamento
       // (elemento já aberto) segue de onde está, sem salto.
       if (!f.dataset.aberta) {
-        aplicar(altura.current)
+        aplicar(fechada())
         f.dataset.aberta = '1'
       }
       mover(0)
       f.focus({ preventScroll: true })
     } else {
-      mover(altura.current, {
+      mover(fechada(), {
         velocidade: velocidadeFechar.current,
         aoFim: () => {
           velocidadeFechar.current = 0
@@ -107,18 +122,35 @@ export function Folha({
     if (!montado) return
     const anterior = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    const tecla = (e: KeyboardEvent) => e.key === 'Escape' && aoFechar()
+    const id = Symbol('folha')
+    pilha.push(id)
+    const tecla = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && pilha[pilha.length - 1] === id) fecharRef.current()
+    }
     window.addEventListener('keydown', tecla)
     return () => {
       document.body.style.overflow = anterior
+      pilha.splice(pilha.indexOf(id), 1)
       window.removeEventListener('keydown', tecla)
     }
-  }, [montado, aoFechar])
+  }, [montado])
+
+  // acompanha o crescimento do conteúdo (ex.: o formulário ganha campos)
+  useEffect(() => {
+    const f = folhaRef.current
+    if (!montado || !f || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => {
+      altura.current = f.offsetHeight
+    })
+    ro.observe(f)
+    return () => ro.disconnect()
+  }, [montado])
 
   useEffect(() => () => cancelar.current?.(), [])
 
   const aoAgarrar = (e: React.PointerEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('button')) return
+    altura.current = folhaRef.current?.offsetHeight ?? altura.current
     cancelar.current?.() // interrompe qualquer animação em curso
     e.currentTarget.setPointerCapture(e.pointerId)
     arrasto.current = {
@@ -162,7 +194,7 @@ export function Folha({
         aria-modal="true"
         aria-label={ultimo.current.titulo}
         tabIndex={-1}
-        className="absolute inset-x-0 bottom-0 mx-auto flex max-h-[90dvh] w-full max-w-[520px] flex-col rounded-t-[var(--radius-folha)] bg-white shadow-[0_-8px_40px_rgb(5_47_77/0.25)] outline-none"
+        className={`absolute inset-x-0 bottom-0 mx-auto flex w-full max-w-[520px] flex-col ${alta ? 'h-[90dvh]' : 'max-h-[90dvh]'} rounded-t-[var(--radius-folha)] bg-white shadow-[0_-8px_40px_rgb(5_47_77/0.25)] outline-none`}
         style={{ transform: 'translate3d(0,100%,0)', willChange: 'transform' }}
       >
         <div
@@ -188,7 +220,7 @@ export function Folha({
             </button>
           </div>
         </div>
-        <div className="overflow-y-auto overscroll-contain px-5 pb-seguro pt-1">{ultimo.current.children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-seguro pt-1">{ultimo.current.children}</div>
       </div>
     </div>,
     document.body,
