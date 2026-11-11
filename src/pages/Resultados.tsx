@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { Topbar } from '@/components/layout/AppShell'
-import { SemCidade } from '@/components/layout/SemCidade'
 import { PILARES } from '@/data/metricas'
 import { useCidades } from '@/lib/cidadeAtiva'
 import { useRespostas } from '@/lib/respostas'
@@ -12,10 +11,10 @@ import { Button, Card, NotaBadge, Pill, Splash, Vazio } from '@/components/ui'
 /** Detalhamento auditável: cada métrica, sua nota e a prioridade que gera. */
 export function Resultados() {
   const navigate = useNavigate()
-  const { cidadeAtiva, avaliacaoAtiva } = useCidades()
+  const { cidadeAtiva, avaliacaoAtiva, caminhoCidade } = useCidades()
   const { respostas, notas, carregando } = useRespostas(avaliacaoAtiva?.id ?? null)
 
-  if (!cidadeAtiva) return <SemCidade />
+  if (!cidadeAtiva) return null
   if (carregando) return <Splash texto="Carregando os resultados…" />
 
   const respondidas = Object.keys(respostas).length
@@ -26,7 +25,7 @@ export function Resultados() {
         <Vazio
           titulo="Sem resultados ainda"
           descricao="Preencha as métricas na tela de avaliação para ver o detalhamento nota a nota."
-          acao={<Button onClick={() => navigate('/app/avaliacao')}>Ir para a avaliação</Button>}
+          acao={<Button onClick={() => navigate(caminhoCidade('avaliacao'))}>Ir para a avaliação</Button>}
         />
       </>
     )

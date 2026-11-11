@@ -9,6 +9,8 @@ export interface ItemAba {
   /** rota (usa <NavLink>); sem `to` vira botão e usa `aoEscolher` */
   to?: string
   fim?: boolean
+  /** botão redondo em evidência (ação principal, ex.: nova cidade) */
+  destaque?: boolean
 }
 
 /**
@@ -55,6 +57,19 @@ export function BarraAbas({
         )}
         {itens.map((item) => {
           const ativo = item.id === ativoId
+          if (item.destaque) {
+            return (
+              <button
+                key={item.id}
+                type="button"
+                aria-label={item.rotulo}
+                onClick={() => aoEscolher?.(item.id)}
+                className="toque mx-auto -mt-5 grid h-[52px] w-[52px] place-items-center self-start rounded-full bg-ciano text-white shadow-[0_6px_16px_rgb(10_90_150/0.35)]"
+              >
+                {item.icone({ ativo })}
+              </button>
+            )
+          }
           const classe = cx(
             'toque relative flex min-h-[56px] flex-col items-center justify-center gap-0.5 text-micro font-bold tracking-[0.02em] transition-colors',
             ativo ? 'text-ciano' : 'text-cinza',

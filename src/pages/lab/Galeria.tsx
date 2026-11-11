@@ -7,6 +7,10 @@ import { Chip } from '@/components/mobile/Chip'
 import { Folha } from '@/components/mobile/Folha'
 import { SeloNota } from '@/components/mobile/SeloNota'
 import { IcoAvaliar, IcoCidades, IcoPlano, IcoResultados, IcoVisaoGeral } from '@/components/mobile/icones'
+import { CartaoCidade } from '@/components/cidades/CartaoCidade'
+import { RedeReal, type ItemRede } from '@/components/cidades/RedeReal'
+import type { ResumoCidade } from '@/lib/cidadeAtiva'
+import type { Cidade } from '@/types/db'
 import { Button } from '@/components/ui'
 import { useNoindex } from './useNoindex'
 
@@ -16,6 +20,36 @@ const ABAS = [
   { id: 'resultados', rotulo: 'Resultados', icone: IcoResultados },
   { id: 'plano', rotulo: 'Plano', icone: IcoPlano },
   { id: 'cidades', rotulo: 'Cidades', icone: IcoCidades },
+]
+
+const cid = (id: string, nome: string, uf: string): Cidade => ({
+  id,
+  nome,
+  uf,
+  pais: 'Brasil',
+  populacao: null,
+  criado_por: 'x',
+  created_at: '',
+  updated_at: '',
+})
+const res = (isps: number | null, nivel: 0 | 1 | 2 | 3, o: Partial<ResumoCidade> = {}): ResumoCidade => ({
+  respondidas: isps === null ? 0 : 43,
+  total: 43,
+  isps,
+  nivelExibido: nivel,
+  nivelReal: nivel,
+  travado: false,
+  mediasPilares: [],
+  concluida: isps !== null,
+  ...o,
+})
+const EXEMPLOS: ItemRede[] = [
+  { cidade: cid('1', 'Vila Modelo', 'MG'), resumo: res(3.41, 3) },
+  { cidade: cid('2', 'Baía Exemplo', 'BA'), resumo: res(3.1, 2) },
+  { cidade: cid('3', 'Campo Piloto', 'MT'), resumo: res(2.9, 2) },
+  { cidade: cid('4', 'Município Exemplo', 'SP'), resumo: res(2.66, 1, { travado: true }) },
+  { cidade: cid('5', 'Serra de Teste', 'RS'), resumo: res(1.3, 0) },
+  { cidade: cid('6', 'Porto Teste', 'RN'), resumo: res(1.9, 1) },
 ]
 
 function Bloco({ titulo, nota, children }: { titulo: string; nota?: string; children: React.ReactNode }) {
@@ -75,6 +109,19 @@ export function Galeria() {
             <GaugeIndice isps={isps} nivel={nivel} travado={isps > 2.5 && isps < 3} className="mx-auto" />
             <input type="range" min={0} max={4} step={0.05} value={isps} onChange={(e) => setIsps(Number(e.target.value))} aria-label="Valor do índice" className="faixa mt-3 w-full" style={{ ['--cor' as string]: '#0A5A96', ['--pct' as string]: `${(isps / 4) * 100}%` }} />
           </div>
+        </Bloco>
+
+        <Bloco titulo="Cartões de cidade" nota="Estados: concluída, travada pela Regra de Ouro, em andamento e sem dados. Cidades fictícias.">
+          <div className="grid gap-3">
+            <CartaoCidade cidade={EXEMPLOS[0].cidade} resumo={EXEMPLOS[0].resumo} />
+            <CartaoCidade cidade={EXEMPLOS[3].cidade} resumo={EXEMPLOS[3].resumo} />
+            <CartaoCidade cidade={cid('7', 'Serra Nova', 'PR')} resumo={res(1.1, 0, { respondidas: 17, concluida: false })} />
+            <CartaoCidade cidade={cid('8', 'Lago Azul', 'GO')} resumo={res(null, 0, { concluida: false })} />
+          </div>
+        </Bloco>
+
+        <Bloco titulo="Rede de cidades" nota="Cor = nível, tamanho = índice, ligação mais forte = índices parecidos. Toque numa cidade.">
+          <RedeReal itens={EXEMPLOS} />
         </Bloco>
 
         <Bloco titulo="Folha deslizante" nota="Arraste para baixo (com velocidade ou até a metade) para fechar. Agarre no meio da animação. Esc ou toque fora também fecham.">

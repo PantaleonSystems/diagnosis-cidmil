@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { Topbar } from '@/components/layout/AppShell'
-import { SemCidade } from '@/components/layout/SemCidade'
 import { useCidades } from '@/lib/cidadeAtiva'
 import { useRespostas } from '@/lib/respostas'
 import { NIVEIS, consolidar } from '@/lib/isps'
@@ -10,10 +9,10 @@ import { Button, Card, CardTitulo, Pill, Splash, Vazio } from '@/components/ui'
 
 export function Plano() {
   const navigate = useNavigate()
-  const { cidadeAtiva, avaliacaoAtiva } = useCidades()
+  const { cidadeAtiva, avaliacaoAtiva, caminhoCidade } = useCidades()
   const { respostas, notas, carregando } = useRespostas(avaliacaoAtiva?.id ?? null)
 
-  if (!cidadeAtiva) return <SemCidade />
+  if (!cidadeAtiva) return null
   if (carregando) return <Splash texto="Montando o plano de ação…" />
 
   if (Object.keys(respostas).length === 0) {
@@ -23,7 +22,7 @@ export function Plano() {
         <Vazio
           titulo="Sem plano ainda"
           descricao="O plano de ação é derivado das notas reais da avaliação. Preencha as métricas para que as recomendações apareçam aqui."
-          acao={<Button onClick={() => navigate('/app/avaliacao')}>Ir para a avaliação</Button>}
+          acao={<Button onClick={() => navigate(caminhoCidade('avaliacao'))}>Ir para a avaliação</Button>}
         />
       </>
     )

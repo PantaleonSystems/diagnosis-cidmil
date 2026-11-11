@@ -8,7 +8,7 @@ export function RadarChart({
   valores,
   rotulos,
   tamanho = 340,
-  padding = 52,
+  padding = 68,
   className,
 }: {
   valores: number[]

@@ -48,3 +48,16 @@ export const IcoCidades = ({ ativo }: { ativo?: boolean }) => (
     <path d="M4 20V9l5-3v14M9 20V4l7 3v13M16 20h4v-8l-4-2M3 20h18" />
   </Icone>
 )
+export const IcoRede = ({ ativo }: { ativo?: boolean }) => (
+  <Icone ativo={ativo}>
+    <circle cx="6" cy="7" r="2.5" />
+    <circle cx="18" cy="6" r="2.5" />
+    <circle cx="12" cy="18" r="2.5" />
+    <path d="M8 8.5l3 7M16.5 8l-3.5 8M8.5 7h7" />
+  </Icone>
+)
+export const IcoMais = () => (
+  <Icone>
+    <path d="M12 5v14M5 12h14" />
+  </Icone>
+)

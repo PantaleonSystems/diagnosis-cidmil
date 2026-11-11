@@ -1,55 +1,46 @@
-import { useState, type ReactNode } from 'react'
-import { Outlet } from 'react-router-dom'
-import { Sidebar } from '@/components/layout/Sidebar'
-import { ModuleBar } from '@/components/layout/ModuleBar'
+import { type ReactNode } from 'react'
+import { Link, Outlet, useLocation, useMatch } from 'react-router-dom'
+import { SidebarCidade, SidebarInicio } from '@/components/layout/Sidebar'
+import { Marca } from '@/components/layout/Marca'
+import { NovaCidadeProvider, useNovaCidade } from '@/components/cidades/NovaCidade'
+import { BarraAbas, type ItemAba } from '@/components/mobile/BarraAbas'
+import { IcoAvaliar, IcoCidades, IcoMais, IcoPlano, IcoRede, IcoResultados, IcoVisaoGeral } from '@/components/mobile/icones'
 import { CidadesProvider, useCidades } from '@/lib/cidadeAtiva'
-import { Gaveta } from '@/components/mobile/Gaveta'
+import { ehDemonstracao } from '@/lib/cidades'
 import { CatalogoProvider, useCatalogo } from '@/lib/catalogo'
-import { Erro, Splash, cx } from '@/components/ui'
+import { Erro, SeloBeta, Splash, cx } from '@/components/ui'
 
-/** Layout protegido: sidebar fixa de 250px + área principal fluida. */
+/**
+ * Casca do app. Dois contextos com navegação própria:
+ *  - Início (/app, /app/rede): nenhuma cidade aberta;
+ *  - Ambiente da cidade (/app/cidades/:id/...): barra lateral/abas da cidade e caminho de volta.
+ * Desktop: barra lateral. Celular: cabeçalho compacto + barra de abas inferior.
+ */
 export function AppShell() {
   return (
     <CatalogoProvider>
       <CidadesProvider>
-        <Conteudo />
+        <NovaCidadeProvider>
+          <Conteudo />
+        </NovaCidadeProvider>
       </CidadesProvider>
     </CatalogoProvider>
   )
 }
 
 function Conteudo() {
-  const [menuAberto, setMenuAberto] = useState(false)
   const { carregando: carregandoCidades, erro: erroCidades } = useCidades()
   const { erro: erroCatalogo } = useCatalogo()
+  const naCidade = useMatch('/app/cidades/:cidadeId/*') !== null
 
   if (carregandoCidades) return <Splash texto="Carregando o diagnóstico…" />
 
   return (
-    <div className="min-h-screen bg-app-bg lg:grid lg:grid-cols-[250px_1fr]">
-      {/* Sidebar fixa no desktop */}
-      <div className="sticky top-0 hidden h-screen lg:block">
-        <Sidebar />
-      </div>
+    <div className="min-h-tela bg-app-bg lg:grid lg:grid-cols-[250px_1fr]">
+      <div className="sticky top-0 hidden h-screen lg:block">{naCidade ? <SidebarCidade /> : <SidebarInicio />}</div>
 
-      {/* Gaveta no mobile: desliza da esquerda, com mola */}
-      <Gaveta aberto={menuAberto} aoFechar={() => setMenuAberto(false)}>
-        <Sidebar aoNavegar={() => setMenuAberto(false)} />
-      </Gaveta>
-
-      <main className="min-w-0 px-6 pb-16 pt-6 lg:h-screen lg:overflow-y-auto lg:px-10 lg:pt-[34px]">
-        <button
-          type="button"
-          onClick={() => setMenuAberto(true)}
-          aria-haspopup="dialog"
-          aria-expanded={menuAberto}
-          className="alvo toque mb-4 inline-flex items-center gap-2 rounded-lg border border-linha bg-white px-3.5 text-sm font-semibold text-petroleo shadow-sm lg:hidden"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
-            <path d="M4 7h16M4 12h16M4 17h10" />
-          </svg>
-          Menu
-        </button>
+      <main className="min-w-0 px-5 pb-28 lg:h-screen lg:overflow-y-auto lg:px-10 lg:pb-16 lg:pt-[34px]">
+        <CabecalhoMobile naCidade={naCidade} />
 
         {(erroCidades ?? erroCatalogo) && (
           <Erro>
@@ -58,16 +49,83 @@ function Conteudo() {
           </Erro>
         )}
 
-        <ModuleBar />
-        <Outlet />
+        <div className="pt-5 lg:pt-0">
+          <Outlet />
+        </div>
 
-        <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-linha pt-4.5 text-[11.5px] text-cinza-cl">
+        <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-linha pt-4.5 text-[11.5px] text-cinza">
           <span>Plataforma de Diagnóstico Cidades MIL · CIIDCMIL</span>
           <span>Powered by Pantaleon Systems</span>
         </footer>
       </main>
+
+      <AbasMobile naCidade={naCidade} />
     </div>
   )
+}
+
+/** Cabeçalho do celular: marca no Início; voltar + nome da cidade dentro dela. */
+function CabecalhoMobile({ naCidade }: { naCidade: boolean }) {
+  const { cidadeAtiva } = useCidades()
+  return (
+    <header
+      className="vidro sticky top-0 z-20 -mx-5 mb-1 flex items-center justify-between gap-3 border-b border-linha px-5 pb-2.5 lg:hidden"
+      style={{ paddingTop: 'max(env(safe-area-inset-top), 0.625rem)' }}
+    >
+      {naCidade ? (
+        <>
+          <Link to="/app" className="alvo toque -ml-2 flex items-center gap-1 rounded-lg px-2 text-corpo font-bold text-ciano">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M15 5l-7 7 7 7" />
+            </svg>
+            Todas as cidades
+          </Link>
+          {cidadeAtiva && ehDemonstracao(cidadeAtiva) && (
+            <span className="rounded-full bg-ciano-cl px-2.5 py-1 text-micro font-extrabold uppercase text-ciano-esc">Demonstração</span>
+          )}
+        </>
+      ) : (
+        <>
+          <Marca tamanho="sm" />
+          <SeloBeta />
+        </>
+      )}
+    </header>
+  )
+}
+
+/** Barra de abas do celular, que muda conforme o contexto (Início ou cidade). */
+function AbasMobile({ naCidade }: { naCidade: boolean }) {
+  const { pathname } = useLocation()
+  const { caminhoCidade } = useCidades()
+  const { abrirNovaCidade } = useNovaCidade()
+
+  if (!naCidade) {
+    const itens: ItemAba[] = [
+      { id: 'cidades', rotulo: 'Cidades', icone: IcoCidades, to: '/app', fim: true },
+      { id: 'nova', rotulo: 'Solicitar nova cidade', icone: IcoMais, destaque: true },
+      { id: 'rede', rotulo: 'Rede', icone: IcoRede, to: '/app/rede' },
+    ]
+    return (
+      <BarraAbas
+        itens={itens}
+        ativoId={pathname.startsWith('/app/rede') ? 'rede' : 'cidades'}
+        aoEscolher={(id) => id === 'nova' && abrirNovaCidade()}
+        className="lg:hidden"
+      />
+    )
+  }
+
+  const itens: ItemAba[] = [
+    { id: 'geral', rotulo: 'Geral', icone: IcoVisaoGeral, to: caminhoCidade(), fim: true },
+    { id: 'avaliacao', rotulo: 'Dados', icone: IcoAvaliar, to: caminhoCidade('avaliacao') },
+    { id: 'resultados', rotulo: 'Resultados', icone: IcoResultados, to: caminhoCidade('resultados') },
+    { id: 'plano', rotulo: 'Plano', icone: IcoPlano, to: caminhoCidade('plano') },
+    { id: 'conexoes', rotulo: 'Conexões', icone: IcoRede, to: caminhoCidade('conexoes') },
+  ]
+  const ultimo = pathname.split('/').filter(Boolean).pop() ?? ''
+  const ativo = itens.some((i) => i.id === ultimo) ? ultimo : 'geral'
+  return <BarraAbas itens={itens} ativoId={ativo} className="lg:hidden" />
 }
 
 /** Cabeçalho padrão das telas internas. */

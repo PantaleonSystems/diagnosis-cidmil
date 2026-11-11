@@ -9,18 +9,17 @@ import { consolidar, mediaPilar } from '@/lib/isps'
 import { supabase } from '@/lib/supabase'
 import { fmt } from '@/lib/theme'
 import { Button, Card, Erro, Splash, Vazio, cx } from '@/components/ui'
-import { SemCidade } from '@/components/layout/SemCidade'
 
 export function Avaliacao() {
   const navigate = useNavigate()
-  const { cidadeAtiva, avaliacaoAtiva, recarregar } = useCidades()
+  const { cidadeAtiva, avaliacaoAtiva, recarregar, caminhoCidade } = useCidades()
   const { respostas, notas, registrar, carregando, estado, erro } = useRespostas(
     avaliacaoAtiva?.id ?? null,
   )
   const [concluindo, setConcluindo] = useState(false)
   const [erroConclusao, setErroConclusao] = useState<string | null>(null)
 
-  if (!cidadeAtiva) return <SemCidade />
+  if (!cidadeAtiva) return null
   if (!avaliacaoAtiva) {
     return (
       <>
@@ -28,7 +27,7 @@ export function Avaliacao() {
         <Vazio
           titulo="Sem avaliação aberta"
           descricao="Esta cidade ainda não tem uma avaliação do módulo Saúde. Cadastre-a novamente pela tela de Cidades para abrir um rascunho."
-          acao={<Button onClick={() => navigate('/app/cidades')}>Ir para Cidades</Button>}
+          acao={<Button onClick={() => navigate('/app')}>Ver todas as cidades</Button>}
         />
       </>
     )
@@ -59,7 +58,7 @@ export function Avaliacao() {
       return
     }
     await recarregar()
-    navigate('/app')
+    navigate(caminhoCidade())
   }
 
   return (

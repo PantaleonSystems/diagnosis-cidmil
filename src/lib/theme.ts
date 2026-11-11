@@ -16,6 +16,9 @@ export const PRIO_COLORS: Record<Prioridade, string> = {
   Baixa: '#3DB18C',
 }
 
+/** Cor de cada nível de maturidade (do mais claro ao mais escuro). */
+export const NIVEL_COLORS = ['#9CCBEA', '#2395C6', '#0A5A96', '#052F4D'] as const
+
 export const CIANO = '#0A5A96'
 export const PETROLEO = '#052F4D'
 export const LINHA = '#DFEAF2'

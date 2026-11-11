@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { Topbar } from '@/components/layout/AppShell'
-import { SemCidade } from '@/components/layout/SemCidade'
 import { RadarChart } from '@/components/charts/RadarChart'
 import { PILARES, TOTAL_METRICAS } from '@/data/metricas'
 import { useCidades } from '@/lib/cidadeAtiva'
@@ -8,19 +7,13 @@ import { useRespostas } from '@/lib/respostas'
 import { NIVEIS, consolidar, MINIMO_GOVERNANCA } from '@/lib/isps'
 import { fmt } from '@/lib/theme'
 import { Aviso, Button, Card, CardTitulo, Splash, Vazio, cx } from '@/components/ui'
-import {
-  PrimeirosPassos,
-  usePrecisaOnboarding,
-} from '@/components/layout/PrimeirosPassos'
 
 export function Dashboard() {
   const navigate = useNavigate()
-  const { cidadeAtiva, avaliacaoAtiva } = useCidades()
+  const { cidadeAtiva, avaliacaoAtiva, caminhoCidade } = useCidades()
   const { respostas, notas, carregando } = useRespostas(avaliacaoAtiva?.id ?? null)
-  // hooks antes de qualquer return condicional
-  const precisaOnboarding = usePrecisaOnboarding()
 
-  if (!cidadeAtiva) return <SemCidade />
+  if (!cidadeAtiva) return null
   if (carregando) return <Splash texto="Carregando o diagnóstico…" />
 
   const respondidas = Object.keys(respostas).length
@@ -29,12 +22,11 @@ export function Dashboard() {
     return (
       <>
         <Topbar titulo="Módulo Saúde · Visão geral" sub={cidadeAtiva.nome} />
-        {precisaOnboarding && <PrimeirosPassos />}
         <Vazio
           titulo="Nenhum dado coletado ainda"
           descricao={`A avaliação de ${cidadeAtiva.nome} está em branco. Preencha as métricas para que o índice, o radar e o plano de ação apareçam aqui.`}
           acao={
-            <Button onClick={() => navigate('/app/avaliacao')}>Iniciar avaliação →</Button>
+            <Button onClick={() => navigate(caminhoCidade('avaliacao'))}>Iniciar avaliação →</Button>
           }
         />
       </>
@@ -53,14 +45,12 @@ export function Dashboard() {
         }`}
         acao={
           !concluida ? (
-            <Button variante="ghost" onClick={() => navigate('/app/avaliacao')}>
+            <Button variante="ghost" onClick={() => navigate(caminhoCidade('avaliacao'))}>
               Continuar avaliação
             </Button>
           ) : undefined
         }
       />
-
-      {precisaOnboarding && <PrimeirosPassos />}
 
       <div className="mb-5 grid gap-5 xl:grid-cols-[1.1fr_1.4fr]">
         {/* ------------------------------------------------------------ ISPS */}

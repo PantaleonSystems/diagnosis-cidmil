@@ -1,73 +1,120 @@
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { useCidades } from '@/lib/cidadeAtiva'
+import { ehDemonstracao, nomeCurto, ufVisivel } from '@/lib/cidades'
 import { Marca } from '@/components/layout/Marca'
 import { cx, SeloBeta } from '@/components/ui'
 
-const SECOES = [
-  { to: '/app', fim: true, rotulo: 'Visão geral', icone: <IconeGrid /> },
-  { to: '/app/avaliacao', rotulo: 'Avaliação', icone: <IconeCheck /> },
-  { to: '/app/resultados', rotulo: 'Resultados por pilar', icone: <IconeBarras /> },
-  { to: '/app/plano', rotulo: 'Plano de ação', icone: <IconePlano /> },
-  { to: '/app/cidades', rotulo: 'Cidades', icone: <IconeCidade /> },
-]
+interface Secao {
+  to: string
+  fim?: boolean
+  rotulo: string
+  icone: ReactNode
+}
 
-export function Sidebar({ aoNavegar }: { aoNavegar?: () => void }) {
-  const { cidadeAtiva, avaliacaoAtiva } = useCidades()
+function Cabecalho() {
+  return (
+    <div className="flex items-center gap-2 border-b border-white/10 px-[22px] py-5">
+      <Marca tamanho="sm" invertido />
+      <SeloBeta />
+    </div>
+  )
+}
 
+function Rodape() {
+  return (
+    <div className="border-t border-white/10 px-[22px] py-4 text-[11px] text-[#8FC3E3]">
+      <div className="text-[#A9D3EC]">Powered by Pantaleon Systems</div>
+      <div className="mt-0.5">Versão beta · dados de teste</div>
+    </div>
+  )
+}
+
+function Lista({ titulo, secoes }: { titulo: string; secoes: Secao[] }) {
+  return (
+    <nav className="flex-1 px-3 py-3.5" aria-label={titulo}>
+      <div className="px-3.5 pb-1.5 pt-3.5 text-[10px] font-bold uppercase tracking-[1.5px] text-[#5F93B7]">
+        {titulo}
+      </div>
+      {secoes.map((s) => (
+        <NavLink
+          key={s.to}
+          to={s.to}
+          end={s.fim}
+          className={({ isActive }) =>
+            cx(
+              'mb-[3px] flex w-full items-center gap-3 rounded-[9px] px-3.5 py-3',
+              'text-sm font-semibold transition-colors duration-100',
+              isActive ? 'bg-ciano text-white' : 'text-[#C4E0F2] hover:bg-white/[0.07] hover:text-white',
+            )
+          }
+        >
+          <span className="shrink-0" aria-hidden>
+            {s.icone}
+          </span>
+          {s.rotulo}
+        </NavLink>
+      ))}
+    </nav>
+  )
+}
+
+/** Barra lateral do Início: nenhuma cidade aberta. */
+export function SidebarInicio() {
+  const secoes: Secao[] = [
+    { to: '/app', fim: true, rotulo: 'Cidades', icone: <IconeCidade /> },
+    { to: '/app/rede', rotulo: 'Rede Cidades MIL', icone: <IconeRede /> },
+  ]
   return (
     <aside className="flex h-full min-h-screen w-[250px] shrink-0 flex-col bg-petroleo text-white">
-      <div className="flex items-center gap-2 border-b border-white/10 px-[22px] py-5">
-        <Marca tamanho="sm" invertido />
-        <SeloBeta />
-      </div>
+      <Cabecalho />
+      <Lista titulo="Cidades MIL" secoes={secoes} />
+      <Rodape />
+    </aside>
+  )
+}
+
+/** Barra lateral do ambiente de uma cidade: navegação própria e caminho de volta. */
+export function SidebarCidade() {
+  const { cidadeAtiva, avaliacaoAtiva, caminhoCidade } = useCidades()
+  const secoes: Secao[] = [
+    { to: caminhoCidade(), fim: true, rotulo: 'Visão geral', icone: <IconeGrid /> },
+    { to: caminhoCidade('avaliacao'), rotulo: 'Dados', icone: <IconeCheck /> },
+    { to: caminhoCidade('resultados'), rotulo: 'Resultados por pilar', icone: <IconeBarras /> },
+    { to: caminhoCidade('plano'), rotulo: 'Plano de ação', icone: <IconePlano /> },
+    { to: caminhoCidade('conexoes'), rotulo: 'Conexões', icone: <IconeRede /> },
+  ]
+  return (
+    <aside className="flex h-full min-h-screen w-[250px] shrink-0 flex-col bg-petroleo text-white">
+      <Cabecalho />
+
+      <Link
+        to="/app"
+        className="mx-3 mt-3 flex items-center gap-2 rounded-[9px] px-3.5 py-2.5 text-sm font-semibold text-[#8FC3E3] transition-colors hover:bg-white/[0.07] hover:text-white"
+      >
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M15 5l-7 7 7 7" />
+        </svg>
+        Todas as cidades
+      </Link>
 
       <div className="border-b border-white/10 px-[22px] py-[18px]">
-        <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#8FC3E3]">
-          Cidade avaliada
+        <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#8FC3E3]">Cidade</div>
+        <div className="mt-0.5 text-[17px] font-bold leading-tight">{cidadeAtiva ? nomeCurto(cidadeAtiva) : '—'}</div>
+        <div className="mt-1 text-[11px] text-[#6FA3C7]">
+          {cidadeAtiva && ufVisivel(cidadeAtiva) ? `${ufVisivel(cidadeAtiva)} · ` : ''}
+          Módulo Saúde
+          {avaliacaoAtiva ? ` · ${avaliacaoAtiva.ano} · ${avaliacaoAtiva.status === 'concluida' ? 'concluída' : 'em andamento'}` : ''}
         </div>
-        <div className="mt-0.5 text-[17px] font-bold">
-          {cidadeAtiva?.nome ?? 'Nenhuma cidade'}
-        </div>
-        <div className="mt-0.5 text-[11px] text-[#6FA3C7]">
-          {cidadeAtiva
-            ? `Módulo Saúde · ${avaliacaoAtiva ? `${avaliacaoAtiva.ano} · ${avaliacaoAtiva.status === 'concluida' ? 'concluída' : 'em rascunho'}` : 'sem avaliação'}`
-            : 'Cadastre uma cidade para começar'}
-        </div>
+        {cidadeAtiva && ehDemonstracao(cidadeAtiva) && (
+          <span className="mt-2 inline-block rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[1px] text-[#C4E0F2]">
+            Demonstração
+          </span>
+        )}
       </div>
 
-      <nav className="flex-1 px-3 py-3.5">
-        <div className="px-3.5 pb-1.5 pt-3.5 text-[10px] font-bold uppercase tracking-[1.5px] text-[#5F93B7]">
-          Módulo Saúde · seções
-        </div>
-        {SECOES.map((s) => (
-          <NavLink
-            key={s.to}
-            to={s.to}
-            end={s.fim}
-            onClick={aoNavegar}
-            className={({ isActive }) =>
-              cx(
-                'mb-[3px] flex w-full items-center gap-3 rounded-[9px] px-3.5 py-3',
-                'text-sm font-semibold transition-colors duration-100',
-                isActive
-                  ? 'bg-ciano text-white'
-                  : 'text-[#C4E0F2] hover:bg-white/[0.07] hover:text-white',
-              )
-            }
-          >
-            <span className="shrink-0" aria-hidden>
-              {s.icone}
-            </span>
-            {s.rotulo}
-          </NavLink>
-        ))}
-      </nav>
-
-      <div className="border-t border-white/10 px-[22px] py-4 text-[11px] text-[#8FC3E3]">
-        <div className="text-[#A9D3EC]">Powered by Pantaleon Systems</div>
-        <div className="mt-0.5">Camada de verificação · em breve</div>
-      </div>
+      <Lista titulo="Nesta cidade" secoes={secoes} />
+      <Rodape />
     </aside>
   )
 }
@@ -136,6 +183,17 @@ function IconeCidade() {
       <path d="M3 21h18" />
       <path d="M5 21V7l7-4 7 4v14" />
       <path d="M9 21v-6h6v6" />
+    </>,
+  )
+}
+
+function IconeRede() {
+  return svg(
+    <>
+      <circle cx="6" cy="7" r="2.5" />
+      <circle cx="18" cy="6" r="2.5" />
+      <circle cx="12" cy="18" r="2.5" />
+      <path d="M8 8.5l3 7M16.5 8l-3.5 8M8.5 7h7" />
     </>,
   )
 }
