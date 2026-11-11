@@ -36,7 +36,7 @@ export function MetricField({ metrica, resposta, aoResponder }: Props) {
               : 'bg-ciano-cl text-ciano-esc',
           )}
         >
-          {metrica.tipo === 'regua' ? '📐 régua 0–4 · critério' : '🧮 cálculo cego'}
+          {metrica.tipo === 'regua' ? '📐 régua 0–4 · critério' : '🧮 cálculo MIL'}
         </Pill>
       </div>
 
@@ -161,7 +161,7 @@ function RubricScale({
             className={cx(
               'flex min-h-24 flex-col items-start gap-1.5 rounded-[10px] border-[1.5px] p-2.5 text-left transition-all duration-100',
               escolhido
-                ? 'bg-white shadow-[0_3px_12px_rgba(2,185,218,0.18)]'
+                ? 'bg-white shadow-[0_3px_12px_rgba(10,90,150,0.18)]'
                 : 'border-linha bg-white hover:border-ciano-2 hover:bg-[#FBFEFF]',
             )}
             style={escolhido ? { borderColor: NOTE_COLORS[nivel] } : undefined}

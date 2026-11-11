@@ -1,4 +1,4 @@
-/** Cores semânticas da paleta CIIDCMIL usadas em SVG e estilos inline. */
+/** Cores semânticas da paleta Cidades MIL usadas em SVG e estilos inline. */
 import type { Nota, Prioridade } from '@/lib/calculos'
 
 /** índice = nota (0–4) */
@@ -16,9 +16,9 @@ export const PRIO_COLORS: Record<Prioridade, string> = {
   Baixa: '#3DB18C',
 }
 
-export const CIANO = '#02B9DA'
-export const PETROLEO = '#0B3D4A'
-export const LINHA = '#E1EEF2'
+export const CIANO = '#0A5A96'
+export const PETROLEO = '#052F4D'
+export const LINHA = '#DFEAF2'
 
 export const fmt = (n: number, casas = 1) =>
   n.toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas })

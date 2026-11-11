@@ -45,7 +45,7 @@ export function PrimeirosPassos() {
   ]
 
   return (
-    <Card className="mb-5 border-ciano/30 bg-[linear-gradient(135deg,#F4FAFC_0%,#E8FAFD_100%)]">
+    <Card className="mb-5 border-ciano/30 bg-[linear-gradient(135deg,#F4F9FC_0%,#E6F2FA_100%)]">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">

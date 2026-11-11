@@ -6,6 +6,8 @@ import { Resultados } from '@/pages/Resultados'
 import { Plano } from '@/pages/Plano'
 import { Cidades } from '@/pages/Cidades'
 import { AppShell } from '@/components/layout/AppShell'
+import { Galeria } from '@/pages/lab/Galeria'
+import { Jornada } from '@/pages/lab/Jornada'
 
 /**
  * BETA: sem rotas de autenticação. "Acessar" leva direto ao dashboard.
@@ -23,6 +25,10 @@ export function AppRoutes() {
         <Route path="plano" element={<Plano />} />
         <Route path="cidades" element={<Cidades />} />
       </Route>
+
+      {/* Laboratório de design mobile (interno, noindex) */}
+      <Route path="/lab" element={<Galeria />} />
+      <Route path="/lab/jornada" element={<Jornada />} />
 
       {/* links antigos continuam funcionando */}
       <Route path="/login" element={<Navigate to="/app" replace />} />

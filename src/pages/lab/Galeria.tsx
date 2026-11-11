@@ -1,0 +1,97 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import type { Nota } from '@/lib/calculos'
+import { GaugeIndice } from '@/components/charts/GaugeIndice'
+import { BarraAbas } from '@/components/mobile/BarraAbas'
+import { Chip } from '@/components/mobile/Chip'
+import { Folha } from '@/components/mobile/Folha'
+import { SeloNota } from '@/components/mobile/SeloNota'
+import { IcoAvaliar, IcoCidades, IcoPlano, IcoResultados, IcoVisaoGeral } from '@/components/mobile/icones'
+import { Button } from '@/components/ui'
+import { useNoindex } from './useNoindex'
+
+const ABAS = [
+  { id: 'geral', rotulo: 'Geral', icone: IcoVisaoGeral },
+  { id: 'avaliar', rotulo: 'Avaliar', icone: IcoAvaliar },
+  { id: 'resultados', rotulo: 'Resultados', icone: IcoResultados },
+  { id: 'plano', rotulo: 'Plano', icone: IcoPlano },
+  { id: 'cidades', rotulo: 'Cidades', icone: IcoCidades },
+]
+
+function Bloco({ titulo, nota, children }: { titulo: string; nota?: string; children: React.ReactNode }) {
+  return (
+    <section className="mb-8">
+      <h2 className="text-subtitulo font-bold text-petroleo">{titulo}</h2>
+      {nota && <p className="mb-3 mt-1 text-legenda text-cinza">{nota}</p>}
+      {children}
+    </section>
+  )
+}
+
+/** Galeria dos componentes da Fase 0 (interna). Abra no celular. */
+export function Galeria() {
+  useNoindex()
+  const [folha, setFolha] = useState(false)
+  const [aba, setAba] = useState('geral')
+  const [chip, setChip] = useState('Todas')
+  const [isps, setIsps] = useState(2.66)
+  const nivel = (isps <= 1.5 ? 0 : isps <= 2.5 ? 1 : isps <= 3.4 ? 2 : 3) as 0 | 1 | 2 | 3
+
+  return (
+    <div className="min-h-tela bg-app-bg px-5 pb-16 pt-8">
+      <div className="mx-auto max-w-[520px]">
+        <p className="text-micro font-bold uppercase text-ciano-esc">Laboratório · interno</p>
+        <h1 className="mt-1 text-titulo font-extrabold text-petroleo">Componentes mobile</h1>
+        <p className="mb-6 mt-2 text-corpo text-cinza">Fase 0 do redesign. Abra no celular e teste os gestos.</p>
+        <Link to="/lab/jornada" className="alvo toque mb-8 flex items-center justify-center rounded-xl bg-ciano px-5 text-corpo font-bold text-white">
+          Abrir o protótipo da jornada →
+        </Link>
+
+        <Bloco titulo="Tipografia fluida" nota="Títulos com tracking negativo; texto pequeno com tracking leve.">
+          <div className="rounded-card border border-linha bg-white p-5">
+            <p className="text-display font-extrabold text-petroleo">2,66</p>
+            <p className="mt-2 text-titulo font-extrabold text-petroleo">Título da tela</p>
+            <p className="mt-2 text-subtitulo font-bold text-petroleo">Subtítulo de seção</p>
+            <p className="mt-2 text-corpo text-cinza">Corpo de texto com entrelinha confortável para leitura no celular.</p>
+            <p className="mt-2 text-legenda text-cinza">Legenda e apoio</p>
+            <p className="mt-2 text-micro font-bold uppercase text-cinza-cl">Rótulo micro</p>
+          </div>
+        </Bloco>
+
+        <Bloco titulo="Selo de nota" nota="Cor + número + rótulo: a cor nunca é o único sinal.">
+          <div className="flex flex-wrap gap-2">
+            {([0, 1, 2, 3, 4] as Nota[]).map((n) => <SeloNota key={n} nota={n} />)}
+          </div>
+        </Bloco>
+
+        <Bloco titulo="Chips" nota="Visual de 36 px, área de toque de 44 px.">
+          <div className="flex flex-wrap gap-2">
+            {['Todas', 'Alta', 'Média', 'Baixa'].map((c) => <Chip key={c} ativo={chip === c} onClick={() => setChip(c)}>{c}</Chip>)}
+          </div>
+        </Bloco>
+
+        <Bloco titulo="Gauge do índice" nota="Mexa no controle: o arco e o número animam.">
+          <div className="rounded-card border border-linha bg-white p-5 text-center">
+            <GaugeIndice isps={isps} nivel={nivel} travado={isps > 2.5 && isps < 3} className="mx-auto" />
+            <input type="range" min={0} max={4} step={0.05} value={isps} onChange={(e) => setIsps(Number(e.target.value))} aria-label="Valor do índice" className="faixa mt-3 w-full" style={{ ['--cor' as string]: '#0A5A96', ['--pct' as string]: `${(isps / 4) * 100}%` }} />
+          </div>
+        </Bloco>
+
+        <Bloco titulo="Folha deslizante" nota="Arraste para baixo (com velocidade ou até a metade) para fechar. Agarre no meio da animação. Esc ou toque fora também fecham.">
+          <Button className="alvo" onClick={() => setFolha(true)}>Abrir folha</Button>
+          <Folha aberto={folha} aoFechar={() => setFolha(false)} titulo="Exemplo de folha">
+            <p className="pb-3 text-corpo text-cinza">Conteúdo que rola por dentro. A folha acompanha o dedo, projeta onde o gesto pararia e entrega a velocidade para a mola.</p>
+            {Array.from({ length: 8 }, (_, i) => <p key={i} className="border-t border-linha py-3 text-corpo text-tinta">Linha {i + 1}</p>)}
+          </Folha>
+        </Bloco>
+
+        <Bloco titulo="Barra de abas" nota="Translúcida; o indicador desliza entre as abas.">
+          <div className="relative h-40 overflow-hidden rounded-card border border-linha bg-white">
+            <div className="p-4 text-corpo text-cinza">Aba ativa: <strong className="text-petroleo">{aba}</strong></div>
+            <BarraAbas contida itens={ABAS} ativoId={aba} aoEscolher={setAba} />
+          </div>
+        </Bloco>
+      </div>
+    </div>
+  )
+}

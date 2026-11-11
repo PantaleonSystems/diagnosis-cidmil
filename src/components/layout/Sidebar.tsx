@@ -23,13 +23,13 @@ export function Sidebar({ aoNavegar }: { aoNavegar?: () => void }) {
       </div>
 
       <div className="border-b border-white/10 px-[22px] py-[18px]">
-        <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#7FC4D2]">
+        <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#8FC3E3]">
           Cidade avaliada
         </div>
         <div className="mt-0.5 text-[17px] font-bold">
           {cidadeAtiva?.nome ?? 'Nenhuma cidade'}
         </div>
-        <div className="mt-0.5 text-[11px] text-[#6FA9B6]">
+        <div className="mt-0.5 text-[11px] text-[#6FA3C7]">
           {cidadeAtiva
             ? `Módulo Saúde · ${avaliacaoAtiva ? `${avaliacaoAtiva.ano} · ${avaliacaoAtiva.status === 'concluida' ? 'concluída' : 'em rascunho'}` : 'sem avaliação'}`
             : 'Cadastre uma cidade para começar'}
@@ -37,7 +37,7 @@ export function Sidebar({ aoNavegar }: { aoNavegar?: () => void }) {
       </div>
 
       <nav className="flex-1 px-3 py-3.5">
-        <div className="px-3.5 pb-1.5 pt-3.5 text-[10px] font-bold uppercase tracking-[1.5px] text-[#5F97A4]">
+        <div className="px-3.5 pb-1.5 pt-3.5 text-[10px] font-bold uppercase tracking-[1.5px] text-[#5F93B7]">
           Módulo Saúde · seções
         </div>
         {SECOES.map((s) => (
@@ -52,7 +52,7 @@ export function Sidebar({ aoNavegar }: { aoNavegar?: () => void }) {
                 'text-sm font-semibold transition-colors duration-100',
                 isActive
                   ? 'bg-ciano text-white'
-                  : 'text-[#C4E4EC] hover:bg-white/[0.07] hover:text-white',
+                  : 'text-[#C4E0F2] hover:bg-white/[0.07] hover:text-white',
               )
             }
           >
@@ -64,8 +64,8 @@ export function Sidebar({ aoNavegar }: { aoNavegar?: () => void }) {
         ))}
       </nav>
 
-      <div className="border-t border-white/10 px-[22px] py-4 text-[11px] text-[#7FC4D2]">
-        <div className="text-[#A9D8E2]">Powered by Pantaleon Systems</div>
+      <div className="border-t border-white/10 px-[22px] py-4 text-[11px] text-[#8FC3E3]">
+        <div className="text-[#A9D3EC]">Powered by Pantaleon Systems</div>
         <div className="mt-0.5">Camada de verificação · em breve</div>
       </div>
     </aside>

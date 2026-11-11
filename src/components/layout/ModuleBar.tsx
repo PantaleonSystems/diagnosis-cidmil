@@ -26,7 +26,7 @@ export function ModuleBar() {
               'flex shrink-0 items-center gap-2 rounded-[10px] border-[1.5px] px-[15px] py-[9px]',
               'text-[13px] font-semibold whitespace-nowrap transition-all duration-100',
               m.ativo
-                ? 'border-ciano bg-ciano text-white shadow-[0_4px_14px_rgba(2,185,218,0.28)]'
+                ? 'border-ciano bg-ciano text-white shadow-[0_4px_14px_rgba(10,90,150,0.28)]'
                 : 'border-linha bg-white text-cinza-cl opacity-75 hover:border-ciano-2 hover:opacity-100',
             )}
           >

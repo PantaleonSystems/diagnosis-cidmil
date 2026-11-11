@@ -1,11 +1,9 @@
 import { cx } from '@/components/ui'
 
 /**
- * Assinatura CIIDCMIL.
- *
- * Placeholder tipográfico — para usar o logotipo oficial, coloque o arquivo em
- * `src/assets/ciidcmil.svg` e troque o conteúdo por um <img>. As medidas aqui
- * (altura ~34px no header, ~26px na sidebar) seguem o protótipo.
+ * Assinatura Cidades MIL: logo (SVG em `public/logo-cidades-mil.svg`) + nome.
+ * A logo atual é temporária; para trocar, substitua o arquivo SVG.
+ * Alturas: ~36px no header, ~28px na sidebar.
  */
 export function Marca({
   tamanho = 'md',
@@ -21,12 +19,17 @@ export function Marca({
     <span className={cx('inline-flex items-center gap-2.5', className)}>
       <span
         className={cx(
-          'grid place-items-center rounded-lg bg-ciano font-extrabold text-white',
-          sm ? 'h-7 w-7 text-sm' : 'h-9 w-9 text-base',
+          'shrink-0',
+          // Sobre fundo escuro a logo (azul-escuro) precisa de um cartão claro.
+          invertido && 'grid place-items-center rounded-lg bg-white p-0.5',
         )}
-        aria-hidden
       >
-        C
+        <img
+          src="/logo-cidades-mil.svg"
+          alt=""
+          aria-hidden
+          className={cx(sm ? 'h-9 w-9' : 'h-11 w-11 sm:h-12 sm:w-12')}
+        />
       </span>
       <span className="leading-none">
         <span
@@ -41,7 +44,7 @@ export function Marca({
         <span
           className={cx(
             'mt-0.5 block text-[9px] uppercase tracking-[1.2px]',
-            invertido ? 'text-[#7FC4D2]' : 'text-cinza-cl',
+            invertido ? 'text-[#8FC3E3]' : 'text-cinza-cl',
           )}
         >
           Cidades MIL

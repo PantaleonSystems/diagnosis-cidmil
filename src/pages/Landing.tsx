@@ -2,12 +2,13 @@ import { Link } from 'react-router-dom'
 import { MODULOS, PILARES } from '@/data/metricas'
 import { RadarChart } from '@/components/charts/RadarChart'
 import { Marca } from '@/components/layout/Marca'
+import { SimuladorIndice } from '@/components/landing/SimuladorIndice'
+import { useAnimado } from '@/lib/movimento'
 import { Button, Eyebrow, SeloBeta, cx } from '@/components/ui'
 import { fmt } from '@/lib/theme'
 
 /** Valores ilustrativos do card do hero — exemplo, não dado de cidade real. */
 const EXEMPLO = [1.9, 2.8, 3.2, 3.5, 2.5]
-const EXEMPLO_ISPS = 2.66
 
 const COMO = [
   {
@@ -32,15 +33,20 @@ const COMO = [
 
 export function Landing() {
   const ativos = MODULOS.filter((m) => m.ativo).length
+  const valores = useAnimado(EXEMPLO, 1400)
+  const isps = valores.reduce((s, v, i) => s + v * PILARES[i].peso, 0)
 
   return (
     <div className="min-h-screen bg-white">
-      <nav className="sticky top-0 z-20 flex items-center justify-between border-b border-linha bg-white px-[6vw] py-4.5">
-        <div className="flex items-center gap-2.5">
+      <nav className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-linha bg-white/95 px-[5vw] py-3 backdrop-blur md:px-[6vw]">
+        <div className="flex min-w-0 items-center gap-2">
           <Marca />
-          <SeloBeta />
+          <SeloBeta className="max-[460px]:hidden" />
         </div>
-        <div className="flex items-center gap-6 text-sm font-semibold text-cinza">
+        <div className="flex shrink-0 items-center gap-4 text-sm font-semibold text-cinza md:gap-6">
+          <a href="#fluxo" className="hidden hover:text-ciano-esc md:inline">
+            Como funciona
+          </a>
           <a href="#conceito" className="hidden hover:text-ciano-esc md:inline">
             O conceito
           </a>
@@ -48,7 +54,10 @@ export function Landing() {
             Pilares
           </a>
           <Link to="/app">
-            <Button variante="ghost">Acessar o sistema</Button>
+            <Button variante="ghost" className="whitespace-nowrap !px-4 !py-2 text-[13px] sm:!px-[22px] sm:!py-[11px] sm:text-sm">
+              Acessar
+              <span className="hidden sm:inline">o sistema</span>
+            </Button>
           </Link>
         </div>
       </nav>
@@ -74,7 +83,7 @@ export function Landing() {
               <Link to="/app">
                 <Button>Abrir o diagnóstico →</Button>
               </Link>
-              <a href="#conceito">
+              <a href="#fluxo">
                 <Button variante="ghost">Ver como funciona</Button>
               </a>
             </div>
@@ -94,21 +103,24 @@ export function Landing() {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-[52px] font-extrabold leading-none text-petroleo">
-                {fmt(EXEMPLO_ISPS, 2)}
+                {fmt(isps, 2)}
               </span>
               <span className="font-bold text-cinza-cl">/ 4,0</span>
             </div>
             <div className="mt-1.5 flex justify-center">
               <RadarChart
-                valores={EXEMPLO}
+                valores={valores}
                 rotulos={PILARES.map((p) => p.curto.slice(0, 6) + '.')}
                 tamanho={300}
-                padding={38}
+                padding={58}
               />
             </div>
           </div>
         </div>
       </header>
+
+      {/* ------------------------------------------------------------ fluxo */}
+      <SimuladorIndice />
 
       {/* --------------------------------------------------------- conceito */}
       <section id="conceito" className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
@@ -202,15 +214,15 @@ export function Landing() {
 
       {/* --------------------------------------------------- acesso restrito */}
       <section className="mx-auto max-w-[1200px] px-[6vw] pb-[70px]">
-        <div className="flex flex-wrap items-center justify-between gap-8 rounded-[18px] bg-[linear-gradient(120deg,#0B3D4A,#0A7C93)] px-12 py-11 text-white">
+        <div className="flex flex-wrap items-center justify-between gap-8 rounded-[18px] bg-[linear-gradient(120deg,#052F4D,#0A5A96)] px-12 py-11 text-white">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-[2px] text-[#9FE0EC]">
+            <span className="text-[11px] font-bold uppercase tracking-[2px] text-[#9CCBEA]">
               Versão beta · acesso aberto
             </span>
             <h3 className="mb-2 mt-1 text-2xl">
               A plataforma está aberta para testes
             </h3>
-            <p className="max-w-[520px] text-[14.5px] text-[#CDEEF4]">
+            <p className="max-w-[520px] text-[14.5px] text-[#D3E8F6]">
               Nesta fase não há cadastro nem senha: entre, cadastre uma cidade e percorra
               o diagnóstico. Os dados são de teste e podem ser reiniciados a qualquer
               momento enquanto o instrumento está sendo validado.
