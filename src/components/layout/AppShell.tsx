@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { ModuleBar } from '@/components/layout/ModuleBar'
 import { CidadesProvider, useCidades } from '@/lib/cidadeAtiva'
+import { Gaveta } from '@/components/mobile/Gaveta'
 import { CatalogoProvider, useCatalogo } from '@/lib/catalogo'
 import { Erro, Splash, cx } from '@/components/ui'
 
@@ -31,26 +32,23 @@ function Conteudo() {
         <Sidebar />
       </div>
 
-      {/* Gaveta no mobile */}
-      {menuAberto && (
-        <div className="fixed inset-0 z-40 lg:hidden">
-          <button
-            aria-label="Fechar menu"
-            className="absolute inset-0 bg-petroleo/50"
-            onClick={() => setMenuAberto(false)}
-          />
-          <div className="relative h-full w-[250px]">
-            <Sidebar aoNavegar={() => setMenuAberto(false)} />
-          </div>
-        </div>
-      )}
+      {/* Gaveta no mobile: desliza da esquerda, com mola */}
+      <Gaveta aberto={menuAberto} aoFechar={() => setMenuAberto(false)}>
+        <Sidebar aoNavegar={() => setMenuAberto(false)} />
+      </Gaveta>
 
       <main className="min-w-0 px-6 pb-16 pt-6 lg:h-screen lg:overflow-y-auto lg:px-10 lg:pt-[34px]">
         <button
+          type="button"
           onClick={() => setMenuAberto(true)}
-          className="mb-4 rounded-lg border border-linha bg-white px-3 py-2 text-sm font-semibold text-petroleo lg:hidden"
+          aria-haspopup="dialog"
+          aria-expanded={menuAberto}
+          className="alvo toque mb-4 inline-flex items-center gap-2 rounded-lg border border-linha bg-white px-3.5 text-sm font-semibold text-petroleo shadow-sm lg:hidden"
         >
-          ☰ Menu
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
+            <path d="M4 7h16M4 12h16M4 17h10" />
+          </svg>
+          Menu
         </button>
 
         {(erroCidades ?? erroCatalogo) && (
