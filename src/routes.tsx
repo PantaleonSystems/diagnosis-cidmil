@@ -13,7 +13,7 @@ const Dashboard = lazy(() => import('@/pages/Dashboard').then((m) => ({ default:
 const Dados = lazy(() => import('@/pages/Dados').then((m) => ({ default: m.Dados })))
 const Avaliacao = lazy(() => import('@/pages/Avaliacao').then((m) => ({ default: m.Avaliacao })))
 const Resultados = lazy(() => import('@/pages/Resultados').then((m) => ({ default: m.Resultados })))
-const Plano = lazy(() => import('@/pages/Plano').then((m) => ({ default: m.Plano })))
+const Priorizar = lazy(() => import('@/pages/Priorizar').then((m) => ({ default: m.Priorizar })))
 const Conexoes = lazy(() => import('@/pages/Conexoes').then((m) => ({ default: m.Conexoes })))
 const Galeria = lazy(() => import('@/pages/lab/Galeria').then((m) => ({ default: m.Galeria })))
 const Jornada = lazy(() => import('@/pages/lab/Jornada').then((m) => ({ default: m.Jornada })))
@@ -38,7 +38,7 @@ export function AppRoutes() {
           <Route path="dados" element={<Dados />} />
           <Route path="avaliacao" element={<Avaliacao />} />
           <Route path="resultados" element={<Resultados />} />
-          <Route path="plano" element={<Plano />} />
+          <Route path="plano" element={<Priorizar />} />
           <Route path="conexoes" element={<Conexoes />} />
         </Route>
 

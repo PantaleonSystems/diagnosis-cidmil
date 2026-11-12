@@ -121,7 +121,7 @@ function valorParaSubir(metrica: Metrica, dados: DadosBrutos, nota: Nota) {
 }
 
 /** Onde a métrica está hoje, nas palavras dela mesma. */
-function descreverSituacao(
+export function descreverSituacao(
   metrica: Metrica,
   nota: Nota,
   dados: DadosBrutos,
@@ -144,7 +144,7 @@ function descreverSituacao(
 }
 
 /** O que precisa passar a existir. É aqui que mora a direção. */
-function descreverProximoPasso(
+export function descreverProximoPasso(
   metrica: Metrica,
   nota: Nota,
   dados: DadosBrutos,
