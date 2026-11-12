@@ -85,7 +85,7 @@ export function SidebarCidade() {
     { to: caminhoCidade(), fim: true, rotulo: 'Visão geral', icone: <IconeGrid /> },
     { to: caminhoCidade('dados'), rotulo: 'Dados', icone: <IconeCheck />, tambem: 'avaliacao' },
     { to: caminhoCidade('resultados'), rotulo: 'Resultados por pilar', icone: <IconeBarras /> },
-    { to: caminhoCidade('plano'), rotulo: 'Plano de ação', icone: <IconePlano /> },
+    { to: caminhoCidade('plano'), rotulo: 'O que fazer primeiro', icone: <IconePlano /> },
     { to: caminhoCidade('conexoes'), rotulo: 'Conexões', icone: <IconeRede /> },
   ]
   return (

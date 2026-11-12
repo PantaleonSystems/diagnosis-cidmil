@@ -122,7 +122,7 @@ function AbasMobile({ naCidade }: { naCidade: boolean }) {
     { id: 'geral', rotulo: 'Geral', icone: IcoVisaoGeral, to: caminhoCidade(), fim: true },
     { id: 'dados', rotulo: 'Dados', icone: IcoAvaliar, to: caminhoCidade('dados') },
     { id: 'resultados', rotulo: 'Resultados', icone: IcoResultados, to: caminhoCidade('resultados') },
-    { id: 'plano', rotulo: 'Plano', icone: IcoPlano, to: caminhoCidade('plano') },
+    { id: 'plano', rotulo: 'Priorizar', icone: IcoPlano, to: caminhoCidade('plano') },
     { id: 'conexoes', rotulo: 'Conexões', icone: IcoRede, to: caminhoCidade('conexoes') },
   ]
   const ultimo = pathname.split('/').filter(Boolean).pop() ?? ''
