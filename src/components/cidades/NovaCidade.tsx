@@ -56,7 +56,7 @@ export function NovaCidadeProvider({ children }: { children: ReactNode }) {
   )
 }
 
-type DadosCidade = { nome: string; uf: string; pais: string; populacao: number | null }
+type DadosCidade = { nome: string; uf: string; pais: string; populacao: number | null; codigo_ibge: string | null }
 
 // O formulário fica dentro da folha: ao fechar, o estado dele zera sozinho.
 function Formulario({
@@ -74,12 +74,17 @@ function Formulario({
   const [enviando, setEnviando] = useState(false)
 
   const existente = useMemo(
-    () =>
-      loc
-        ? existentes.find(
-            (c) => c.pais === loc.pais && c.uf === loc.uf && normalizar(c.nome) === normalizar(loc.nome),
-          )
-        : undefined,
+    () => {
+      if (!loc) return undefined
+      // o código IBGE identifica o município; sem ele, compara país + UF + nome
+      if (loc.codigoIbge) {
+        const porCodigo = existentes.find((c) => c.codigo_ibge === loc.codigoIbge)
+        if (porCodigo) return porCodigo
+      }
+      return existentes.find(
+        (c) => !c.codigo_ibge && c.pais === loc.pais && c.uf === loc.uf && normalizar(c.nome) === normalizar(loc.nome),
+      )
+    },
     [loc, existentes],
   )
 
@@ -94,6 +99,7 @@ function Formulario({
         uf: loc.uf,
         pais: loc.pais,
         populacao: loc.populacao ?? (populacao ? Number(populacao) : null),
+        codigo_ibge: loc.codigoIbge,
       })
     } catch (err) {
       setErro(err instanceof Error ? err.message : 'Não foi possível cadastrar.')

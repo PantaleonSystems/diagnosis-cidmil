@@ -95,6 +95,7 @@ export function useRespostas(avaliacaoId: string | null) {
           metrica_id: metricaId,
           dados_brutos: valor.dadosBrutos,
           nota: valor.nota,
+          origem: 'declarado',
         },
         { onConflict: 'avaliacao_id,metrica_id' },
       )

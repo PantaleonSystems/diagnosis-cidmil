@@ -24,6 +24,8 @@ export interface NovaCidade {
   uf: string
   pais: string
   populacao: number | null
+  /** código IBGE (7 dígitos) quando a cidade vem da lista oficial brasileira */
+  codigo_ibge?: string | null
 }
 
 /** Retrato de uma cidade calculado a partir das respostas já registradas. */
@@ -183,7 +185,21 @@ export function CidadesProvider({ children }: { children: ReactNode }) {
         .insert({ ...dados, criado_por: userId })
         .select()
         .single()
-      if (error) throw new Error(error.message)
+      if (error) {
+        // 23505: o código IBGE já existe (outra pessoa cadastrou antes). Abre a existente.
+        if (error.code === '23505' && dados.codigo_ibge) {
+          const { data: existente } = await supabase
+            .from('cidades')
+            .select('*')
+            .eq('codigo_ibge', dados.codigo_ibge)
+            .maybeSingle()
+          if (existente) {
+            await recarregar()
+            return existente as Cidade
+          }
+        }
+        throw new Error(error.message)
+      }
 
       // toda cidade nasce com uma avaliação do módulo Saúde em rascunho
       const { error: erroAval } = await supabase.from('avaliacoes').insert({

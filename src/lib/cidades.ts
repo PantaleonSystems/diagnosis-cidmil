@@ -1,10 +1,11 @@
 import { normalizar } from '@/lib/localidades'
 
 /**
- * A cidade de demonstração é reconhecida pelo nome (temporário: vira um campo
- * próprio quando a migração de banco for feita — ver tarefa de permissões).
+ * Cidade de demonstração: usa o campo `demonstracao` do banco. Sem o campo
+ * (dados antigos em memória), cai no reconhecimento pelo nome.
  */
-export const ehDemonstracao = (c: { nome: string }): boolean => /demonstra[cç][aã]o/i.test(c.nome)
+export const ehDemonstracao = (c: { nome: string; demonstracao?: boolean }): boolean =>
+  c.demonstracao ?? /demonstra[cç][aã]o/i.test(c.nome)
 
 /** Nome sem o sufixo "(demonstração)". */
 export const nomeCurto = (c: { nome: string }): string =>

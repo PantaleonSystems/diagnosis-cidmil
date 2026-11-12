@@ -30,6 +30,8 @@ const cid = (id: string, nome: string, uf: string): Cidade => ({
   uf,
   pais: 'Brasil',
   populacao: null,
+  codigo_ibge: null,
+  demonstracao: false,
   criado_por: 'x',
   created_at: '',
   updated_at: '',
