@@ -23,8 +23,8 @@ function Cabecalho() {
 
 function Rodape() {
   return (
-    <div className="border-t border-white/10 px-[22px] py-4 text-[11px] text-[#8FC3E3]">
-      <div className="text-[#A9D3EC]">Powered by Pantaleon Systems</div>
+    <div className="border-t border-white/10 px-[22px] py-4 text-[11px] text-lateral-3">
+      <div className="text-lateral-2">Powered by Pantaleon Systems</div>
       <div className="mt-0.5">Versão beta · dados de teste</div>
     </div>
   )
@@ -33,7 +33,7 @@ function Rodape() {
 function Lista({ titulo, secoes }: { titulo: string; secoes: Secao[] }) {
   return (
     <nav className="flex-1 px-3 py-3.5" aria-label={titulo}>
-      <div className="px-3.5 pb-1.5 pt-3.5 text-[10px] font-bold uppercase tracking-[1.5px] text-[#5F93B7]">
+      <div className="px-3.5 pb-1.5 pt-3.5 text-[10px] font-bold uppercase tracking-[1.5px] text-lateral-5">
         {titulo}
       </div>
       {secoes.map((s) => (
@@ -45,7 +45,7 @@ function Lista({ titulo, secoes }: { titulo: string; secoes: Secao[] }) {
             cx(
               'mb-[3px] flex w-full items-center gap-3 rounded-[9px] px-3.5 py-3',
               'text-sm font-semibold transition-colors duration-100',
-              isActive ? 'bg-ciano text-white' : 'text-[#C4E0F2] hover:bg-white/[0.07] hover:text-white',
+              isActive ? 'bg-marca text-white' : 'text-lateral-1 hover:bg-white/[0.07] hover:text-white',
             )
           }
         >
@@ -66,7 +66,7 @@ export function SidebarInicio() {
     { to: '/app/rede', rotulo: 'Rede Cidades MIL', icone: <IconeRede /> },
   ]
   return (
-    <aside className="flex h-full min-h-screen w-[250px] shrink-0 flex-col bg-petroleo text-white">
+    <aside className="flex h-full min-h-screen w-[250px] shrink-0 flex-col bg-noite text-white">
       <Cabecalho />
       <Lista titulo="Cidades MIL" secoes={secoes} />
       <Rodape />
@@ -85,12 +85,12 @@ export function SidebarCidade() {
     { to: caminhoCidade('conexoes'), rotulo: 'Conexões', icone: <IconeRede /> },
   ]
   return (
-    <aside className="flex h-full min-h-screen w-[250px] shrink-0 flex-col bg-petroleo text-white">
+    <aside className="flex h-full min-h-screen w-[250px] shrink-0 flex-col bg-noite text-white">
       <Cabecalho />
 
       <Link
         to="/app"
-        className="mx-3 mt-3 flex items-center gap-2 rounded-[9px] px-3.5 py-2.5 text-sm font-semibold text-[#8FC3E3] transition-colors hover:bg-white/[0.07] hover:text-white"
+        className="mx-3 mt-3 flex items-center gap-2 rounded-[9px] px-3.5 py-2.5 text-sm font-semibold text-lateral-3 transition-colors hover:bg-white/[0.07] hover:text-white"
       >
         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M15 5l-7 7 7 7" />
@@ -99,15 +99,15 @@ export function SidebarCidade() {
       </Link>
 
       <div className="border-b border-white/10 px-[22px] py-[18px]">
-        <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#8FC3E3]">Cidade</div>
+        <div className="text-[10px] font-bold uppercase tracking-[1.5px] text-lateral-3">Cidade</div>
         <div className="mt-0.5 text-[17px] font-bold leading-tight">{cidadeAtiva ? nomeCurto(cidadeAtiva) : '—'}</div>
-        <div className="mt-1 text-[11px] text-[#6FA3C7]">
+        <div className="mt-1 text-[11px] text-lateral-4">
           {cidadeAtiva && ufVisivel(cidadeAtiva) ? `${ufVisivel(cidadeAtiva)} · ` : ''}
           Módulo Saúde
           {avaliacaoAtiva ? ` · ${avaliacaoAtiva.ano} · ${avaliacaoAtiva.status === 'concluida' ? 'concluída' : 'em andamento'}` : ''}
         </div>
         {cidadeAtiva && ehDemonstracao(cidadeAtiva) && (
-          <span className="mt-2 inline-block rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[1px] text-[#C4E0F2]">
+          <span className="mt-2 inline-block rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[1px] text-lateral-1">
             Demonstração
           </span>
         )}

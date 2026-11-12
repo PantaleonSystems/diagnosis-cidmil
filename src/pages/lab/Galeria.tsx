@@ -55,7 +55,7 @@ const EXEMPLOS: ItemRede[] = [
 function Bloco({ titulo, nota, children }: { titulo: string; nota?: string; children: React.ReactNode }) {
   return (
     <section className="mb-8">
-      <h2 className="text-subtitulo font-bold text-petroleo">{titulo}</h2>
+      <h2 className="text-subtitulo font-bold text-noite">{titulo}</h2>
       {nota && <p className="mb-3 mt-1 text-legenda text-cinza">{nota}</p>}
       {children}
     </section>
@@ -74,18 +74,18 @@ export function Galeria() {
   return (
     <div className="min-h-tela bg-app-bg px-5 pb-16 pt-8">
       <div className="mx-auto max-w-[520px]">
-        <p className="text-micro font-bold uppercase text-ciano-esc">Laboratório · interno</p>
-        <h1 className="mt-1 text-titulo font-extrabold text-petroleo">Componentes mobile</h1>
+        <p className="text-micro font-bold uppercase text-marca-escura">Laboratório · interno</p>
+        <h1 className="mt-1 text-titulo font-extrabold text-noite">Componentes mobile</h1>
         <p className="mb-6 mt-2 text-corpo text-cinza">Fase 0 do redesign. Abra no celular e teste os gestos.</p>
-        <Link to="/lab/jornada" className="alvo toque mb-8 flex items-center justify-center rounded-xl bg-ciano px-5 text-corpo font-bold text-white">
+        <Link to="/lab/jornada" className="alvo toque mb-8 flex items-center justify-center rounded-xl bg-marca px-5 text-corpo font-bold text-white">
           Abrir o protótipo da jornada →
         </Link>
 
         <Bloco titulo="Tipografia fluida" nota="Títulos com tracking negativo; texto pequeno com tracking leve.">
           <div className="rounded-card border border-linha bg-white p-5">
-            <p className="text-display font-extrabold text-petroleo">2,66</p>
-            <p className="mt-2 text-titulo font-extrabold text-petroleo">Título da tela</p>
-            <p className="mt-2 text-subtitulo font-bold text-petroleo">Subtítulo de seção</p>
+            <p className="text-display font-extrabold text-noite">2,66</p>
+            <p className="mt-2 text-titulo font-extrabold text-noite">Título da tela</p>
+            <p className="mt-2 text-subtitulo font-bold text-noite">Subtítulo de seção</p>
             <p className="mt-2 text-corpo text-cinza">Corpo de texto com entrelinha confortável para leitura no celular.</p>
             <p className="mt-2 text-legenda text-cinza">Legenda e apoio</p>
             <p className="mt-2 text-micro font-bold uppercase text-cinza-cl">Rótulo micro</p>
@@ -134,7 +134,7 @@ export function Galeria() {
 
         <Bloco titulo="Barra de abas" nota="Translúcida; o indicador desliza entre as abas.">
           <div className="relative h-40 overflow-hidden rounded-card border border-linha bg-white">
-            <div className="p-4 text-corpo text-cinza">Aba ativa: <strong className="text-petroleo">{aba}</strong></div>
+            <div className="p-4 text-corpo text-cinza">Aba ativa: <strong className="text-noite">{aba}</strong></div>
             <BarraAbas contida itens={ABAS} ativoId={aba} aoEscolher={setAba} />
           </div>
         </Bloco>

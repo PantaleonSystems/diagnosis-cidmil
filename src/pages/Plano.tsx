@@ -4,7 +4,7 @@ import { useCidades } from '@/lib/cidadeAtiva'
 import { useRespostas } from '@/lib/respostas'
 import { NIVEIS, consolidar } from '@/lib/isps'
 import { montarPlano } from '@/lib/plano'
-import { PRIO_COLORS } from '@/lib/theme'
+import { PRIO_COLORS, PRIO_TEXT } from '@/lib/theme'
 import { Button, Card, CardTitulo, Pill, Splash, Vazio } from '@/components/ui'
 
 export function Plano() {
@@ -39,8 +39,8 @@ export function Plano() {
       />
 
       <div className="mb-5 grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-[#BEE5D5] bg-[#EAF7F2] px-5 py-4.5">
-          <h4 className="mb-2.5 text-[13px] text-[#2C8465]">Pontos fortes</h4>
+        <div className="rounded-xl border border-ok-borda bg-ok-bg px-5 py-4.5">
+          <h4 className="mb-2.5 text-[13px] text-ok-txt">Pontos fortes</h4>
           <ul className="text-[13px] text-tinta">
             {plano.fortes.map((f) => (
               <li key={f} className="relative py-1 pl-5">
@@ -53,8 +53,8 @@ export function Plano() {
           </ul>
         </div>
 
-        <div className="rounded-xl border border-[#F3CFC0] bg-[#FCEEE9] px-5 py-4.5">
-          <h4 className="mb-2.5 text-[13px] text-[#B3532F]">Pontos de atenção</h4>
+        <div className="rounded-xl border border-erro-borda bg-erro-bg px-5 py-4.5">
+          <h4 className="mb-2.5 text-[13px] text-erro-txt">Pontos de atenção</h4>
           <ul className="text-[13px] text-tinta">
             {plano.atencao.map((a) => (
               <li key={a} className="relative py-1 pl-5">
@@ -77,7 +77,7 @@ export function Plano() {
       </Card>
 
       <div className="mb-3.5 mt-2 flex flex-wrap items-baseline justify-between gap-2">
-        <h3 className="text-[15px] text-petroleo">Ações priorizadas</h3>
+        <h3 className="text-[15px] text-noite">Ações priorizadas</h3>
         <p className="text-[11.5px] text-cinza-cl">
           Ordenadas pelo que destrava nível primeiro, depois pelo impacto real de cada
           ponto
@@ -96,12 +96,12 @@ export function Plano() {
                 className="mt-0.5 shrink-0"
                 style={{
                   backgroundColor: `${PRIO_COLORS[acao.prioridade]}22`,
-                  color: PRIO_COLORS[acao.prioridade],
+                  color: PRIO_TEXT[acao.prioridade],
                 }}
               >
                 {acao.prioridade}
               </Pill>
-              <h4 className="text-[14.5px] text-petroleo">{acao.titulo}</h4>
+              <h4 className="text-[14.5px] text-noite">{acao.titulo}</h4>
             </div>
             <div className="shrink-0 text-right text-[11.5px] text-cinza-cl">
               {acao.prazo}
@@ -117,8 +117,8 @@ export function Plano() {
               </dt>
               <dd className="text-[12.5px] text-tinta">{acao.situacaoAtual}</dd>
             </div>
-            <div className="rounded-lg border border-ciano/25 bg-ciano-cl/50 px-3 py-2.5">
-              <dt className="mb-0.5 text-[10.5px] font-bold uppercase tracking-[0.8px] text-ciano-esc">
+            <div className="rounded-lg border border-marca/25 bg-marca-fundo/50 px-3 py-2.5">
+              <dt className="mb-0.5 text-[10.5px] font-bold uppercase tracking-[0.8px] text-marca-escura">
                 Próximo passo
               </dt>
               <dd className="text-[12.5px] font-medium text-tinta">

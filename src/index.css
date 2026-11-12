@@ -3,23 +3,32 @@
 /* ============================================================
    Identidade visual Cidades MIL
    Paleta extraída da logo (azul-escuro, azul e azul-claro).
-   Tailwind 4 gera as utilities a partir daqui (bg-ciano, text-petroleo, ...).
-   ATENÇÃO: os nomes "ciano*" e "petroleo" são legados da primeira paleta;
-   hoje ciano = azul da marca, ciano-2 = azul-claro, ciano-esc = azul-escuro,
-   petroleo = azul-noite. Renomear está no backlog.
-   ============================================================ */
+   Tailwind 4 gera as utilities a partir daqui (bg-marca, text-noite, ...).
+   Textos conferidos para contraste mínimo de 4,5:1 sobre o fundo em que aparecem.
+   */
 @theme {
   /* Marca */
-  --color-ciano: #0a5a96;
-  --color-ciano-2: #2395c6;
-  --color-ciano-esc: #054c7c;
-  --color-ciano-cl: #e6f2fa;
-  --color-petroleo: #052f4d;
+  --color-marca: #0a5a96;
+  --color-marca-clara: #2395c6;
+  --color-marca-escura: #054c7c;
+  --color-marca-fundo: #e6f2fa;
+  --color-noite: #052f4d;
+
+  /* Texto sobre a barra lateral escura (todos com 4,5:1 ou mais sobre --color-noite) */
+  --color-lateral-1: #c4e0f2;
+  --color-lateral-2: #a9d3ec;
+  --color-lateral-3: #8fc3e3;
+  --color-lateral-4: #6fa3c7;
+  --color-lateral-5: #7fb0d3;
+
+  /* Texto claro sobre fundos de marca (gradientes azuis) */
+  --color-sobre-marca: #b5d8f0;
+  --color-sobre-marca-2: #d3e8f6;
 
   /* Texto e superfícies */
   --color-tinta: #10283a;
   --color-cinza: #5a6b78;
-  --color-cinza-cl: #8797a5;
+  --color-cinza-cl: #617487;
   --color-app-bg: #f4f9fc;
   --color-linha: #dfeaf2;
 
@@ -33,6 +42,20 @@
   --color-aviso-bg: #fff6ec;
   --color-aviso-borda: #f3d9b6;
   --color-aviso-txt: #8a5a1e;
+
+  /* Erro e sucesso (texto escuro sobre fundo claro: 5,5:1 ou mais) */
+  --color-erro-bg: #fceee9;
+  --color-erro-borda: #f3cfc0;
+  --color-erro-txt: #9c4423;
+  --color-ok-bg: #eaf7f2;
+  --color-ok-borda: #bee5d5;
+  --color-ok-txt: #236b52;
+
+  /* Superfícies auxiliares */
+  --color-campo: #fbfdfe;
+  --color-neutro: #f0f4f6;
+  --color-regua-bg: #f1eef9;
+  --color-regua-txt: #6b4e9e;
 
   --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial,
     sans-serif;
@@ -105,19 +128,25 @@
   .faixa {
     -webkit-appearance: none;
     appearance: none;
+    height: 32px; /* área de toque; a trilha desenhada tem 8 px */
+    background: transparent;
+  }
+  .faixa::-webkit-slider-runnable-track {
     height: 8px;
     border-radius: 999px;
-    background: linear-gradient(
-      to right,
-      var(--cor) var(--pct),
-      var(--color-linha) var(--pct)
-    );
+    background: linear-gradient(to right, var(--cor) var(--pct), var(--color-linha) var(--pct));
+  }
+  .faixa::-moz-range-track {
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--cor) var(--pct), var(--color-linha) var(--pct));
   }
   .faixa::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 22px;
     height: 22px;
+    margin-top: -7px;
     border-radius: 50%;
     background: #fff;
     border: 3px solid var(--cor);
@@ -134,7 +163,7 @@
     cursor: pointer;
   }
   .faixa:focus-visible {
-    outline: 2px solid var(--color-ciano);
+    outline: 2px solid var(--color-marca);
     outline-offset: 4px;
   }
 }

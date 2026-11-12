@@ -1,4 +1,4 @@
-import { CIANO, LINHA } from '@/lib/theme'
+import { MARCA, LINHA } from '@/lib/theme'
 
 /**
  * Radar dos pilares em SVG puro — portado do protótipo, sem biblioteca de
@@ -68,7 +68,7 @@ export function RadarChart({
                 y={ly}
                 fontSize={11}
                 fontWeight={700}
-                fill="#5B6B72"
+                fill="#5A6B78"
                 textAnchor={anchor}
                 dominantBaseline="middle"
               >
@@ -83,7 +83,7 @@ export function RadarChart({
       <polygon
         points={area.join(' ')}
         fill="rgba(10,90,150,.18)"
-        stroke={CIANO}
+        stroke={MARCA}
         strokeWidth={2.5}
       />
       {area.map((p, i) => {

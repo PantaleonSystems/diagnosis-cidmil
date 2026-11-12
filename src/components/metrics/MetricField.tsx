@@ -20,20 +20,20 @@ export function MetricField({ metrica, resposta, aoResponder }: Props) {
   const respondida = resposta !== undefined
 
   return (
-    <Card className={cx('mb-4', respondida && 'border-l-4 border-l-ciano')}>
+    <Card className={cx('mb-4', respondida && 'border-l-4 border-l-marca')}>
       <div className="mb-1 flex items-start justify-between gap-4">
         <div>
-          <div className="text-[11px] font-extrabold tracking-[0.5px] text-ciano">
+          <div className="text-[11px] font-extrabold tracking-[0.5px] text-marca">
             MÉTRICA {metrica.numero}
           </div>
-          <h4 className="text-base text-petroleo">{metrica.titulo}</h4>
+          <h4 className="text-base text-noite">{metrica.titulo}</h4>
         </div>
         <Pill
           className={cx(
             'shrink-0',
             metrica.tipo === 'regua'
-              ? 'bg-[#F1EEF9] text-[#6B4E9E]'
-              : 'bg-ciano-cl text-ciano-esc',
+              ? 'bg-regua-bg text-regua-txt'
+              : 'bg-marca-fundo text-marca-escura',
           )}
         >
           {metrica.tipo === 'regua' ? '📐 régua 0–4 · critério' : '🧮 cálculo MIL'}
@@ -110,13 +110,15 @@ function BlindCalc({
         )}
       </div>
 
-      <div className="rounded-card border border-linha bg-app-bg p-4.5 text-center">
+      <div
+        className="rounded-card border border-linha border-t-4 bg-app-bg p-4.5 text-center"
+        style={nota === null ? undefined : { borderTopColor: NOTE_COLORS[nota] }}
+      >
         <div className="min-h-8 text-xs text-cinza">
           {preenchida ? memoriaDeCalculo(metrica, dados) : 'Informe os números'}
         </div>
         <div
-          className="my-1.5 text-[44px] font-extrabold leading-none"
-          style={{ color: nota === null ? '#8A9AA1' : NOTE_COLORS[nota] }}
+          className={cx('my-1.5 text-[44px] font-extrabold leading-none', nota === null ? 'text-cinza-cl' : 'text-noite')}
         >
           {nota ?? '–'}
         </div>
@@ -162,16 +164,16 @@ function RubricScale({
               'flex min-h-24 flex-col items-start gap-1.5 rounded-[10px] border-[1.5px] p-2.5 text-left transition-all duration-100',
               escolhido
                 ? 'bg-white shadow-[0_3px_12px_rgba(10,90,150,0.18)]'
-                : 'border-linha bg-white hover:border-ciano-2 hover:bg-[#FBFEFF]',
+                : 'border-linha bg-white hover:border-marca-clara hover:bg-campo',
             )}
             style={escolhido ? { borderColor: NOTE_COLORS[nivel] } : undefined}
           >
             <span
               className={cx(
                 'grid h-[22px] w-[22px] place-items-center rounded-md text-xs font-extrabold',
-                escolhido ? 'text-white' : 'bg-[#F0F4F6] text-cinza',
+                escolhido ? 'text-noite' : 'bg-neutro text-cinza',
               )}
-              style={escolhido ? { backgroundColor: NOTE_COLORS[nivel] } : undefined}
+              style={escolhido ? { backgroundColor: `${NOTE_COLORS[nivel]}59`, boxShadow: `inset 0 0 0 1.5px ${NOTE_COLORS[nivel]}` } : undefined}
             >
               {i}
             </span>

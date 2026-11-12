@@ -74,14 +74,14 @@ function CabecalhoMobile({ naCidade }: { naCidade: boolean }) {
     >
       {naCidade ? (
         <>
-          <Link to="/app" className="alvo toque -ml-2 flex items-center gap-1 rounded-lg px-2 text-corpo font-bold text-ciano">
+          <Link to="/app" className="alvo toque -ml-2 flex items-center gap-1 rounded-lg px-2 text-corpo font-bold text-marca">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M15 5l-7 7 7 7" />
             </svg>
             Todas as cidades
           </Link>
           {cidadeAtiva && ehDemonstracao(cidadeAtiva) && (
-            <span className="rounded-full bg-ciano-cl px-2.5 py-1 text-micro font-extrabold uppercase text-ciano-esc">Demonstração</span>
+            <span className="rounded-full bg-marca-fundo px-2.5 py-1 text-micro font-extrabold uppercase text-marca-escura">Demonstração</span>
           )}
         </>
       ) : (
@@ -141,7 +141,7 @@ export function Topbar({
   return (
     <div className={cx('mb-6 flex flex-wrap items-start justify-between gap-4')}>
       <div>
-        <h1 className="text-[26px] tracking-[-0.3px] text-petroleo">{titulo}</h1>
+        <h1 className="text-[26px] tracking-[-0.3px] text-noite">{titulo}</h1>
         <p className="mt-0.5 text-sm text-cinza">{sub}</p>
       </div>
       <div className="flex items-center gap-3">{acao}</div>

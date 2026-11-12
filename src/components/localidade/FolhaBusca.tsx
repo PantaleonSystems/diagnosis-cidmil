@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { Folha } from '@/components/mobile/Folha'
 import { Input, cx } from '@/components/ui'
 
@@ -27,6 +27,7 @@ export function FolhaBusca({
   buscar,
   aoEscolher,
   selecionadoId,
+  topo,
 }: {
   aberto: boolean
   aoFechar: () => void
@@ -35,10 +36,12 @@ export function FolhaBusca({
   buscar: (termo: string) => ResultadoBusca
   aoEscolher: (id: string) => void
   selecionadoId?: string | null
+  /** conteúdo opcional acima da busca (ex.: o mapa de países) */
+  topo?: ReactNode
 }) {
   return (
     <Folha aberto={aberto} aoFechar={aoFechar} titulo={titulo} alta>
-      <Conteudo placeholder={placeholder} buscar={buscar} aoEscolher={aoEscolher} selecionadoId={selecionadoId} />
+      <Conteudo placeholder={placeholder} buscar={buscar} aoEscolher={aoEscolher} selecionadoId={selecionadoId} topo={topo} />
     </Folha>
   )
 }
@@ -48,11 +51,13 @@ function Conteudo({
   buscar,
   aoEscolher,
   selecionadoId,
+  topo,
 }: {
   placeholder: string
   buscar: (termo: string) => ResultadoBusca
   aoEscolher: (id: string) => void
   selecionadoId?: string | null
+  topo?: ReactNode
 }) {
   const [termo, setTermo] = useState('')
   const entrada = useRef<HTMLInputElement>(null)
@@ -83,6 +88,7 @@ function Conteudo({
 
   return (
     <div onKeyDown={teclas} className="flex h-full flex-col">
+      {topo}
       <div className="sticky top-0 z-10 -mx-5 bg-white px-5 pb-3 pt-1">
         <Input
           ref={entrada}
@@ -114,11 +120,11 @@ function Conteudo({
                 onClick={() => aoEscolher(o.id)}
                 className={cx(
                   'toque flex min-h-[52px] w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-left',
-                  'hover:bg-ciano-cl focus-visible:bg-ciano-cl focus-visible:outline-none',
-                  sel && 'bg-ciano-cl',
+                  'hover:bg-marca-fundo focus-visible:bg-marca-fundo focus-visible:outline-none',
+                  sel && 'bg-marca-fundo',
                 )}
               >
-                <span className="text-corpo font-semibold text-petroleo">{o.rotulo}</span>
+                <span className="text-corpo font-semibold text-noite">{o.rotulo}</span>
                 {o.detalhe && <span className="shrink-0 text-legenda text-cinza">{o.detalhe}</span>}
               </button>
             </li>

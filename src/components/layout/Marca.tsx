@@ -36,7 +36,7 @@ export function Marca({
           className={cx(
             'block font-extrabold tracking-[0.5px]',
             sm ? 'text-[13px]' : 'text-[15px]',
-            invertido ? 'text-white' : 'text-petroleo',
+            invertido ? 'text-white' : 'text-noite',
           )}
         >
           CIIDCMIL
@@ -44,7 +44,7 @@ export function Marca({
         <span
           className={cx(
             'mt-0.5 block text-[9px] uppercase tracking-[1.2px]',
-            invertido ? 'text-[#8FC3E3]' : 'text-cinza-cl',
+            invertido ? 'text-lateral-3' : 'text-cinza-cl',
           )}
         >
           Cidades MIL

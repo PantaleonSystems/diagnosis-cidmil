@@ -31,10 +31,10 @@ export function Modal({
         // clique no backdrop (fora do conteúdo) fecha
         if (e.target === ref.current) aoFechar()
       }}
-      className="m-auto w-[min(92vw,480px)] rounded-card border border-linha p-0 shadow-card backdrop:bg-petroleo/40"
+      className="m-auto w-[min(92vw,480px)] rounded-card border border-linha p-0 shadow-card backdrop:bg-noite/40"
     >
       <div className="p-6">
-        <h2 className="text-lg text-petroleo">{titulo}</h2>
+        <h2 className="text-lg text-noite">{titulo}</h2>
         {descricao && <p className="mt-1 mb-4 text-[13px] text-cinza">{descricao}</p>}
         <div className={descricao ? '' : 'mt-4'}>{children}</div>
       </div>

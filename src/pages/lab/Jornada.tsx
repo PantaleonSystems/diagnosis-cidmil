@@ -54,7 +54,7 @@ type Aberta =
   | { tipo: 'acao'; i: number }
   | null
 
-const corPrioridade: Record<Prioridade, string> = { Alta: 'text-[#B3532F]', Média: 'text-[#8A5A1E]', Baixa: 'text-[#2C8465]' }
+const corPrioridade: Record<Prioridade, string> = { Alta: 'text-erro-txt', Média: 'text-aviso-txt', Baixa: 'text-ok-txt' }
 
 export function Jornada() {
   useNoindex()
@@ -70,10 +70,10 @@ export function Jornada() {
           <button type="button" onClick={() => setAberta({ tipo: 'cidade' })} className="alvo toque -ml-2 flex items-center gap-1.5 rounded-full px-2 text-left">
             <span>
               <span className="block text-micro font-bold uppercase text-cinza-cl">Cidade</span>
-              <span className="block text-corpo font-bold leading-tight text-petroleo">Município Exemplo ▾</span>
+              <span className="block text-corpo font-bold leading-tight text-noite">Município Exemplo ▾</span>
             </span>
           </button>
-          <span className="rounded-full bg-ciano-cl px-3 py-1 text-legenda font-bold text-ciano-esc">Saúde</span>
+          <span className="rounded-full bg-marca-fundo px-3 py-1 text-legenda font-bold text-marca-escura">Saúde</span>
         </header>
 
         <div key={aba} className="entrar px-5 pt-5">
@@ -95,7 +95,7 @@ export function Jornada() {
           {CIDADES.map((c) => (
             <li key={c.nome}>
               <button type="button" onClick={fechar} className="alvo toque flex w-full items-center justify-between rounded-xl border border-linha px-4 py-3 text-left">
-                <span className="font-bold text-petroleo">{c.nome}</span>
+                <span className="font-bold text-noite">{c.nome}</span>
                 <span className="text-legenda text-cinza">ISPS {fmt(c.isps, 2)}</span>
               </button>
             </li>
@@ -119,7 +119,7 @@ export function Jornada() {
       <Folha aberto={aberta?.tipo === 'acao'} aoFechar={fechar} titulo="Ação do plano">
         {aberta?.tipo === 'acao' && (
           <div className="pb-3">
-            <h3 className="text-subtitulo font-bold text-petroleo">{ACOES[aberta.i].t}</h3>
+            <h3 className="text-subtitulo font-bold text-noite">{ACOES[aberta.i].t}</h3>
             <p className="mt-2 text-corpo text-cinza">{ACOES[aberta.i].d}</p>
             <p className={cx('mt-3 text-legenda font-bold', corPrioridade[ACOES[aberta.i].p])}>Prioridade {ACOES[aberta.i].p}</p>
           </div>
@@ -134,7 +134,7 @@ export function Jornada() {
 function Titulo({ children, sub }: { children: string; sub?: string }) {
   return (
     <div className="mb-4">
-      <h1 className="text-titulo font-extrabold text-petroleo">{children}</h1>
+      <h1 className="text-titulo font-extrabold text-noite">{children}</h1>
       {sub && <p className="mt-1 text-corpo text-cinza">{sub}</p>}
     </div>
   )
@@ -148,7 +148,7 @@ function Geral({ res }: { res: ReturnType<typeof calcular> }) {
         <GaugeIndice isps={res.isps} nivel={res.nivel as 0 | 1 | 2 | 3} travado={res.travado} className="mx-auto mt-1" />
         <div className="mt-2 flex gap-1.5" aria-hidden>
           {NIVEIS.map((n, i) => (
-            <span key={n} className={cx('h-1.5 flex-1 rounded-full', i <= res.nivel ? 'bg-ciano' : 'bg-linha')} />
+            <span key={n} className={cx('h-1.5 flex-1 rounded-full', i <= res.nivel ? 'bg-marca' : 'bg-linha')} />
           ))}
         </div>
       </div>
@@ -159,13 +159,13 @@ function Geral({ res }: { res: ReturnType<typeof calcular> }) {
         </div>
       )}
 
-      <h2 className="mb-2 mt-6 text-subtitulo font-bold text-petroleo">Pilares</h2>
+      <h2 className="mb-2 mt-6 text-subtitulo font-bold text-noite">Pilares</h2>
       <ul className="space-y-2.5">
         {PILARES.map((p, i) => (
           <li key={p.numero} className="rounded-xl border border-linha bg-white p-3.5">
             <div className="flex items-baseline justify-between gap-3">
-              <span className="text-corpo font-bold text-petroleo">{p.curto}</span>
-              <span className="text-corpo font-extrabold text-petroleo">{fmt(NOTAS_PILARES[i], 1)}</span>
+              <span className="text-corpo font-bold text-noite">{p.curto}</span>
+              <span className="text-corpo font-extrabold text-noite">{fmt(NOTAS_PILARES[i], 1)}</span>
             </div>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-linha">
               <div className="h-full rounded-full" style={{ width: `${(NOTAS_PILARES[i] / 4) * 100}%`, backgroundColor: p.cor, transition: 'width 700ms cubic-bezier(0.2,0.9,0.25,1)' }} />
@@ -176,7 +176,7 @@ function Geral({ res }: { res: ReturnType<typeof calcular> }) {
       </ul>
 
       <details className="mt-5 rounded-xl border border-linha bg-white p-4">
-        <summary className="alvo cursor-pointer list-none text-corpo font-bold text-petroleo">Primeiros passos · 1 de 3 ▾</summary>
+        <summary className="alvo cursor-pointer list-none text-corpo font-bold text-noite">Primeiros passos · 1 de 3 ▾</summary>
         <ol className="mt-2 space-y-2 text-corpo text-cinza">
           <li>✓ Cadastre a sua cidade</li>
           <li>2. Preencha os dados</li>
@@ -202,11 +202,11 @@ function Avaliar() {
         <span>{i + 1} de {exemplos.length}</span>
       </div>
       <div className="mb-4 h-1.5 rounded-full bg-linha" aria-hidden>
-        <div className="h-full rounded-full bg-ciano" style={{ width: `${((i + 1) / exemplos.length) * 100}%`, transition: 'width 400ms cubic-bezier(0.2,0.9,0.25,1)' }} />
+        <div className="h-full rounded-full bg-marca" style={{ width: `${((i + 1) / exemplos.length) * 100}%`, transition: 'width 400ms cubic-bezier(0.2,0.9,0.25,1)' }} />
       </div>
       <div className="rounded-card border border-linha bg-white p-5 shadow-card">
-        <p className="text-micro font-extrabold uppercase text-ciano">Métrica {exemplos[i].numero}</p>
-        <h2 className="mt-1 text-subtitulo font-bold text-petroleo">{exemplos[i].titulo}</h2>
+        <p className="text-micro font-extrabold uppercase text-marca">Métrica {exemplos[i].numero}</p>
+        <h2 className="mt-1 text-subtitulo font-bold text-noite">{exemplos[i].titulo}</h2>
         <div className="mt-4">
           <Field label="Total no ano"><Input inputMode="decimal" value={a} onChange={(e) => setA(e.target.value)} /></Field>
           <Field label="Do total, quantos atendem"><Input inputMode="decimal" value={b} onChange={(e) => setB(e.target.value)} /></Field>
@@ -242,10 +242,10 @@ function Resultados({ abrir }: { abrir: (i: number) => void }) {
           <li key={m.numero}>
             <button type="button" onClick={() => abrir(i)} className="toque w-full rounded-xl border border-linha bg-white p-4 text-left">
               <div className="flex items-start justify-between gap-3">
-                <span className="text-micro font-extrabold uppercase text-ciano">M{m.numero}</span>
+                <span className="text-micro font-extrabold uppercase text-marca">M{m.numero}</span>
                 <SeloNota nota={nota} />
               </div>
-              <p className="mt-1.5 line-clamp-2 text-corpo font-bold text-petroleo">{m.titulo}</p>
+              <p className="mt-1.5 line-clamp-2 text-corpo font-bold text-noite">{m.titulo}</p>
               <p className={cx('mt-1 text-legenda font-bold', corPrioridade[prioridade(nota)])}>Prioridade {prioridade(nota)}</p>
             </button>
           </li>
@@ -260,7 +260,7 @@ function DetalheMetrica({ i }: { i: number }) {
   const nota = NOTAS_METRICAS[i % NOTAS_METRICAS.length]
   return (
     <div className="pb-3">
-      <h3 className="text-subtitulo font-bold text-petroleo">{m.titulo}</h3>
+      <h3 className="text-subtitulo font-bold text-noite">{m.titulo}</h3>
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <SeloNota nota={nota} />
         <span className={cx('text-legenda font-bold', corPrioridade[prioridade(nota)])}>Prioridade {prioridade(nota)}</span>
@@ -278,9 +278,9 @@ function Plano({ abrir }: { abrir: (i: number) => void }) {
         {ACOES.map((a, i) => (
           <li key={a.t}>
             <button type="button" onClick={() => abrir(i)} className="toque flex w-full gap-3 rounded-card border border-linha bg-white p-4 text-left shadow-card">
-              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-ciano text-corpo font-extrabold text-white">{i + 1}</span>
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-marca text-corpo font-extrabold text-white">{i + 1}</span>
               <span>
-                <span className="block text-corpo font-bold text-petroleo">{a.t}</span>
+                <span className="block text-corpo font-bold text-noite">{a.t}</span>
                 <span className={cx('mt-1 block text-legenda font-bold', corPrioridade[a.p])}>Prioridade {a.p}</span>
               </span>
             </button>
@@ -299,10 +299,10 @@ function Cidades({ nova }: { nova: () => void }) {
         {CIDADES.map((c) => (
           <li key={c.nome} className="flex items-center justify-between rounded-card border border-linha bg-white p-4">
             <span>
-              <span className="block text-corpo font-bold text-petroleo">{c.nome}</span>
+              <span className="block text-corpo font-bold text-noite">{c.nome}</span>
               {c.demo && <span className="text-legenda text-cinza-cl">demonstração</span>}
             </span>
-            <span className="text-corpo font-extrabold text-petroleo">{fmt(c.isps, 2)}</span>
+            <span className="text-corpo font-extrabold text-noite">{fmt(c.isps, 2)}</span>
           </li>
         ))}
       </ul>

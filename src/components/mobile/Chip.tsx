@@ -17,8 +17,8 @@ export function Chip({
         'text-legenda font-bold transition-colors duration-150',
         "before:absolute before:-inset-1 before:content-['']",
         ativo
-          ? 'border-ciano bg-ciano text-white'
-          : 'border-linha bg-white text-ciano-esc hover:border-ciano-2',
+          ? 'border-marca bg-marca text-white'
+          : 'border-linha bg-white text-marca-escura hover:border-marca-clara',
         className,
       )}
       {...props}

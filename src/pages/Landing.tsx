@@ -44,17 +44,17 @@ export function Landing() {
           <SeloBeta className="max-[460px]:hidden" />
         </div>
         <div className="flex shrink-0 items-center gap-4 text-sm font-semibold text-cinza md:gap-6">
-          <a href="#fluxo" className="hidden hover:text-ciano-esc md:inline">
+          <a href="#fluxo" className="hidden hover:text-marca-escura md:inline">
             Como funciona
           </a>
-          <a href="#conceito" className="hidden hover:text-ciano-esc md:inline">
+          <a href="#conceito" className="hidden hover:text-marca-escura md:inline">
             O conceito
           </a>
-          <a href="#pilares" className="hidden hover:text-ciano-esc md:inline">
+          <a href="#pilares" className="hidden hover:text-marca-escura md:inline">
             Pilares
           </a>
           <Link to="/app">
-            <Button variante="ghost" className="whitespace-nowrap !px-4 !py-2 text-[13px] sm:!px-[22px] sm:!py-[11px] sm:text-sm">
+            <Button variante="ghost" className="alvo whitespace-nowrap !px-4 !py-2 text-[13px] sm:!px-[22px] sm:!py-[11px] sm:text-sm">
               Acessar
               <span className="hidden sm:inline">o sistema</span>
             </Button>
@@ -62,20 +62,21 @@ export function Landing() {
         </div>
       </nav>
 
+      <main>
       {/* ------------------------------------------------------------ hero */}
       <header className="bg-[radial-gradient(1200px_500px_at_80%_-10%,#E4F8FC_0%,transparent_60%),linear-gradient(180deg,#fff_0%,#F4FAFC_100%)] px-[6vw] pb-20 pt-[90px]">
         <div className="mx-auto grid max-w-[1200px] items-center gap-[60px] lg:grid-cols-[1.15fr_0.85fr]">
           <div>
             <Eyebrow>Plataforma de Diagnóstico · Cidades MIL</Eyebrow>
-            <h1 className="my-5 text-[clamp(32px,5vw,46px)] tracking-[-0.5px] text-petroleo">
+            <h1 className="my-5 text-[clamp(32px,5vw,46px)] tracking-[-0.5px] text-noite">
               Medir o impacto social de uma cidade com{' '}
-              <span className="text-ciano">rigor e transparência</span>
+              <span className="text-marca">rigor e transparência</span>
             </h1>
             <p className="mb-7 max-w-[520px] text-lg text-cinza">
               A plataforma do CIIDCMIL que transforma o framework das Cidades MIL em
               diagnósticos objetivos: dados entram, notas são calculadas, e a cidade
               enxerga exatamente onde evoluir.{' '}
-              <strong className="font-bold text-ciano-esc">
+              <strong className="font-bold text-marca-escura">
                 Começando pelo módulo Saúde.
               </strong>
             </p>
@@ -97,12 +98,12 @@ export function Landing() {
                 </div>
                 <div className="mt-0.5 text-[13px] text-cinza">Exemplo ilustrativo</div>
               </div>
-              <span className="rounded-lg bg-ciano-cl px-3 py-1.5 text-[13px] font-bold text-ciano-esc">
+              <span className="rounded-lg bg-marca-fundo px-3 py-1.5 text-[13px] font-bold text-marca-escura">
                 Nível 2 · Concessiva
               </span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-[52px] font-extrabold leading-none text-petroleo">
+              <span className="text-[52px] font-extrabold leading-none text-noite">
                 {fmt(isps, 2)}
               </span>
               <span className="font-bold text-cinza-cl">/ 4,0</span>
@@ -125,7 +126,7 @@ export function Landing() {
       {/* --------------------------------------------------------- conceito */}
       <section id="conceito" className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
         <Eyebrow className="block text-center">O que é uma Cidade MIL</Eyebrow>
-        <h2 className="mx-auto mb-3 mt-2.5 max-w-3xl text-center text-[32px] tracking-[-0.3px] text-petroleo">
+        <h2 className="mx-auto mb-3 mt-2.5 max-w-3xl text-center text-[32px] tracking-[-0.3px] text-noite">
           Um espaço urbano que usa a informação com ética e senso crítico
         </h2>
         <p className="mx-auto mb-11 max-w-[640px] text-center text-cinza">
@@ -137,10 +138,10 @@ export function Landing() {
         <div className="grid gap-6 md:grid-cols-3">
           {COMO.map((c) => (
             <div key={c.n} className="rounded-card border border-linha bg-white p-[26px]">
-              <div className="mb-3.5 grid h-[38px] w-[38px] place-items-center rounded-[10px] bg-ciano-cl text-[17px] font-extrabold text-ciano-esc">
+              <div className="mb-3.5 grid h-[38px] w-[38px] place-items-center rounded-[10px] bg-marca-fundo text-[17px] font-extrabold text-marca-escura">
                 {c.n}
               </div>
-              <h3 className="mb-1.5 text-base text-petroleo">{c.titulo}</h3>
+              <h3 className="mb-1.5 text-base text-noite">{c.titulo}</h3>
               <p className="text-[13.5px] text-cinza">{c.texto}</p>
             </div>
           ))}
@@ -152,7 +153,7 @@ export function Landing() {
         <Eyebrow className="block text-center">
           Módulo Saúde · a estrutura da avaliação
         </Eyebrow>
-        <h2 className="mb-3 mt-2.5 text-center text-[32px] tracking-[-0.3px] text-petroleo">
+        <h2 className="mb-3 mt-2.5 text-center text-[32px] tracking-[-0.3px] text-noite">
           Os cinco pilares do diagnóstico de saúde
         </h2>
         <p className="mx-auto mb-11 max-w-[640px] text-center text-cinza">
@@ -167,10 +168,10 @@ export function Landing() {
               className="rounded-card border border-linha border-t-4 bg-white px-[18px] py-[22px] transition-transform duration-150 hover:-translate-y-[3px] hover:shadow-card"
               style={{ borderTopColor: p.cor }}
             >
-              <div className="text-xs font-extrabold tracking-[1px] text-ciano">
+              <div className="text-xs font-extrabold tracking-[1px] text-marca">
                 PILAR {p.numero} · PESO {Math.round(p.peso * 100)}%
               </div>
-              <h3 className="my-2 text-[15px] text-petroleo">{p.nome}</h3>
+              <h3 className="my-2 text-[15px] text-noite">{p.nome}</h3>
               <p className="text-[12.5px] text-cinza">{p.descricao}</p>
               <p className="mt-2 text-[11.5px] font-semibold text-cinza-cl">
                 {p.metricas.length} métricas
@@ -182,7 +183,7 @@ export function Landing() {
         {/* -------------------------------------------------------- módulos */}
         <div className="mt-11 text-center">
           <Eyebrow>Uma plataforma, treze áreas</Eyebrow>
-          <h2 className="mb-3 mt-2 text-2xl text-petroleo">
+          <h2 className="mb-3 mt-2 text-2xl text-noite">
             Saúde é o primeiro de treze módulos do framework
           </h2>
           <p className="mx-auto mb-6 max-w-[640px] text-cinza">
@@ -198,7 +199,7 @@ export function Landing() {
               className={cx(
                 'flex items-center gap-2 rounded-[10px] border-[1.5px] px-[15px] py-[9px] text-[13px] font-semibold',
                 m.ativo
-                  ? 'border-ciano bg-ciano text-white'
+                  ? 'border-marca bg-marca text-white'
                   : 'border-linha bg-white text-cinza-cl opacity-75',
               )}
             >
@@ -216,13 +217,13 @@ export function Landing() {
       <section className="mx-auto max-w-[1200px] px-[6vw] pb-[70px]">
         <div className="flex flex-wrap items-center justify-between gap-8 rounded-[18px] bg-[linear-gradient(120deg,#052F4D,#0A5A96)] px-12 py-11 text-white">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-[2px] text-[#9CCBEA]">
+            <span className="text-[11px] font-bold uppercase tracking-[2px] text-sobre-marca">
               Versão beta · acesso aberto
             </span>
             <h3 className="mb-2 mt-1 text-2xl">
               A plataforma está aberta para testes
             </h3>
-            <p className="max-w-[520px] text-[14.5px] text-[#D3E8F6]">
+            <p className="max-w-[520px] text-[14.5px] text-sobre-marca-2">
               Nesta fase não há cadastro nem senha: entre, cadastre uma cidade e percorra
               o diagnóstico. Os dados são de teste e podem ser reiniciados a qualquer
               momento enquanto o instrumento está sendo validado.
@@ -233,6 +234,8 @@ export function Landing() {
           </Link>
         </div>
       </section>
+
+      </main>
 
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-linha px-[6vw] py-[34px] text-[12.5px] text-cinza-cl">
         <span>

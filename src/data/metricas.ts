@@ -228,7 +228,7 @@ export const PILARES: Pilar[] = [
     curto: 'Engajamento',
     descricao: 'Participação ativa da população em ações e na coleta de dados.',
     peso: 0.25,
-    cor: '#0A5A96',
+    cor: '#2395C6',
     central: 'Participação de cidadãos e associações (M96)',
     metricas: [
       {
@@ -355,7 +355,7 @@ export const PILARES: Pilar[] = [
     descricao:
       'Capacitação crítica para lidar com informação e desinformação em saúde.',
     peso: 0.2,
-    cor: '#1676B5',
+    cor: '#0A5A96',
     central: 'Campanhas de saúde preventiva (M63)',
     metricas: [
       {
@@ -451,7 +451,7 @@ export const PILARES: Pilar[] = [
     curto: 'Infraestrutura',
     descricao: 'Condições materiais, tecnológicas e logísticas da saúde.',
     peso: 0.15,
-    cor: '#2395C6',
+    cor: '#5BB4DA',
     central: 'Qualidade — padrão ONU (M105)',
     metricas: [
       {
@@ -600,7 +600,7 @@ export const PILARES: Pilar[] = [
     curto: 'Planejamento',
     descricao: 'Capacidade de antecipar problemas e medir resultados.',
     peso: 0.05,
-    cor: '#5BB4DA',
+    cor: '#1676B5',
     central: 'Integração e impacto mensurável',
     metricas: [
       {

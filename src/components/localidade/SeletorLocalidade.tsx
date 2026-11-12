@@ -3,6 +3,7 @@ import { ESTADOS, buscarMunicipios, carregarMunicipios, listaPaises, normalizar,
 import { Input } from '@/components/ui'
 import { CampoSeletor } from './CampoSeletor'
 import { FolhaBusca, type ResultadoBusca } from './FolhaBusca'
+import { MapaPaises } from './MapaPaises'
 
 /** Localidade escolhida, pronta para virar uma cidade cadastrada. */
 export interface Localidade {
@@ -139,7 +140,7 @@ export function SeletorLocalidade({ aoMudar }: { aoMudar: (l: Localidade | null)
             <span className="mb-1.5 block text-[12.5px] font-bold text-tinta">Cidade</span>
             <Input value={cidade} onChange={(e) => setCidade(e.target.value)} autoComplete="off" />
           </label>
-          <p className="mb-4 rounded-lg bg-ciano-cl px-3 py-2 text-legenda text-ciano-esc">
+          <p className="mb-4 rounded-lg bg-marca-fundo px-3 py-2 text-legenda text-marca-escura">
             Para este país ainda não há lista oficial nem coleta automática de dados. Por enquanto, só o Brasil tem seleção
             guiada.
           </p>
@@ -154,6 +155,7 @@ export function SeletorLocalidade({ aoMudar }: { aoMudar: (l: Localidade | null)
         buscar={buscarPais}
         aoEscolher={escolherPais}
         selecionadoId={paisCodigo}
+        topo={<MapaPaises selecionado={paisCodigo} aoEscolher={escolherPais} />}
       />
       <FolhaBusca
         aberto={aberta === 'estado'}

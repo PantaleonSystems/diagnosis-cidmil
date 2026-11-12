@@ -29,7 +29,7 @@ export function Conexoes() {
         titulo="Conexões"
         sub={`${nomeCurto(cidadeAtiva)} · cidades em estágio parecido`}
         acao={
-          <Link to="/app/rede" className="text-legenda font-bold text-ciano hover:underline">
+          <Link to="/app/rede" className="alvo inline-flex items-center text-legenda font-bold text-marca hover:underline">
             Ver a rede toda
           </Link>
         }
@@ -53,22 +53,22 @@ export function Conexoes() {
               <li key={c.id}>
                 <Link
                   to={caminhoDaCidade(c.id)}
-                  className="toque block rounded-[16px] border border-linha bg-white p-4 shadow-card transition-colors hover:border-ciano-2"
+                  className="toque block rounded-[16px] border border-linha bg-white p-4 shadow-card transition-colors hover:border-marca-clara"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="truncate text-subtitulo font-extrabold text-petroleo">{nomeCurto(c)}</div>
+                      <div className="truncate text-subtitulo font-extrabold text-noite">{nomeCurto(c)}</div>
                       <div className="mt-0.5 flex items-center gap-1.5 text-legenda text-cinza">
                         <span className="h-2 w-2 rounded-full" style={{ backgroundColor: NIVEL_COLORS[r.nivelExibido] }} aria-hidden />
                         {ufVisivel(c) && `${ufVisivel(c)} · `}Nível {r.nivelExibido + 1} · {NIVEIS[r.nivelExibido]}
                         {ehDemonstracao(c) && ' · demonstração'}
                       </div>
                     </div>
-                    <div className="text-[1.625rem] font-extrabold leading-none tracking-[-0.02em] text-petroleo">{fmt(r.isps as number, 2)}</div>
+                    <div className="text-[1.625rem] font-extrabold leading-none tracking-[-0.02em] text-noite">{fmt(r.isps as number, 2)}</div>
                   </div>
                   <div className="mt-3 flex items-center gap-3">
                     <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-linha" aria-hidden>
-                      <span className="block h-full rounded-full bg-ciano-2" style={{ width: `${Math.round(s * 100)}%` }} />
+                      <span className="block h-full rounded-full bg-marca-clara" style={{ width: `${Math.round(s * 100)}%` }} />
                     </span>
                     <span className="text-legenda font-bold text-cinza">{Math.round(s * 100)}% parecida</span>
                   </div>

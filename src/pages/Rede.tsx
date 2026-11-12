@@ -47,7 +47,7 @@ export function Rede() {
     <div>
       <header className="mb-5 max-w-2xl">
         <p className="text-micro font-extrabold uppercase text-cinza">Análise geral</p>
-        <h1 className="mt-1 text-titulo font-extrabold text-petroleo">Rede Cidades MIL</h1>
+        <h1 className="mt-1 text-titulo font-extrabold text-noite">Rede Cidades MIL</h1>
         <p className="mt-2 text-corpo text-cinza">
           Como as cidades se distribuem e quais se parecem. Cidades em estágios próximos se conectam mais forte.
         </p>
@@ -66,7 +66,7 @@ export function Rede() {
               { v: String(dados.travadas), r: 'travadas pela Regra de Ouro' },
             ].map((k) => (
               <div key={k.r} className="rounded-xl border border-linha bg-white p-3.5">
-                <div className="text-[1.625rem] font-extrabold leading-none tracking-[-0.02em] text-petroleo">{k.v}</div>
+                <div className="text-[1.625rem] font-extrabold leading-none tracking-[-0.02em] text-noite">{k.v}</div>
                 <div className="mt-1.5 text-legenda text-cinza">{k.r}</div>
               </div>
             ))}
@@ -77,7 +77,7 @@ export function Rede() {
             <ul className="space-y-2.5">
               {NIVEIS.map((n, i) => (
                 <li key={n} className="flex items-center gap-3 text-corpo">
-                  <span className="w-[8.5rem] shrink-0 font-bold text-petroleo">
+                  <span className="w-[8.5rem] shrink-0 font-bold text-noite">
                     {i + 1} · {n}
                   </span>
                   <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-linha" aria-hidden>
@@ -86,7 +86,7 @@ export function Rede() {
                       style={{ width: `${(dados.porNivel[i] / total) * 100}%`, backgroundColor: NIVEL_COLORS[i], transition: 'width 600ms cubic-bezier(0.2,0.9,0.25,1)' }}
                     />
                   </span>
-                  <span className="w-6 text-right font-extrabold text-petroleo">{dados.porNivel[i]}</span>
+                  <span className="w-6 text-right font-extrabold text-noite">{dados.porNivel[i]}</span>
                 </li>
               ))}
             </ul>
@@ -96,7 +96,7 @@ export function Rede() {
             <section className="mb-5 rounded-[16px] border border-linha bg-white p-4 shadow-card">
               <h2 className="mb-1.5 text-micro font-extrabold uppercase text-cinza">O que a rede mostra</h2>
               <p className="text-corpo text-tinta">
-                <strong className="text-petroleo">{dados.fraco.nome}</strong> é o pilar mais fraco: média {fmt(dados.fraco.media, 1)} nas cidades com dados.
+                <strong className="text-noite">{dados.fraco.nome}</strong> é o pilar mais fraco: média {fmt(dados.fraco.media, 1)} nas cidades com dados.
               </p>
               {dados.travadas > 0 && (
                 <p className="mt-1 text-legenda text-cinza">
@@ -108,7 +108,7 @@ export function Rede() {
 
           {total >= 3 ? (
             <section aria-label="Conexões entre as cidades">
-              <h2 className="mb-2 text-subtitulo font-bold text-petroleo">Conexões</h2>
+              <h2 className="mb-2 text-subtitulo font-bold text-noite">Conexões</h2>
               <RedeReal itens={dados.itens} />
             </section>
           ) : (

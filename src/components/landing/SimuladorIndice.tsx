@@ -251,10 +251,10 @@ export function SimuladorIndice() {
 
   return (
     <section id="fluxo" className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
-      <span className="block text-center text-[11px] font-bold uppercase tracking-[2px] text-ciano-esc">
+      <span className="block text-center text-[11px] font-bold uppercase tracking-[2px] text-marca-escura">
         Dados em movimento
       </span>
-      <h2 className="mx-auto mb-3 mt-2.5 max-w-3xl text-center text-[clamp(26px,4vw,32px)] tracking-[-0.3px] text-petroleo">
+      <h2 className="mx-auto mb-3 mt-2.5 max-w-3xl text-center text-[clamp(26px,4vw,32px)] tracking-[-0.3px] text-noite">
         Do dado à nota, ao vivo
       </h2>
       <p className="mx-auto mb-9 max-w-[660px] text-center text-cinza">
@@ -278,8 +278,8 @@ export function SimuladorIndice() {
                 type="button"
                 onClick={() => setNotas(p.valores)}
                 className={cx(
-                  'rounded-full border-[1.5px] px-3.5 py-1.5 text-[13px] font-bold transition-colors',
-                  ativo ? 'border-ciano bg-ciano text-white' : 'border-linha bg-white text-ciano-esc hover:border-ciano-2',
+                  'min-h-11 rounded-full border-[1.5px] px-3.5 py-1.5 text-[13px] font-bold transition-colors',
+                  ativo ? 'border-marca bg-marca text-white' : 'border-linha bg-white text-marca-escura hover:border-marca-clara',
                 )}
               >
                 {p.nome}
@@ -296,9 +296,9 @@ export function SimuladorIndice() {
               onMouseEnter={() => setFoco(i)}
               onMouseLeave={() => setFoco(null)}
             >
-              <span className="flex items-baseline justify-between text-[13px] font-bold text-petroleo">
+              <span className="flex items-baseline justify-between text-[13px] font-bold text-noite">
                 {p.curto}
-                <span className="mono text-ciano-esc">{fmt(notas[i], 1)}</span>
+                <span className="mono text-marca-escura">{fmt(notas[i], 1)}</span>
               </span>
               <input
                 type="range"
@@ -327,7 +327,7 @@ export function SimuladorIndice() {
         <p
           className={cx(
             'mt-5 rounded-lg px-4 py-3 text-[13px]',
-            res.travado ? 'border border-aviso-borda bg-aviso-bg text-aviso-txt' : 'bg-ciano-cl text-ciano-esc',
+            res.travado ? 'border border-aviso-borda bg-aviso-bg text-aviso-txt' : 'bg-marca-fundo text-marca-escura',
           )}
         >
           {res.travado ? (

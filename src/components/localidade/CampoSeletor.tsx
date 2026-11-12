@@ -32,8 +32,8 @@ export function CampoSeletor({
         className={cx(
           'toque flex min-h-12 w-full items-center justify-between gap-3 rounded-[9px] border-[1.5px] px-3.5 py-2.5 text-left',
           'text-corpo transition-colors duration-150',
-          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ciano',
-          valor ? 'border-ciano-2 bg-white text-petroleo' : 'border-linha bg-[#FBFDFE] text-cinza-cl',
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marca',
+          valor ? 'border-marca-clara bg-white text-noite' : 'border-linha bg-campo text-cinza-cl',
           desabilitado && 'cursor-not-allowed opacity-55',
         )}
       >

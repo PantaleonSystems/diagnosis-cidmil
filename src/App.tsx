@@ -44,7 +44,7 @@ function FalhaDeAcesso({
         <div className="mb-6 flex justify-center">
           <Marca />
         </div>
-        <h1 className="mb-3 text-xl text-petroleo">Não foi possível abrir o sistema</h1>
+        <h1 className="mb-3 text-xl text-noite">Não foi possível abrir o sistema</h1>
         <p className="mx-auto mb-6 max-w-md text-sm text-cinza">{mensagem}</p>
         <Button onClick={aoTentar}>Tentar novamente</Button>
       </div>
@@ -57,7 +57,7 @@ function FaltaConfiguracao() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-app-bg px-6">
       <div className="max-w-lg rounded-card border border-linha bg-white p-8 shadow-card">
-        <h1 className="mb-3 text-xl text-petroleo">Supabase não configurado</h1>
+        <h1 className="mb-3 text-xl text-noite">Supabase não configurado</h1>
         <p className="mb-4 text-sm text-cinza">
           Copie <code className="rounded bg-app-bg px-1">.env.example</code> para{' '}
           <code className="rounded bg-app-bg px-1">.env.local</code> e preencha com a

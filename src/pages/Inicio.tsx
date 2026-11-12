@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CartaoCidade } from '@/components/cidades/CartaoCidade'
+import { BoasVindas, primeiraVisita } from '@/components/onboarding/BoasVindas'
 import { useNovaCidade } from '@/components/cidades/NovaCidade'
 import { Chip } from '@/components/mobile/Chip'
 import { Button, Input, cx } from '@/components/ui'
@@ -21,6 +22,8 @@ export function Inicio() {
   const { abrirNovaCidade } = useNovaCidade()
   const [busca, setBusca] = useState('')
   const [filtro, setFiltro] = useState<Filtro>('todas')
+  // introdução curta na primeira visita; "Como funciona" reabre quando quiser
+  const [boasVindas, setBoasVindas] = useState(primeiraVisita)
 
   const panorama = useMemo(() => {
     const comDados = cidades.map((c) => resumos.get(c.id)).filter((r) => r && r.isps !== null)
@@ -59,14 +62,34 @@ export function Inicio() {
 
   const soDemonstracao = cidades.length > 0 && cidades.every(ehDemonstracao)
 
-  if (cidades.length === 0) return <PrimeiroAcesso aoSolicitar={abrirNovaCidade} />
+  const intro = <BoasVindas aberto={boasVindas} aoFechar={() => setBoasVindas(false)} />
+
+  if (cidades.length === 0) {
+    return (
+      <>
+        <PrimeiroAcesso aoSolicitar={abrirNovaCidade} />
+        {intro}
+      </>
+    )
+  }
 
   return (
     <div>
       <header className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-xl">
-          <h1 className="text-titulo font-extrabold text-petroleo">Qual cidade você quer acompanhar?</h1>
+          <h1 className="text-titulo font-extrabold text-noite">Qual cidade você quer acompanhar?</h1>
           <p className="mt-2 text-corpo text-cinza">Escolha uma cidade para abrir o diagnóstico ou solicite uma nova.</p>
+          <button
+            type="button"
+            onClick={() => setBoasVindas(true)}
+            className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-legenda font-bold text-marca hover:underline"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 11v5M12 8h.01" />
+            </svg>
+            Como funciona
+          </button>
         </div>
         <div className="hidden lg:block">
           <Button className="alvo" onClick={abrirNovaCidade}>
@@ -78,19 +101,19 @@ export function Inicio() {
       {ultimaVisitada && !soDemonstracao && (
         <Link
           to={caminhoDaCidade(ultimaVisitada.id)}
-          className="toque mb-4 flex items-center justify-between gap-3 rounded-xl border border-ciano/30 bg-ciano-cl px-4 py-3"
+          className="toque mb-4 flex items-center justify-between gap-3 rounded-xl border border-marca/30 bg-marca-fundo px-4 py-3"
         >
           <span className="min-w-0">
-            <span className="block text-micro font-bold uppercase text-ciano-esc">Continuar de onde parou</span>
-            <span className="block truncate text-corpo font-bold text-petroleo">{nomeCurto(ultimaVisitada)}</span>
+            <span className="block text-micro font-bold uppercase text-marca-escura">Continuar de onde parou</span>
+            <span className="block truncate text-corpo font-bold text-noite">{nomeCurto(ultimaVisitada)}</span>
           </span>
-          <span className="text-corpo font-bold text-ciano" aria-hidden>→</span>
+          <span className="text-corpo font-bold text-marca" aria-hidden>→</span>
         </Link>
       )}
 
       {soDemonstracao && (
-        <div className="mb-4 rounded-xl border border-ciano/30 bg-ciano-cl p-4">
-          <p className="text-corpo font-bold text-petroleo">Você ainda não solicitou uma cidade.</p>
+        <div className="mb-4 rounded-xl border border-marca/30 bg-marca-fundo p-4">
+          <p className="text-corpo font-bold text-noite">Você ainda não solicitou uma cidade.</p>
           <p className="mt-1 text-legenda text-cinza">
             O Município Exemplo é uma demonstração com dados fictícios. Solicite o seu município para começar de verdade.
           </p>
@@ -101,7 +124,7 @@ export function Inicio() {
       <section className="mb-5 rounded-[16px] border border-linha bg-white p-4 shadow-card" aria-label="Panorama das cidades">
         <div className="flex items-baseline justify-between">
           <h2 className="text-micro font-extrabold uppercase text-cinza">Panorama da rede</h2>
-          <Link to="/app/rede" className="text-legenda font-bold text-ciano hover:underline">Ver rede</Link>
+          <Link to="/app/rede" className="alvo -my-2 inline-flex items-center justify-end text-legenda font-bold text-marca hover:underline">Ver rede</Link>
         </div>
         <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
           {[
@@ -111,7 +134,7 @@ export function Inicio() {
             { v: String(panorama.atencao), r: 'precisam de atenção' },
           ].map((k) => (
             <div key={k.r}>
-              <dd className="text-[1.625rem] font-extrabold leading-none tracking-[-0.02em] text-petroleo">{k.v}</dd>
+              <dd className="text-[1.625rem] font-extrabold leading-none tracking-[-0.02em] text-noite">{k.v}</dd>
               <dt className="mt-1 text-legenda text-cinza">{k.r}</dt>
             </div>
           ))}
@@ -127,7 +150,7 @@ export function Inicio() {
               {NIVEIS.map((n, i) => (
                 <li key={n} className="inline-flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full" style={{ backgroundColor: NIVEL_COLORS[i] }} aria-hidden />
-                  {n} <strong className="text-petroleo">{panorama.porNivel[i]}</strong>
+                  {n} <strong className="text-noite">{panorama.porNivel[i]}</strong>
                 </li>
               ))}
             </ul>
@@ -135,7 +158,7 @@ export function Inicio() {
         )}
       </section>
 
-      <div className="mb-3 flex items-center gap-2.5 rounded-xl border-[1.5px] border-linha bg-white px-3.5 focus-within:border-ciano">
+      <div className="mb-3 flex items-center gap-2.5 rounded-xl border-[1.5px] border-linha bg-white px-3.5 focus-within:border-marca">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" className="shrink-0 text-cinza" aria-hidden>
           <circle cx="11" cy="11" r="7" />
           <path d="M20 20l-3.5-3.5" />
@@ -178,6 +201,8 @@ export function Inicio() {
           ))}
         </div>
       )}
+
+      {intro}
     </div>
   )
 }
@@ -198,16 +223,16 @@ function PrimeiroAcesso({ aoSolicitar }: { aoSolicitar: () => void }) {
         <circle cx="171" cy="80" r="28" fill="#0A5A96" stroke="#fff" strokeWidth="4" />
         <circle cx="60" cy="35" r="15" fill="#9CCBEA" stroke="#fff" strokeWidth="3" /><circle cx="285" cy="32" r="17" fill="#2395C6" stroke="#fff" strokeWidth="3" /><circle cx="70" cy="130" r="13" fill="#0A5A96" stroke="#fff" strokeWidth="3" /><circle cx="280" cy="128" r="16" fill="#052F4D" stroke="#fff" strokeWidth="3" />
       </svg>
-      <h1 className="text-titulo font-extrabold text-petroleo">Comece pela sua primeira cidade</h1>
+      <h1 className="text-titulo font-extrabold text-noite">Comece pela sua primeira cidade</h1>
       <p className="mt-2 text-corpo text-cinza">
         Escolha o município e acompanhe o diagnóstico. Sem formulários longos.
       </p>
       <ol className="mx-auto mt-6 max-w-sm space-y-3 text-left">
         {passos.map(([n, t, d]) => (
           <li key={n} className="flex items-start gap-3">
-            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-ciano-cl text-corpo font-extrabold text-ciano-esc">{n}</span>
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-marca-fundo text-corpo font-extrabold text-marca-escura">{n}</span>
             <span>
-              <span className="block text-corpo font-bold text-petroleo">{t}</span>
+              <span className="block text-corpo font-bold text-noite">{t}</span>
               <span className="block text-legenda text-cinza">{d}</span>
             </span>
           </li>

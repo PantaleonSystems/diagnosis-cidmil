@@ -47,7 +47,7 @@ export function BarraAbas({
         {indice >= 0 && (
           <span
             aria-hidden
-            className="absolute left-0 top-0 h-[3px] rounded-b-full bg-ciano"
+            className="absolute left-0 top-0 h-[3px] rounded-b-full bg-marca"
             style={{
               width: `${largura}%`,
               transform: `translateX(${indice * 100}%) scaleX(0.5)`,
@@ -64,7 +64,7 @@ export function BarraAbas({
                 type="button"
                 aria-label={item.rotulo}
                 onClick={() => aoEscolher?.(item.id)}
-                className="toque mx-auto -mt-5 grid h-[52px] w-[52px] place-items-center self-start rounded-full bg-ciano text-white shadow-[0_6px_16px_rgb(10_90_150/0.35)]"
+                className="toque mx-auto -mt-5 grid h-[52px] w-[52px] place-items-center self-start rounded-full bg-marca text-white shadow-[0_6px_16px_rgb(10_90_150/0.35)]"
               >
                 {item.icone({ ativo })}
               </button>
@@ -72,7 +72,7 @@ export function BarraAbas({
           }
           const classe = cx(
             'toque relative flex min-h-[56px] flex-col items-center justify-center gap-0.5 text-micro font-bold tracking-[0.02em] transition-colors',
-            ativo ? 'text-ciano' : 'text-cinza',
+            ativo ? 'text-marca' : 'text-cinza',
           )
           const conteudo = (
             <>

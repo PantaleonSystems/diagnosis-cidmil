@@ -187,7 +187,7 @@ export function Folha({
 
   return createPortal(
     <div className="fixed inset-0 z-50">
-      <div ref={veuRef} className="absolute inset-0 bg-petroleo/50" style={{ opacity: 0 }} onClick={aoFechar} aria-hidden />
+      <div ref={veuRef} className="absolute inset-0 bg-noite/50" style={{ opacity: 0 }} onClick={aoFechar} aria-hidden />
       <div
         ref={folhaRef}
         role="dialog"
@@ -207,11 +207,11 @@ export function Folha({
         >
           <div className="mx-auto mt-2.5 h-1.5 w-10 rounded-full bg-linha" aria-hidden />
           <div className="flex items-center justify-between gap-3 px-5 pb-2 pt-2">
-            <h2 className="text-subtitulo font-bold text-petroleo">{ultimo.current.titulo}</h2>
+            <h2 className="text-subtitulo font-bold text-noite">{ultimo.current.titulo}</h2>
             <button
               type="button"
               onClick={aoFechar}
-              className="alvo toque -mr-2 grid place-items-center rounded-full text-cinza hover:bg-ciano-cl"
+              className="alvo toque -mr-2 grid place-items-center rounded-full text-cinza hover:bg-marca-fundo"
               aria-label="Fechar"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>

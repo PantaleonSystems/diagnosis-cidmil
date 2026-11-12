@@ -103,7 +103,7 @@ export function RedeReal({ itens }: { itens: ItemRede[] }) {
               }}
               style={{ cursor: 'pointer', outline: 'none' }}
             >
-              <circle cx={x} cy={y} r={r + 9} fill="transparent" />
+              <circle cx={x} cy={y} r={Math.max(r + 9, 24)} fill="transparent" />
               {marcado && (
                 <circle cx={x} cy={y} r={r + 8} fill={NIVEL_COLORS[resumo.nivelExibido]} fillOpacity={0.16}>
                   {movimento && <animate attributeName="r" values={`${r + 6};${r + 12};${r + 6}`} dur="3.2s" repeatCount="indefinite" />}
@@ -132,23 +132,23 @@ export function RedeReal({ itens }: { itens: ItemRede[] }) {
       <div className="mt-4 rounded-xl border border-linha bg-app-bg p-4" aria-live="polite">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="truncate text-subtitulo font-extrabold text-petroleo">{nomeCurto(selecionada.cidade)}</div>
+            <div className="truncate text-subtitulo font-extrabold text-noite">{nomeCurto(selecionada.cidade)}</div>
             <div className="text-legenda text-cinza">
               {[ufVisivel(selecionada.cidade), `Nível ${selecionada.resumo.nivelExibido + 1}`, NIVEIS[selecionada.resumo.nivelExibido]].filter(Boolean).join(' · ')}
             </div>
           </div>
-          <div className="text-[1.625rem] font-extrabold leading-none tracking-[-0.02em] text-petroleo">{fmt(selecionada.resumo.isps ?? 0, 2)}</div>
+          <div className="text-[1.625rem] font-extrabold leading-none tracking-[-0.02em] text-noite">{fmt(selecionada.resumo.isps ?? 0, 2)}</div>
         </div>
 
         <div className="mt-3 text-micro font-extrabold uppercase text-cinza">Cidades parecidas</div>
         <ul className="mt-2 space-y-2">
           {parecidas.map(({ x, s }) => (
             <li key={x.cidade.id} className="flex items-center gap-3 text-corpo">
-              <button type="button" onClick={() => setSelId(x.cidade.id)} className="flex-1 truncate text-left font-bold text-petroleo hover:underline">
+              <button type="button" onClick={() => setSelId(x.cidade.id)} className="flex-1 truncate text-left font-bold text-noite hover:underline">
                 {nomeCurto(x.cidade)}
               </button>
               <span className="h-1.5 w-16 overflow-hidden rounded-full bg-linha" aria-hidden>
-                <span className="block h-full rounded-full bg-ciano-2" style={{ width: `${Math.round(s * 100)}%` }} />
+                <span className="block h-full rounded-full bg-marca-clara" style={{ width: `${Math.round(s * 100)}%` }} />
               </span>
               <span className="w-10 text-right text-legenda text-cinza">{Math.round(s * 100)}%</span>
             </li>
@@ -156,7 +156,7 @@ export function RedeReal({ itens }: { itens: ItemRede[] }) {
         </ul>
         <Link
           to={caminhoDaCidade(selecionada.cidade.id)}
-          className="toque alvo mt-3 flex items-center justify-center rounded-xl bg-ciano text-corpo font-bold text-white"
+          className="toque alvo mt-3 flex items-center justify-center rounded-xl bg-marca text-corpo font-bold text-white"
         >
           Abrir cidade
         </Link>

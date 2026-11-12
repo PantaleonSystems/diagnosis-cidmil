@@ -43,8 +43,8 @@ export function RedeCidades({ isps }: { isps: number }) {
   return (
     <div className="mt-12">
       <div className="mb-6 text-center">
-        <span className="text-[11px] font-bold uppercase tracking-[2px] text-ciano-esc">Cidades conectadas</span>
-        <h3 className="mb-2 mt-2 text-2xl tracking-[-0.3px] text-petroleo">A nota coloca a cidade na rede</h3>
+        <span className="text-[11px] font-bold uppercase tracking-[2px] text-marca-escura">Cidades conectadas</span>
+        <h3 className="mb-2 mt-2 text-2xl tracking-[-0.3px] text-noite">A nota coloca a cidade na rede</h3>
         <p className="mx-auto max-w-[620px] text-cinza">
           Cidades em estágios parecidos se conectam mais forte. Mude os pilares acima e veja a sua
           cidade se aproximar de outras. <span className="text-cinza-cl">Cidades de exemplo, sem dados reais.</span>
@@ -109,7 +109,7 @@ export function RedeCidades({ isps }: { isps: number }) {
                 }}
                 style={{ cursor: 'pointer', outline: 'none' }}
               >
-                <circle cx={x} cy={y} r={raio(c.isps) + 6} fill="transparent" />
+                <circle cx={x} cy={y} r={Math.max(raio(c.isps) + 6, 24)} fill="transparent" />
                 <circle cx={x} cy={y} r={raio(c.isps)} fill={COR_NIVEL[nivel]} stroke="#fff" strokeWidth={3} />
                 {marcado && <circle cx={x} cy={y} r={raio(c.isps) + 6} fill="none" stroke={COR_NIVEL[nivel]} strokeWidth={2} />}
                 {!alto && (

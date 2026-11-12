@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Topbar } from '@/components/layout/AppShell'
+import { AvaliacaoGuiada } from '@/components/metrics/AvaliacaoGuiada'
 import { MetricField } from '@/components/metrics/MetricField'
+import { Chip } from '@/components/mobile/Chip'
+import { useMediaQuery } from '@/lib/movimento'
 import { PILARES, TOTAL_METRICAS } from '@/data/metricas'
 import { useCidades } from '@/lib/cidadeAtiva'
 import { useRespostas, type EstadoSalvamento } from '@/lib/respostas'
 import { consolidar, mediaPilar } from '@/lib/isps'
 import { supabase } from '@/lib/supabase'
-import { fmt } from '@/lib/theme'
+import { fmt, textoSobre } from '@/lib/theme'
 import { Button, Card, Erro, Splash, Vazio, cx } from '@/components/ui'
 
 export function Avaliacao() {
@@ -18,6 +21,10 @@ export function Avaliacao() {
   )
   const [concluindo, setConcluindo] = useState(false)
   const [erroConclusao, setErroConclusao] = useState<string | null>(null)
+  // celular: uma métrica por vez; computador: lista completa (a pessoa pode trocar)
+  const noComputador = useMediaQuery('(min-width: 1024px)')
+  const [escolhaModo, setEscolhaModo] = useState<'guiado' | 'lista' | null>(null)
+  const modo = escolhaModo ?? (noComputador ? 'lista' : 'guiado')
 
   if (!cidadeAtiva) return null
   if (!avaliacaoAtiva) {
@@ -26,7 +33,7 @@ export function Avaliacao() {
         <Topbar titulo="Avaliação" sub={cidadeAtiva.nome} />
         <Vazio
           titulo="Sem avaliação aberta"
-          descricao="Esta cidade ainda não tem uma avaliação do módulo Saúde. Cadastre-a novamente pela tela de Cidades para abrir um rascunho."
+          descricao="Esta cidade ainda não tem uma avaliação do módulo Saúde. Solicite a cidade novamente para abrir um rascunho."
           acao={<Button onClick={() => navigate('/app')}>Ver todas as cidades</Button>}
         />
       </>
@@ -61,6 +68,34 @@ export function Avaliacao() {
     navigate(caminhoCidade())
   }
 
+  const cartaoConcluir = (
+      <Card>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h3 className="text-[15px] text-noite">Concluir avaliação</h3>
+            <p className="max-w-xl text-[12.5px] text-cinza">
+              {completo
+                ? 'Todas as métricas foram preenchidas. Ao concluir, o ISPS é calculado e o diagnóstico passa a aparecer na visão geral.'
+                : `Faltam ${TOTAL_METRICAS - respondidas} métricas. Você pode concluir mesmo assim — o índice considera apenas o que foi respondido.`}
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <div className="text-[10.5px] font-bold uppercase tracking-[1px] text-cinza-cl">
+                ISPS parcial
+              </div>
+              <div className="text-2xl font-extrabold text-noite">
+                {fmt(resultado.isps, 2)}
+              </div>
+            </div>
+            <Button onClick={() => void concluir()} disabled={concluindo || !respondidas}>
+              {concluindo ? 'Concluindo…' : 'Concluir avaliação'}
+            </Button>
+          </div>
+        </div>
+      </Card>
+  )
+
   return (
     <>
       <Topbar
@@ -72,6 +107,7 @@ export function Avaliacao() {
       <Erro>{erro ?? erroConclusao}</Erro>
 
       {/* ------------------------------------------------- barra de progresso */}
+      {modo === 'lista' && (
       <Card className="mb-5 border-dashed bg-app-bg">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-start gap-3">
@@ -79,7 +115,7 @@ export function Avaliacao() {
               🧮
             </span>
             <div>
-              <h3 className="text-[15px] text-petroleo">Coleta de dados brutos</h3>
+              <h3 className="text-[15px] text-noite">Coleta de dados brutos</h3>
               <p className="max-w-2xl text-[12.5px] text-cinza">
                 As <strong>{TOTAL_METRICAS} métricas</strong> de saúde (63–105)
                 organizadas pelos 5 pilares. Onde o framework define fórmula objetiva, a
@@ -93,7 +129,7 @@ export function Avaliacao() {
             <div className="text-[10.5px] font-bold uppercase tracking-[1px] text-cinza-cl">
               preenchimento
             </div>
-            <div className="text-2xl font-extrabold text-petroleo">
+            <div className="text-2xl font-extrabold text-noite">
               {respondidas}
               <span className="text-sm font-semibold text-cinza-cl">
                 /{TOTAL_METRICAS}
@@ -104,14 +140,24 @@ export function Avaliacao() {
 
         <div className="mt-4 h-1.5 overflow-hidden rounded bg-linha">
           <div
-            className="h-full rounded bg-ciano transition-[width] duration-300"
+            className="h-full rounded bg-marca transition-[width] duration-300"
             style={{ width: `${(respondidas / TOTAL_METRICAS) * 100}%` }}
           />
         </div>
       </Card>
+      )}
+
+      <div className="mb-4 flex gap-2" role="group" aria-label="Modo de preenchimento">
+        <Chip ativo={modo === 'guiado'} onClick={() => setEscolhaModo('guiado')}>Uma por vez</Chip>
+        <Chip ativo={modo === 'lista'} onClick={() => setEscolhaModo('lista')}>Lista completa</Chip>
+      </div>
+
+      {modo === 'guiado' && (
+        <AvaliacaoGuiada respostas={respostas} aoResponder={(metrica, valor, imediato) => registrar(metrica, valor, imediato)} concluir={cartaoConcluir} />
+      )}
 
       {/* ---------------------------------------------------- grupos por pilar */}
-      {PILARES.map((pilar) => {
+      {modo === 'lista' && PILARES.map((pilar) => {
         const media = mediaPilar(pilar, notas)
         const feitas = pilar.metricas.filter(
           (m) => respostas[m.numero] !== undefined,
@@ -124,8 +170,8 @@ export function Avaliacao() {
               style={{ borderLeftColor: pilar.cor }}
             >
               <div
-                className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[10px] text-[17px] font-extrabold text-white"
-                style={{ backgroundColor: pilar.cor }}
+                className="grid h-[38px] w-[38px] shrink-0 place-items-center rounded-[10px] text-[17px] font-extrabold"
+                style={{ backgroundColor: pilar.cor, color: textoSobre(pilar.cor) }}
               >
                 {pilar.numero}
               </div>
@@ -134,12 +180,11 @@ export function Avaliacao() {
                   Pilar {pilar.numero} · peso {Math.round(pilar.peso * 100)}% ·{' '}
                   {feitas}/{pilar.metricas.length} preenchidas
                 </div>
-                <h3 className="text-base text-petroleo">{pilar.nome}</h3>
+                <h3 className="text-base text-noite">{pilar.nome}</h3>
               </div>
               <div className="text-right leading-tight">
                 <span
-                  className="block text-[22px] font-extrabold"
-                  style={{ color: pilar.cor }}
+                  className="block text-[22px] font-extrabold text-noite"
                 >
                   {feitas ? fmt(media) : '—'}
                 </span>
@@ -161,32 +206,7 @@ export function Avaliacao() {
         )
       })}
 
-      {/* ------------------------------------------------------------ concluir */}
-      <Card>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h3 className="text-[15px] text-petroleo">Concluir avaliação</h3>
-            <p className="max-w-xl text-[12.5px] text-cinza">
-              {completo
-                ? 'Todas as métricas foram preenchidas. Ao concluir, o ISPS é calculado e o diagnóstico passa a aparecer na visão geral.'
-                : `Faltam ${TOTAL_METRICAS - respondidas} métricas. Você pode concluir mesmo assim — o índice considera apenas o que foi respondido.`}
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <div className="text-[10.5px] font-bold uppercase tracking-[1px] text-cinza-cl">
-                ISPS parcial
-              </div>
-              <div className="text-2xl font-extrabold text-petroleo">
-                {fmt(resultado.isps, 2)}
-              </div>
-            </div>
-            <Button onClick={() => void concluir()} disabled={concluindo || !respondidas}>
-              {concluindo ? 'Concluindo…' : 'Concluir avaliação'}
-            </Button>
-          </div>
-        </div>
-      </Card>
+      {modo === 'lista' && cartaoConcluir}
     </>
   )
 }
@@ -204,10 +224,10 @@ function IndicadorSalvamento({ estado }: { estado: EstadoSalvamento }) {
       className={cx(
         'rounded-[20px] px-3 py-1 text-[11.5px] font-semibold',
         estado === 'erro'
-          ? 'bg-[#FCEEE9] text-[#B3532F]'
+          ? 'bg-erro-bg text-erro-txt'
           : estado === 'salvo'
-            ? 'bg-[#EAF7F2] text-[#2C8465]'
-            : 'bg-ciano-cl text-ciano-esc',
+            ? 'bg-ok-bg text-ok-txt'
+            : 'bg-marca-fundo text-marca-escura',
       )}
       aria-live="polite"
     >

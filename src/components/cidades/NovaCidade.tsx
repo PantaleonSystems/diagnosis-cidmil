@@ -113,7 +113,7 @@ function Formulario({
 
       {loc?.codigoIbge && (
         <div className="mb-4 rounded-xl border border-linha bg-app-bg px-4 py-3 text-legenda text-cinza">
-          <div className="font-bold text-petroleo">
+          <div className="font-bold text-noite">
             {loc.nome} · {loc.uf}
           </div>
           <div className="mt-0.5">

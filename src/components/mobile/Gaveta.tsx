@@ -158,7 +158,7 @@ export function Gaveta({
 
   return createPortal(
     <div className="fixed inset-0 z-40 lg:hidden">
-      <div ref={veuRef} className="absolute inset-0 bg-petroleo/50" style={{ opacity: 0 }} onClick={aoFechar} aria-hidden />
+      <div ref={veuRef} className="absolute inset-0 bg-noite/50" style={{ opacity: 0 }} onClick={aoFechar} aria-hidden />
       <div
         ref={painelRef}
         role="dialog"

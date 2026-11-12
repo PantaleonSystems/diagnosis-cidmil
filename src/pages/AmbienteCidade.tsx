@@ -10,7 +10,7 @@ export function AmbienteCidade() {
   if (!cidadeAtiva) {
     return (
       <div className="mx-auto max-w-md pt-16 text-center">
-        <h1 className="text-titulo font-extrabold text-petroleo">Cidade não encontrada</h1>
+        <h1 className="text-titulo font-extrabold text-noite">Cidade não encontrada</h1>
         <p className="mt-2 text-corpo text-cinza">
           Essa cidade não existe mais ou o link está incorreto. Volte para a lista e escolha de novo.
         </p>
