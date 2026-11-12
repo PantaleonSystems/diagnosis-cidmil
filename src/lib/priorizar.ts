@@ -56,7 +56,11 @@ export interface AcaoPossivel {
   ajudaDestravar: boolean
 }
 
-export function acoesPossiveis(respostas: RespostasPlano, limite = MAX_ACOES): AcaoPossivel[] {
+export function acoesPossiveis(
+  respostas: RespostasPlano,
+  limite = MAX_ACOES,
+  { semTeto = false }: { semTeto?: boolean } = {},
+): AcaoPossivel[] {
   const notas = notasDe(respostas)
   if (Object.keys(notas).length === 0) return []
   const antes = consolidar(notas)
@@ -101,6 +105,9 @@ export function acoesPossiveis(respostas: RespostasPlano, limite = MAX_ACOES): A
       : 0
   const tetoDoPilar = (numero: number) =>
     numero === 1 ? Math.max(MAX_POR_PILAR, faltamEmGovernanca) : MAX_POR_PILAR
+
+  // sem teto: todas as métricas que ainda podem subir, na mesma ordem
+  if (semTeto) return todas.slice(0, limite)
 
   const escolhidas: AcaoPossivel[] = []
   const porPilar = new Map<number, number>()
@@ -159,6 +166,8 @@ export interface Conclusao {
   dado: string
   /** o que isso significa, em palavras simples */
   texto: string
+  /** números das métricas das ações que esta conclusão libera (vazio para uma força) */
+  acoes: number[]
 }
 
 /** As conclusões que o diagnóstico sugere. O consultor confirma, edita ou descarta. */
@@ -167,6 +176,8 @@ export function conclusoes(respostas: RespostasPlano): Conclusao[] {
   if (Object.keys(notas).length === 0) return []
   const r = consolidar(notas)
   const lista: Conclusao[] = []
+  const emAcoes = acoesPossiveis(respostas)
+  const existe = (numero: number) => (respostas[numero]?.nota ?? 4) < 4
 
   /* Governança abaixo do mínimo */
   const gov = r.pilares.find((p) => p.pilar.numero === 1)
@@ -179,6 +190,7 @@ export function conclusoes(respostas: RespostasPlano): Conclusao[] {
       texto: r.travado
         ? `Se Governança não subir, a cidade não passa do Nível 2, mesmo que as outras áreas melhorem. É a área que mais pesa na nota: ${Math.round(gov.pilar.peso * 100)}%.`
         : `Abaixo de ${n(MINIMO_GOVERNANCA)}, a cidade não passa do Nível 2 (Regra de Ouro). Por enquanto a nota geral nem chegaria lá, mas vale cuidar desde já.`,
+      acoes: emAcoes.filter((a) => a.pilar.numero === 1).map((a) => a.id),
     })
   }
 
@@ -203,6 +215,7 @@ export function conclusoes(respostas: RespostasPlano): Conclusao[] {
         (f.pilar.numero === 1 && r.mediaGovernanca < MINIMO_GOVERNANCA
           ? ' Melhorar aqui ajuda Governança a chegar a 2,0.'
           : ''),
+      acoes: existe(f.numero) ? [f.numero] : [],
     })
   }
 
@@ -217,6 +230,7 @@ export function conclusoes(respostas: RespostasPlano): Conclusao[] {
       area: melhor.pilar.curto,
       dado: `${melhor.pilar.curto} tem nota ${n(melhor.media)} de 4`,
       texto: 'É um ponto forte. Vale usar como argumento nas conversas com o gestor.',
+      acoes: [],
     })
   }
 
@@ -232,6 +246,7 @@ export function conclusoes(respostas: RespostasPlano): Conclusao[] {
       area: oportunidade.pilar.curto,
       dado: `${oportunidade.metrica.titulo}: nota ${oportunidade.nota} de 4`,
       texto: `Subir uma nota aqui soma ${n(oportunidade.ganho, 2)} na nota geral. ${oportunidade.passo}`,
+      acoes: [oportunidade.id],
     })
   }
 

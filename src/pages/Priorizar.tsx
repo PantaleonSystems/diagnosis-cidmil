@@ -9,7 +9,7 @@ import { Simulador } from '@/components/priorizar/Simulador'
 import { Aviso, Button, Splash, Vazio } from '@/components/ui'
 import { useCidades } from '@/lib/cidadeAtiva'
 import { useEstadoPriorizar } from '@/lib/estadoPriorizar'
-import { acoesPossiveis, conclusoes } from '@/lib/priorizar'
+import { acoesPossiveis, conclusoes, simular } from '@/lib/priorizar'
 import { useRespostas } from '@/lib/respostas'
 
 const PASSOS = ['Conclusões', 'E se fizermos', 'O que primeiro', 'Decisão'] as const
@@ -25,8 +25,26 @@ export function Priorizar() {
   const { estado, atualizar, recomecar } = useEstadoPriorizar(cidadeAtiva?.id ?? 'sem-cidade')
   const [passo, setPasso] = useState(0)
 
+  const [verTodas, setVerTodas] = useState(false)
+
   const lista = useMemo(() => conclusoes(respostas), [respostas])
-  const acoes = useMemo(() => acoesPossiveis(respostas), [respostas])
+  const acoesPadrao = useMemo(() => acoesPossiveis(respostas), [respostas])
+  const todasAcoes = useMemo(() => acoesPossiveis(respostas, 500, { semTeto: true }), [respostas])
+
+  // o que o consultor confirma no passo 1 define com o que os passos seguintes trabalham
+  const idsLiberados = useMemo(
+    () => [...new Set(lista.filter((c) => estado.conclusoes[c.id] === 'confirmada').flatMap((c) => c.acoes))],
+    [lista, estado.conclusoes],
+  )
+  const projecao = useMemo(
+    () => (idsLiberados.length > 0 ? simular(respostas, idsLiberados) : null),
+    [respostas, idsLiberados],
+  )
+  const filtrado = idsLiberados.length > 0 && !verTodas
+  const acoes = useMemo(
+    () => (filtrado ? todasAcoes.filter((a) => idsLiberados.includes(a.id)) : acoesPadrao),
+    [filtrado, todasAcoes, idsLiberados, acoesPadrao],
+  )
 
   if (!cidadeAtiva) return null
   if (carregando) return <Splash texto="Lendo os resultados…" />
@@ -45,7 +63,10 @@ export function Priorizar() {
   }
 
   // sem escolha ainda, o simulador já começa com as ações que ajudam a liberar a Regra de Ouro
-  const marcadas = estado.marcadas ?? acoes.filter((a) => a.ajudaDestravar).map((a) => a.id)
+  const idsDisponiveis = new Set(acoes.map((a) => a.id))
+  const marcadas = (estado.marcadas ?? acoes.filter((a) => a.ajudaDestravar).map((a) => a.id)).filter((id) =>
+    idsDisponiveis.has(id),
+  )
 
   return (
     <>
@@ -78,7 +99,31 @@ export function Priorizar() {
       </div>
 
       <div className="max-w-2xl">
-        {passo === 0 && <Conclusoes conclusoes={lista} estado={estado} atualizar={atualizar} />}
+        {passo === 0 && (
+          <Conclusoes
+            conclusoes={lista}
+            estado={estado}
+            atualizar={atualizar}
+            idsLiberados={idsLiberados}
+            projecao={projecao}
+          />
+        )}
+        {passo > 0 && idsLiberados.length > 0 && (
+          <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-linha bg-marca-fundo px-3 py-2.5 text-[12.5px] leading-snug text-noite">
+            <span>
+              {filtrado
+                ? `Mostrando as ${acoes.length} ações das conclusões que você confirmou.`
+                : 'Mostrando todas as ações possíveis, não só as das conclusões confirmadas.'}
+            </span>
+            <button
+              type="button"
+              className="alvo shrink-0 font-bold text-marca-escura"
+              onClick={() => setVerTodas(!verTodas)}
+            >
+              {filtrado ? 'Ver todas' : 'Só as confirmadas'}
+            </button>
+          </div>
+        )}
         {passo === 1 && (
           <Simulador
             respostas={respostas}

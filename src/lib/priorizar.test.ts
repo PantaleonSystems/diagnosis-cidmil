@@ -116,6 +116,23 @@ describe('conclusões', () => {
     expect(conclusoes(uniformes([3, 3, 3, 3, 3])).length).toBeGreaterThan(0)
   })
 
+  it('liga cada conclusão às ações que ela libera', () => {
+    const r = travada
+    const c = conclusoes(r)
+    const governanca = c.find((x) => x.id === 'governanca')!
+    expect(governanca.acoes.length).toBeGreaterThan(0)
+    // as ações citadas existem de verdade e ainda podem subir
+    for (const id of c.flatMap((x) => x.acoes)) expect((r[id]?.nota ?? 4) < 4).toBe(true)
+    // uma força não libera ação
+    expect(c.find((x) => x.tipo === 'forca')?.acoes).toEqual([])
+  })
+
+  it('sem teto por pilar, traz todas as métricas que ainda sobem', () => {
+    const r = uniformes([1, 1, 1, 1, 1])
+    const total = Object.values(r).filter((x) => x.nota < 4).length
+    expect(acoesPossiveis(r, 500, { semTeto: true })).toHaveLength(total)
+  })
+
   it('devolve vazio sem respostas', () => {
     expect(conclusoes({})).toEqual([])
   })
