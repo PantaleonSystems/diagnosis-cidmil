@@ -7,29 +7,65 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { useMatch, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/auth'
-import { MODULO_SAUDE } from '@/data/metricas'
+import { useCatalogo } from '@/lib/catalogo'
+import { MODULO_SAUDE, TOTAL_METRICAS } from '@/data/metricas'
+import { consolidar, type NivelIndice, type NotasPorMetrica } from '@/lib/isps'
+import type { Nota } from '@/lib/calculos'
 import type { Avaliacao, Cidade } from '@/types/db'
 
-const CHAVE = 'cidadesmil:cidade-ativa'
+/** Última cidade aberta (só para o "continuar de onde parou"; a cidade em uso vem da rota). */
+const CHAVE = 'cidadesmil:ultima-cidade'
 
 export interface NovaCidade {
   nome: string
   uf: string
   pais: string
   populacao: number | null
+  /** código IBGE (7 dígitos) quando a cidade vem da lista oficial brasileira */
+  codigo_ibge?: string | null
+}
+
+/** Retrato de uma cidade calculado a partir das respostas já registradas. */
+export interface ResumoCidade {
+  respondidas: number
+  total: number
+  /** índice 0–4 (parcial se a avaliação não foi concluída); null sem nenhuma resposta */
+  isps: number | null
+  nivelExibido: NivelIndice
+  nivelReal: NivelIndice
+  /** Regra de Ouro: a Governança trava o nível */
+  travado: boolean
+  /** média de cada pilar, na ordem dos pilares */
+  mediasPilares: number[]
+  concluida: boolean
+}
+
+interface RespostaLinha {
+  avaliacao_id: string
+  metrica_id: string
+  nota: number
 }
 
 interface CidadesContextValue {
   cidades: Cidade[]
   /** avaliação do módulo Saúde do ano corrente, por cidade */
   avaliacoes: Map<string, Avaliacao>
+  /** índice, nível e progresso de cada cidade que já tem resposta */
+  resumos: Map<string, ResumoCidade>
+  /** cidade aberta na rota atual (/app/cidades/:id/...); null fora do ambiente de uma cidade */
   cidadeAtiva: Cidade | null
   avaliacaoAtiva: Avaliacao | null
+  /** última cidade aberta neste aparelho, para "continuar de onde parou" */
+  ultimaVisitada: Cidade | null
   carregando: boolean
   erro: string | null
-  selecionar: (cidadeId: string) => void
+  /** abre o ambiente da cidade (opcionalmente numa subpágina) */
+  abrirCidade: (cidadeId: string, sub?: string) => void
+  /** caminho de uma subpágina da cidade aberta (ex.: 'resultados') */
+  caminhoCidade: (sub?: string) => string
   /** cria a cidade e já abre a avaliação em rascunho */
   criarCidade: (dados: NovaCidade) => Promise<Cidade>
   recarregar: () => Promise<void>
@@ -39,13 +75,44 @@ const CidadesContext = createContext<CidadesContextValue | null>(null)
 
 const anoCorrente = () => new Date().getFullYear()
 
+export const caminhoDaCidade = (cidadeId: string, sub?: string): string =>
+  `/app/cidades/${cidadeId}${sub ? `/${sub}` : ''}`
+
+/** Busca todas as respostas das avaliações, em páginas (o servidor limita 1000 linhas por consulta). */
+async function todasRespostas(avaliacaoIds: string[]): Promise<RespostaLinha[]> {
+  if (avaliacaoIds.length === 0) return []
+  const linhas: RespostaLinha[] = []
+  const TAM = 1000
+  for (let de = 0; ; de += TAM) {
+    const { data, error } = await supabase
+      .from('respostas')
+      .select('avaliacao_id, metrica_id, nota')
+      .in('avaliacao_id', avaliacaoIds)
+      .range(de, de + TAM - 1)
+    if (error) throw new Error(error.message)
+    linhas.push(...((data ?? []) as RespostaLinha[]))
+    if (!data || data.length < TAM) break
+  }
+  return linhas
+}
+
 export function CidadesProvider({ children }: { children: ReactNode }) {
   const { session } = useAuth()
+  const { numeroPorId } = useCatalogo()
+  const navigate = useNavigate()
+  const rota = useMatch('/app/cidades/:cidadeId/*')
+  const rotaId = rota?.params.cidadeId ?? null
+
   const [cidades, setCidades] = useState<Cidade[]>([])
   const [avaliacoes, setAvaliacoes] = useState<Map<string, Avaliacao>>(new Map())
-  const [ativaId, setAtivaId] = useState<string | null>(
-    () => localStorage.getItem(CHAVE) ?? null,
-  )
+  const [respostas, setRespostas] = useState<RespostaLinha[]>([])
+  const [ultimaId, setUltimaId] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem(CHAVE)
+    } catch {
+      return null
+    }
+  })
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState<string | null>(null)
 
@@ -62,8 +129,7 @@ export function CidadesProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    const lista = (cid.data ?? []) as Cidade[]
-    setCidades(lista)
+    setCidades((cid.data ?? []) as Cidade[])
 
     // uma avaliação por cidade: a mais recente do módulo Saúde
     const mapa = new Map<string, Avaliacao>()
@@ -73,8 +139,11 @@ export function CidadesProvider({ children }: { children: ReactNode }) {
     }
     setAvaliacoes(mapa)
 
-    // se a cidade guardada sumiu (ou é o primeiro acesso), cai na primeira
-    setAtivaId((id) => (id && lista.some((c) => c.id === id) ? id : (lista[0]?.id ?? null)))
+    try {
+      setRespostas(await todasRespostas([...mapa.values()].map((a) => a.id)))
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : 'Erro ao carregar respostas.')
+    }
     setCarregando(false)
   }, [])
 
@@ -82,6 +151,7 @@ export function CidadesProvider({ children }: { children: ReactNode }) {
     if (!session) {
       setCidades([])
       setAvaliacoes(new Map())
+      setRespostas([])
       setCarregando(false)
       return
     }
@@ -89,10 +159,21 @@ export function CidadesProvider({ children }: { children: ReactNode }) {
     void recarregar()
   }, [session, recarregar])
 
+  // lembra a última cidade aberta
   useEffect(() => {
-    if (ativaId) localStorage.setItem(CHAVE, ativaId)
-    else localStorage.removeItem(CHAVE)
-  }, [ativaId])
+    if (!rotaId || !cidades.some((c) => c.id === rotaId)) return
+    setUltimaId(rotaId)
+    try {
+      localStorage.setItem(CHAVE, rotaId)
+    } catch {
+      // sem armazenamento: só não lembra
+    }
+  }, [rotaId, cidades])
+
+  const abrirCidade = useCallback(
+    (cidadeId: string, sub?: string) => navigate(caminhoDaCidade(cidadeId, sub)),
+    [navigate],
+  )
 
   const criarCidade = useCallback(
     async (dados: NovaCidade): Promise<Cidade> => {
@@ -104,7 +185,21 @@ export function CidadesProvider({ children }: { children: ReactNode }) {
         .insert({ ...dados, criado_por: userId })
         .select()
         .single()
-      if (error) throw new Error(error.message)
+      if (error) {
+        // 23505: o código IBGE já existe (outra pessoa cadastrou antes). Abre a existente.
+        if (error.code === '23505' && dados.codigo_ibge) {
+          const { data: existente } = await supabase
+            .from('cidades')
+            .select('*')
+            .eq('codigo_ibge', dados.codigo_ibge)
+            .maybeSingle()
+          if (existente) {
+            await recarregar()
+            return existente as Cidade
+          }
+        }
+        throw new Error(error.message)
+      }
 
       // toda cidade nasce com uma avaliação do módulo Saúde em rascunho
       const { error: erroAval } = await supabase.from('avaliacoes').insert({
@@ -117,26 +212,72 @@ export function CidadesProvider({ children }: { children: ReactNode }) {
       if (erroAval) throw new Error(erroAval.message)
 
       await recarregar()
-      setAtivaId((cidade as Cidade).id)
       return cidade as Cidade
     },
     [session, recarregar],
   )
 
+  /** Índice, nível e progresso por cidade, a partir das respostas. */
+  const resumos = useMemo(() => {
+    const porAvaliacao = new Map<string, NotasPorMetrica>()
+    for (const r of respostas) {
+      const numero = numeroPorId.get(r.metrica_id)
+      if (numero === undefined) continue
+      const notas = porAvaliacao.get(r.avaliacao_id) ?? {}
+      notas[numero] = r.nota as Nota
+      porAvaliacao.set(r.avaliacao_id, notas)
+    }
+
+    const mapa = new Map<string, ResumoCidade>()
+    for (const [cidadeId, av] of avaliacoes) {
+      const notas = porAvaliacao.get(av.id) ?? {}
+      const respondidas = Object.keys(notas).length
+      if (respondidas === 0) {
+        mapa.set(cidadeId, {
+          respondidas: 0,
+          total: TOTAL_METRICAS,
+          isps: null,
+          nivelExibido: 0,
+          nivelReal: 0,
+          travado: false,
+          mediasPilares: [],
+          concluida: av.status === 'concluida',
+        })
+        continue
+      }
+      const r = consolidar(notas)
+      mapa.set(cidadeId, {
+        respondidas,
+        total: TOTAL_METRICAS,
+        isps: r.isps,
+        nivelExibido: r.nivelExibido,
+        nivelReal: r.nivelReal,
+        travado: r.travado,
+        mediasPilares: r.pilares.map((p) => p.media),
+        concluida: av.status === 'concluida',
+      })
+    }
+    return mapa
+  }, [respostas, avaliacoes, numeroPorId])
+
   const value = useMemo<CidadesContextValue>(() => {
-    const cidadeAtiva = cidades.find((c) => c.id === ativaId) ?? null
+    const cidadeAtiva = rotaId ? (cidades.find((c) => c.id === rotaId) ?? null) : null
+    const ultimaVisitada = ultimaId ? (cidades.find((c) => c.id === ultimaId) ?? null) : null
     return {
       cidades,
       avaliacoes,
+      resumos,
       cidadeAtiva,
       avaliacaoAtiva: cidadeAtiva ? (avaliacoes.get(cidadeAtiva.id) ?? null) : null,
+      ultimaVisitada,
       carregando,
       erro,
-      selecionar: setAtivaId,
+      abrirCidade,
+      caminhoCidade: (sub) => (rotaId ? caminhoDaCidade(rotaId, sub) : '/app'),
       criarCidade,
       recarregar,
     }
-  }, [cidades, avaliacoes, ativaId, carregando, erro, criarCidade, recarregar])
+  }, [cidades, avaliacoes, resumos, rotaId, ultimaId, carregando, erro, abrirCidade, criarCidade, recarregar])
 
   return <CidadesContext value={value}>{children}</CidadesContext>
 }

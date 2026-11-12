@@ -1,5 +1,5 @@
 /** Peças visuais reutilizáveis, com a identidade CIIDCMIL do protótipo. */
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from 'react'
+import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from 'react'
 
 export const cx = (...cls: (string | false | null | undefined)[]) =>
   cls.filter(Boolean).join(' ')
@@ -9,10 +9,10 @@ export const cx = (...cls: (string | false | null | undefined)[]) =>
 type Variante = 'primario' | 'ghost' | 'claro'
 
 const VARIANTES: Record<Variante, string> = {
-  primario: 'bg-ciano text-white hover:bg-ciano-esc',
+  primario: 'bg-marca text-white hover:bg-marca-escura',
   ghost:
-    'bg-transparent text-ciano-esc border-[1.5px] border-ciano hover:bg-ciano-cl',
-  claro: 'bg-white text-ciano-esc hover:bg-ciano-cl',
+    'bg-transparent text-marca-escura border-[1.5px] border-marca hover:bg-marca-fundo',
+  claro: 'bg-white text-marca-escura hover:bg-marca-fundo',
 }
 
 export function Button({
@@ -26,7 +26,7 @@ export function Button({
         'inline-flex items-center justify-center gap-2 rounded-lg px-[22px] py-[11px]',
         'text-sm font-bold transition-colors duration-150',
         'disabled:cursor-not-allowed disabled:opacity-55',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ciano',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-marca',
         VARIANTES[variante],
         className,
       )}
@@ -65,7 +65,7 @@ export function CardTitulo({
 }) {
   return (
     <div className="mb-4">
-      <h3 className="text-[15px] text-petroleo">{titulo}</h3>
+      <h3 className="text-[15px] text-noite">{titulo}</h3>
       {sub && <p className="mt-1 text-[12.5px] text-cinza">{sub}</p>}
     </div>
   )
@@ -94,13 +94,13 @@ export function Field({
 export function Input({
   className,
   ...props
-}: InputHTMLAttributes<HTMLInputElement>) {
+}: ComponentProps<'input'>) {
   return (
     <input
       className={cx(
-        'w-full rounded-[9px] border-[1.5px] border-linha bg-[#FBFDFE] px-3.5 py-3',
+        'w-full rounded-[9px] border-[1.5px] border-linha bg-campo px-3.5 py-3',
         'text-sm text-tinta transition-colors duration-150 placeholder:text-cinza-cl',
-        'focus:border-ciano focus:bg-white focus:outline-none',
+        'focus:border-marca focus:bg-white focus:outline-none',
         className,
       )}
       {...props}
@@ -132,12 +132,12 @@ export function Pill({
   )
 }
 
-/** Quadradinho colorido com a nota 0–4. */
+/** Quadradinho com a nota 0–4: fundo na cor da nota (suave), borda forte e número em tinta escura. */
 export function NotaBadge({ nota, cor }: { nota: number; cor: string }) {
   return (
     <span
-      className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-[7px] text-[13px] font-extrabold text-white"
-      style={{ backgroundColor: cor }}
+      className="inline-flex h-[26px] w-[26px] items-center justify-center rounded-[7px] text-[13px] font-extrabold text-noite"
+      style={{ backgroundColor: `${cor}40`, boxShadow: `inset 0 0 0 1.5px ${cor}` }}
     >
       {nota}
     </span>
@@ -150,8 +150,8 @@ export function SeloBeta({ className }: { className?: string }) {
     <span
       title="Versão em testes — dados e cálculos podem mudar"
       className={cx(
-        'inline-flex items-center rounded-[20px] border border-ciano/40 bg-ciano/15',
-        'px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-[1.2px] text-ciano',
+        'inline-flex items-center rounded-[20px] border border-marca/40 bg-marca/15',
+        'px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-[1.2px] text-marca',
         className,
       )}
     >
@@ -170,7 +170,7 @@ export function Eyebrow({
   return (
     <span
       className={cx(
-        'text-[11px] font-bold uppercase tracking-[2px] text-ciano-esc',
+        'text-[11px] font-bold uppercase tracking-[2px] text-marca-escura',
         className,
       )}
     >
@@ -195,7 +195,7 @@ export function Erro({ children }: { children: ReactNode }) {
   return (
     <div
       role="alert"
-      className="mb-4 rounded-[9px] border border-[#F3CFC0] bg-[#FCEEE9] px-3 py-2.5 text-xs text-[#B3532F]"
+      className="mb-4 rounded-[9px] border border-erro-borda bg-erro-bg px-3 py-2.5 text-xs text-erro-txt"
     >
       {children}
     </div>
@@ -208,7 +208,7 @@ export function Splash({ texto = 'Carregando…' }: { texto?: string }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-app-bg">
       <div className="flex flex-col items-center gap-3 text-cinza">
-        <span className="h-8 w-8 animate-spin rounded-full border-[3px] border-linha border-t-ciano" />
+        <span className="h-8 w-8 animate-spin rounded-full border-[3px] border-linha border-t-marca" />
         <span className="text-sm">{texto}</span>
       </div>
     </div>
@@ -226,7 +226,7 @@ export function Vazio({
 }) {
   return (
     <Card className="text-center">
-      <h3 className="mb-2 text-[15px] text-petroleo">{titulo}</h3>
+      <h3 className="mb-2 text-[15px] text-noite">{titulo}</h3>
       <p className="mx-auto mb-5 max-w-md text-[13.5px] text-cinza">{descricao}</p>
       {acao}
     </Card>

@@ -53,6 +53,10 @@ export interface Cidade {
   uf: string
   pais: string
   populacao: number | null
+  /** código IBGE de 7 dígitos (municípios brasileiros); único quando preenchido */
+  codigo_ibge: string | null
+  /** cidade de demonstração (dados de exemplo) */
+  demonstracao: boolean
   criado_por: string
   created_at: string
   updated_at: string
@@ -80,6 +84,8 @@ export interface Resposta {
   dados_brutos: Record<string, number>
   nota: number
   observacao: string
+  /** de onde veio o dado: preenchido por uma pessoa ou coletado automaticamente */
+  origem: 'declarado' | 'automatico'
   created_at: string
   updated_at: string
 }

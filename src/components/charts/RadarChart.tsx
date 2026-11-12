@@ -1,4 +1,4 @@
-import { CIANO, LINHA } from '@/lib/theme'
+import { MARCA, LINHA } from '@/lib/theme'
 
 /**
  * Radar dos pilares em SVG puro — portado do protótipo, sem biblioteca de
@@ -8,7 +8,7 @@ export function RadarChart({
   valores,
   rotulos,
   tamanho = 340,
-  padding = 52,
+  padding = 68,
   className,
 }: {
   valores: number[]
@@ -68,7 +68,7 @@ export function RadarChart({
                 y={ly}
                 fontSize={11}
                 fontWeight={700}
-                fill="#5B6B72"
+                fill="#5A6B78"
                 textAnchor={anchor}
                 dominantBaseline="middle"
               >
@@ -82,13 +82,13 @@ export function RadarChart({
       {/* área dos valores */}
       <polygon
         points={area.join(' ')}
-        fill="rgba(2,185,218,.18)"
-        stroke={CIANO}
+        fill="rgba(10,90,150,.18)"
+        stroke={MARCA}
         strokeWidth={2.5}
       />
       {area.map((p, i) => {
         const [x, y] = p.split(',')
-        return <circle key={i} cx={x} cy={y} r={3.5} fill="#0A7C93" />
+        return <circle key={i} cx={x} cy={y} r={3.5} fill="#054C7C" />
       })}
     </svg>
   )

@@ -1,24 +1,36 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Identidade visual CIIDCMIL
-   Tokens extraídos do protótipo. Tailwind 4 gera as utilities
-   a partir daqui (bg-ciano, text-petroleo, border-linha, ...).
-   ============================================================ */
+   Identidade visual Cidades MIL
+   Paleta extraída da logo (azul-escuro, azul e azul-claro).
+   Tailwind 4 gera as utilities a partir daqui (bg-marca, text-noite, ...).
+   Textos conferidos para contraste mínimo de 4,5:1 sobre o fundo em que aparecem.
+   */
 @theme {
   /* Marca */
-  --color-ciano: #02b9da;
-  --color-ciano-2: #0ca5c0;
-  --color-ciano-esc: #0a7c93;
-  --color-ciano-cl: #e8fafd;
-  --color-petroleo: #0b3d4a;
+  --color-marca: #0a5a96;
+  --color-marca-clara: #2395c6;
+  --color-marca-escura: #054c7c;
+  --color-marca-fundo: #e6f2fa;
+  --color-noite: #052f4d;
+
+  /* Texto sobre a barra lateral escura (todos com 4,5:1 ou mais sobre --color-noite) */
+  --color-lateral-1: #c4e0f2;
+  --color-lateral-2: #a9d3ec;
+  --color-lateral-3: #8fc3e3;
+  --color-lateral-4: #6fa3c7;
+  --color-lateral-5: #7fb0d3;
+
+  /* Texto claro sobre fundos de marca (gradientes azuis) */
+  --color-sobre-marca: #b5d8f0;
+  --color-sobre-marca-2: #d3e8f6;
 
   /* Texto e superfícies */
-  --color-tinta: #12303a;
-  --color-cinza: #5b6b72;
-  --color-cinza-cl: #8a9aa1;
-  --color-app-bg: #f4fafc;
-  --color-linha: #e1eef2;
+  --color-tinta: #10283a;
+  --color-cinza: #5a6b78;
+  --color-cinza-cl: #617487;
+  --color-app-bg: #f4f9fc;
+  --color-linha: #dfeaf2;
 
   /* Semântica de nota e prioridade */
   --color-nota-alta: #e0603e;
@@ -31,12 +43,46 @@
   --color-aviso-borda: #f3d9b6;
   --color-aviso-txt: #8a5a1e;
 
+  /* Erro e sucesso (texto escuro sobre fundo claro: 5,5:1 ou mais) */
+  --color-erro-bg: #fceee9;
+  --color-erro-borda: #f3cfc0;
+  --color-erro-txt: #9c4423;
+  --color-ok-bg: #eaf7f2;
+  --color-ok-borda: #bee5d5;
+  --color-ok-txt: #236b52;
+
+  /* Superfícies auxiliares */
+  --color-campo: #fbfdfe;
+  --color-neutro: #f0f4f6;
+  --color-regua-bg: #f1eef9;
+  --color-regua-txt: #6b4e9e;
+
   --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial,
     sans-serif;
 
-  --radius-card: 14px;
+  /* Escala tipográfica fluida (rem acompanha o tamanho de fonte do sistema).
+     Títulos grandes: tracking negativo e entrelinha curta; texto pequeno: tracking leve positivo. */
+  --text-display: clamp(2.75rem, 2.2rem + 3vw, 3.5rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.03em;
+  --text-titulo: clamp(1.5rem, 1.3rem + 1vw, 1.875rem);
+  --text-titulo--line-height: 1.15;
+  --text-titulo--letter-spacing: -0.02em;
+  --text-subtitulo: 1.0625rem;
+  --text-subtitulo--line-height: 1.3;
+  --text-subtitulo--letter-spacing: -0.01em;
+  --text-corpo: 0.9375rem;
+  --text-corpo--line-height: 1.5;
+  --text-legenda: 0.8125rem;
+  --text-legenda--line-height: 1.4;
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.3;
+  --text-micro--letter-spacing: 0.04em;
 
-  --shadow-card: 0 1px 3px rgb(11 61 74 / 0.06), 0 6px 24px rgb(11 61 74 / 0.06);
+  --radius-card: 14px;
+  --radius-folha: 22px;
+
+  --shadow-card: 0 1px 3px rgb(5 47 77 / 0.06), 0 6px 24px rgb(5 47 77 / 0.06);
 }
 
 @layer base {
@@ -74,4 +120,136 @@
 
 @utility mono {
   font-variant-numeric: tabular-nums;
+}
+
+/* Controle deslizante dos pilares (landing): trilha preenchida até o valor.
+   Usa as variáveis --cor e --pct definidas inline em cada input. */
+@layer components {
+  .faixa {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 32px; /* área de toque; a trilha desenhada tem 8 px */
+    background: transparent;
+  }
+  .faixa::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--cor) var(--pct), var(--color-linha) var(--pct));
+  }
+  .faixa::-moz-range-track {
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--cor) var(--pct), var(--color-linha) var(--pct));
+  }
+  .faixa::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    margin-top: -7px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid var(--cor);
+    box-shadow: 0 1px 4px rgb(5 47 77 / 0.25);
+    cursor: pointer;
+  }
+  .faixa::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid var(--cor);
+    box-shadow: 0 1px 4px rgb(5 47 77 / 0.25);
+    cursor: pointer;
+  }
+  .faixa:focus-visible {
+    outline: 2px solid var(--color-marca);
+    outline-offset: 4px;
+  }
+}
+
+
+/* ============================================================
+   Fundamentos mobile (Fase 0 do redesign)
+   ============================================================ */
+
+/* Áreas seguras: notch e barra de gestos. Exigem viewport-fit=cover (index.html). */
+@utility pb-seguro {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
+}
+@utility pt-seguro {
+  padding-top: env(safe-area-inset-top);
+}
+/* Altura real da tela no celular (a barra do navegador sobe e desce). */
+@utility min-h-tela {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+/* Alvo de toque mínimo de 44 px. */
+@utility alvo {
+  min-height: 44px;
+  min-width: 44px;
+}
+/* Feedback no momento do toque (não só ao soltar). */
+@utility toque {
+  transition: transform 100ms ease-out;
+  &:active {
+    transform: scale(0.97);
+  }
+}
+/* Material translúcido: conteúdo rola por baixo. */
+@utility vidro {
+  background-color: rgb(255 255 255 / 0.78);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  summary {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation; /* sem espera de 300 ms no toque */
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .vidro {
+    background-color: #fff;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* Reduzir movimento: some o deslize e a mola, mantém mudanças de cor/opacidade. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Entrada suave de tela (troca de aba). */
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@utility entrar {
+  animation: entrar 320ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
 }

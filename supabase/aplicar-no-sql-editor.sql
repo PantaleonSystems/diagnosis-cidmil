@@ -439,3 +439,166 @@ on conflict (numero) do update set
   tipo = excluded.tipo, config = excluded.config,
   dica = excluded.dica, ordem = excluded.ordem;
 
+
+-- >>>>> 20260922100000_acesso_publico_beta.sql
+
+-- ============================================================================
+-- BETA: acesso público, sem tela de login
+--
+-- O app passa a criar uma sessão ANÔNIMA silenciosa (supabase.auth
+-- .signInAnonymously). O visitante não vê login nenhum, mas continua tendo um
+-- JWT — então a RLS segue ligada e `criado_por` / `avaliador_id` continuam
+-- registrando quem fez o quê.
+--
+-- Diferença para o modelo anterior: some a exigência de `credenciado = true`.
+-- Qualquer visitante lê e escreve. Isso é deliberado para a fase de testes e
+-- DEVE ser revisto antes de uso real — ver 20260922100000_..._REVERTER abaixo.
+--
+-- Por que não liberar o papel `anon` direto, sem sessão: sem JWT não existe
+-- auth.uid(), a autoria se perde e não há como reapertar depois sem migrar
+-- dados. A sessão anônima custa nada ao usuário e preserva as duas coisas.
+-- ============================================================================
+
+-- ---------------------------------------------------------------------------
+-- Catálogo: leitura livre para qualquer sessão
+-- ---------------------------------------------------------------------------
+
+drop policy if exists "catálogo módulos: ler"  on public.modulos;
+drop policy if exists "catálogo pilares: ler"  on public.pilares;
+drop policy if exists "catálogo métricas: ler" on public.metricas;
+
+create policy "beta: catálogo módulos legível"
+  on public.modulos for select to authenticated using (true);
+
+create policy "beta: catálogo pilares legível"
+  on public.pilares for select to authenticated using (true);
+
+create policy "beta: catálogo métricas legível"
+  on public.metricas for select to authenticated using (true);
+
+-- ---------------------------------------------------------------------------
+-- Cidades
+--
+-- Durante o BETA qualquer sessão edita qualquer cidade: a equipe testa em
+-- conjunto e sessões anônimas não sobrevivem à limpeza de cookies, então
+-- amarrar a edição ao criador deixaria dados órfãos e intocáveis.
+-- ---------------------------------------------------------------------------
+
+drop policy if exists "cidades: ler"                on public.cidades;
+drop policy if exists "cidades: criar"              on public.cidades;
+drop policy if exists "cidades: editar as próprias" on public.cidades;
+drop policy if exists "cidades: apagar as próprias" on public.cidades;
+
+create policy "beta: cidades leitura"
+  on public.cidades for select to authenticated using (true);
+
+create policy "beta: cidades criação"
+  on public.cidades for insert to authenticated
+  with check (criado_por = (select auth.uid()));
+
+create policy "beta: cidades edição"
+  on public.cidades for update to authenticated using (true) with check (true);
+
+create policy "beta: cidades exclusão"
+  on public.cidades for delete to authenticated using (true);
+
+-- ---------------------------------------------------------------------------
+-- Avaliações
+-- ---------------------------------------------------------------------------
+
+drop policy if exists "avaliações: ler"                on public.avaliacoes;
+drop policy if exists "avaliações: criar"              on public.avaliacoes;
+drop policy if exists "avaliações: editar as próprias" on public.avaliacoes;
+drop policy if exists "avaliações: apagar as próprias" on public.avaliacoes;
+
+create policy "beta: avaliações leitura"
+  on public.avaliacoes for select to authenticated using (true);
+
+create policy "beta: avaliações criação"
+  on public.avaliacoes for insert to authenticated
+  with check (avaliador_id = (select auth.uid()));
+
+create policy "beta: avaliações edição"
+  on public.avaliacoes for update to authenticated using (true) with check (true);
+
+create policy "beta: avaliações exclusão"
+  on public.avaliacoes for delete to authenticated using (true);
+
+-- ---------------------------------------------------------------------------
+-- Respostas
+-- ---------------------------------------------------------------------------
+
+drop policy if exists "respostas: ler"                              on public.respostas;
+drop policy if exists "respostas: escrever nas próprias avaliações" on public.respostas;
+drop policy if exists "respostas: editar nas próprias avaliações"   on public.respostas;
+drop policy if exists "respostas: apagar nas próprias avaliações"   on public.respostas;
+
+create policy "beta: respostas leitura"
+  on public.respostas for select to authenticated using (true);
+
+create policy "beta: respostas criação"
+  on public.respostas for insert to authenticated with check (true);
+
+create policy "beta: respostas edição"
+  on public.respostas for update to authenticated using (true) with check (true);
+
+create policy "beta: respostas exclusão"
+  on public.respostas for delete to authenticated using (true);
+
+-- ---------------------------------------------------------------------------
+-- profiles
+--
+-- O trigger handle_new_user() cria um perfil para toda sessão anônima também.
+-- As policies de perfil próprio seguem valendo e não precisam mudar.
+-- ---------------------------------------------------------------------------
+
+-- ============================================================================
+-- COMO REVERTER ao acesso credenciado
+--
+-- 1. Apagar as policies "beta: ..." acima.
+-- 2. Recriar as policies originais (ver 20260813120000_schema.sql).
+-- 3. Desligar Authentication -> Providers -> Anonymous no painel.
+-- 4. Restaurar a tela de login (git revert do commit que a removeu).
+-- ============================================================================
+
+-- >>>>> 20261112024930_codigo_ibge_demonstracao_origem.sql
+
+-- ============================================================================
+-- Código IBGE, cidade de demonstração e origem das respostas
+--
+-- Só adiciona: colunas opcionais ou com padrão, então o app anterior continua
+-- funcionando. Já aplicada no banco de produção em 2026-11-12 (versão
+-- 20261112024930, via apply_migration); este arquivo registra o mesmo SQL.
+-- ============================================================================
+
+-- Só adiciona: opcional / com padrão. O app atual continua funcionando.
+
+alter table public.cidades
+  add column if not exists codigo_ibge text,
+  add column if not exists demonstracao boolean not null default false;
+
+alter table public.respostas
+  add column if not exists origem text not null default 'declarado';
+
+alter table public.cidades
+  add constraint cidades_codigo_ibge_formato
+  check (codigo_ibge is null or codigo_ibge ~ '^[0-9]{7}$');
+
+alter table public.respostas
+  add constraint respostas_origem_valida
+  check (origem in ('declarado', 'automatico'));
+
+-- um município do IBGE só pode existir uma vez (só onde o código está preenchido)
+create unique index if not exists cidades_codigo_ibge_uniq
+  on public.cidades (codigo_ibge)
+  where codigo_ibge is not null;
+
+-- a demonstração, pelo id exato e conferindo o nome
+update public.cidades
+   set demonstracao = true
+ where id = '1c58f5f1-1283-416f-b669-cfea6e176811'
+   and nome ilike '%demonstra%';
+
+comment on column public.cidades.codigo_ibge is 'Código oficial do município no IBGE (7 dígitos). Chave da coleta de dados.';
+comment on column public.cidades.demonstracao is 'Cidade fictícia usada para demonstrar o produto.';
+comment on column public.respostas.origem is 'declarado = informado à mão (não verificado); automatico = veio da coleta.';

@@ -1,41 +1,44 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Topbar } from '@/components/layout/AppShell'
-import { SemCidade } from '@/components/layout/SemCidade'
+import { GaugeIndice } from '@/components/charts/GaugeIndice'
 import { RadarChart } from '@/components/charts/RadarChart'
 import { PILARES, TOTAL_METRICAS } from '@/data/metricas'
 import { useCidades } from '@/lib/cidadeAtiva'
+import { ehDemonstracao, nomeCurto, ufVisivel } from '@/lib/cidades'
 import { useRespostas } from '@/lib/respostas'
 import { NIVEIS, consolidar, MINIMO_GOVERNANCA } from '@/lib/isps'
 import { fmt } from '@/lib/theme'
-import { Aviso, Button, Card, CardTitulo, Splash, Vazio, cx } from '@/components/ui'
-import {
-  PrimeirosPassos,
-  usePrecisaOnboarding,
-} from '@/components/layout/PrimeirosPassos'
+import { Aviso, Button, Card, CardTitulo, Splash, Vazio } from '@/components/ui'
 
+/** Visão geral da cidade: o índice primeiro, depois os dados reunidos e os pilares. */
 export function Dashboard() {
   const navigate = useNavigate()
-  const { cidadeAtiva, avaliacaoAtiva } = useCidades()
+  const { cidadeAtiva, avaliacaoAtiva, caminhoCidade } = useCidades()
   const { respostas, notas, carregando } = useRespostas(avaliacaoAtiva?.id ?? null)
-  // hooks antes de qualquer return condicional
-  const precisaOnboarding = usePrecisaOnboarding()
 
-  if (!cidadeAtiva) return <SemCidade />
+  if (!cidadeAtiva) return null
   if (carregando) return <Splash texto="Carregando o diagnóstico…" />
 
   const respondidas = Object.keys(respostas).length
+  const nome = nomeCurto(cidadeAtiva)
+  const uf = ufVisivel(cidadeAtiva)
+  const sub = [
+    uf,
+    cidadeAtiva.populacao ? `${cidadeAtiva.populacao.toLocaleString('pt-BR')} hab.` : null,
+    `Módulo Saúde${avaliacaoAtiva ? ` · ${avaliacaoAtiva.ano}` : ''}`,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+  const demo = ehDemonstracao(cidadeAtiva)
 
   if (respondidas === 0) {
     return (
       <>
-        <Topbar titulo="Módulo Saúde · Visão geral" sub={cidadeAtiva.nome} />
-        {precisaOnboarding && <PrimeirosPassos />}
+        <Topbar titulo={nome} sub={sub} />
         <Vazio
-          titulo="Nenhum dado coletado ainda"
-          descricao={`A avaliação de ${cidadeAtiva.nome} está em branco. Preencha as métricas para que o índice, o radar e o plano de ação apareçam aqui.`}
-          acao={
-            <Button onClick={() => navigate('/app/avaliacao')}>Iniciar avaliação →</Button>
-          }
+          titulo="Esta cidade ainda não tem dados"
+          descricao={`Quando houver dados de ${nome}, o índice, os pilares e o plano de ação aparecem aqui. Por enquanto você pode preencher à mão.`}
+          acao={<Button className="alvo" onClick={() => navigate(caminhoCidade('avaliacao'))}>Preencher dados →</Button>}
         />
       </>
     )
@@ -43,143 +46,111 @@ export function Dashboard() {
 
   const r = consolidar(notas)
   const concluida = avaliacaoAtiva?.status === 'concluida'
+  const progresso = Math.round((respondidas / TOTAL_METRICAS) * 100)
 
   return (
     <>
       <Topbar
-        titulo="Módulo Saúde · Visão geral"
-        sub={`${cidadeAtiva.nome} · ${respondidas} de ${TOTAL_METRICAS} métricas respondidas${
-          concluida ? ' · avaliação concluída' : ' · rascunho'
-        }`}
+        titulo={nome}
+        sub={sub}
         acao={
-          !concluida ? (
-            <Button variante="ghost" onClick={() => navigate('/app/avaliacao')}>
-              Continuar avaliação
-            </Button>
-          ) : undefined
+          <>
+            {demo && (
+              <span className="hidden rounded-full bg-marca-fundo px-3 py-1 text-micro font-extrabold uppercase text-marca-escura lg:inline-block">
+                Demonstração
+              </span>
+            )}
+            {!concluida && (
+              <Button variante="ghost" className="alvo hidden lg:inline-flex" onClick={() => navigate(caminhoCidade('avaliacao'))}>
+                Continuar avaliação
+              </Button>
+            )}
+          </>
         }
       />
 
-      {precisaOnboarding && <PrimeirosPassos />}
+      <div className="grid gap-4 lg:grid-cols-[1fr_1.25fr]">
+        {/* ------------------------------------------------------------ índice */}
+        <Card className="text-center">
+          <span className="text-micro font-extrabold uppercase text-cinza">Índice Cidades MIL de Saúde</span>
+          <GaugeIndice isps={r.isps} nivel={r.nivelExibido} travado={r.travado} className="mx-auto mt-1" tamanho={240} />
 
-      <div className="mb-5 grid gap-5 xl:grid-cols-[1.1fr_1.4fr]">
-        {/* ------------------------------------------------------------ ISPS */}
-        <Card className="flex flex-col justify-center">
-          <span className="text-[11px] font-bold uppercase tracking-[2px] text-ciano-esc">
-            Índice Cidades MIL de Saúde (ISPS)
-          </span>
-
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-[66px] font-extrabold leading-none text-petroleo">
-              {fmt(r.isps, 2)}
-            </span>
-            <span className="text-xl font-semibold text-cinza-cl">/ 4,0</span>
-          </div>
-
-          <div className="mt-2.5">
-            <span className="inline-block rounded-[20px] bg-ciano-cl px-2.5 py-[3px] text-[11px] font-bold tracking-[0.3px] text-ciano-esc">
-              Nível {r.nivelExibido + 1} · {NIVEIS[r.nivelExibido]}
-            </span>
-          </div>
-
-          <div className="mt-4.5 flex gap-1.5">
-            {NIVEIS.map((_, i) => (
-              <div
-                key={i}
-                className={cx(
-                  'h-2 flex-1 rounded-[5px]',
-                  i <= r.nivelExibido ? 'bg-ciano' : 'bg-linha',
-                )}
-              />
+          <div className="mt-2 flex gap-1.5" aria-hidden>
+            {NIVEIS.map((n, i) => (
+              <span key={n} className={`h-1.5 flex-1 rounded-full ${i <= r.nivelExibido ? 'bg-marca' : 'bg-linha'}`} />
             ))}
           </div>
-          <div className="mt-1.5 flex justify-between text-[10.5px] font-semibold text-cinza-cl">
+          <div className="mt-1.5 flex justify-between text-micro font-semibold text-cinza" aria-hidden>
             {NIVEIS.map((n) => (
               <span key={n}>{n}</span>
             ))}
           </div>
 
           {r.travado && (
-            <div className="mt-4">
+            <div className="mt-4 text-left">
               <Aviso>
-                <strong>Regra de Ouro aplicada:</strong> a Governança Participativa
-                (Pilar 1 = {fmt(r.mediaGovernanca)}) está abaixo de{' '}
-                {fmt(MINIMO_GOVERNANCA)}. A cidade é mantida no Nível 2, pois
-                participação é pré-requisito para uma Cidade MIL. O ISPS real continua
-                sendo {fmt(r.isps, 2)} (Nível {r.nivelReal + 1}).
+                <strong>Regra de Ouro:</strong> a Governança Participativa (Pilar 1 = {fmt(r.mediaGovernanca)}) está abaixo de{' '}
+                {fmt(MINIMO_GOVERNANCA)}. A cidade é mantida no Nível 2, pois participação é pré-requisito para uma Cidade MIL.
+                O índice real continua sendo {fmt(r.isps, 2)} (Nível {r.nivelReal + 1}).
               </Aviso>
             </div>
           )}
-
           {!concluida && (
-            <p className="mt-4 text-[11.5px] text-cinza-cl">
-              Índice parcial — considera apenas as {respondidas} métricas já
-              respondidas.
-            </p>
+            <p className="mt-3 text-legenda text-cinza">Índice parcial: considera só as {respondidas} métricas respondidas.</p>
           )}
         </Card>
 
-        {/* ----------------------------------------------------------- radar */}
-        <Card>
-          <CardTitulo
-            titulo="Desempenho por pilar do módulo Saúde"
-            sub="Os 5 pilares que estruturam a avaliação · nota de 0 a 4"
-          />
-          <div className="flex flex-wrap items-center gap-5">
-            <div className="flex-1 min-w-[260px]">
-              <RadarChart
-                valores={r.pilares.map((p) => p.media)}
-                rotulos={PILARES.map((p) => p.curto)}
-              />
+        {/* ------------------------------------------- dados + pilares + radar */}
+        <div className="flex flex-col gap-4">
+          <Link
+            to={caminhoCidade('dados')}
+            className="toque flex items-center gap-4 rounded-card border border-linha bg-white px-4 py-3.5 shadow-card hover:border-marca-clara"
+          >
+            <div className="min-w-0 flex-1">
+              <div className="text-corpo font-bold text-noite">
+                Dados reunidos: {progresso}%
+              </div>
+              <div className="mt-0.5 text-legenda text-cinza">
+                {respondidas} de {TOTAL_METRICAS} métricas · {concluida ? 'avaliação concluída' : 'em andamento'}
+              </div>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-linha" aria-hidden>
+                <div className="h-full rounded-full bg-marca" style={{ width: `${progresso}%`, transition: 'width 600ms cubic-bezier(0.2,0.9,0.25,1)' }} />
+              </div>
             </div>
-            <ul className="text-[12.5px]">
+            <span className="shrink-0 text-corpo font-bold text-marca">Ver dados</span>
+          </Link>
+
+          <Card>
+            <CardTitulo titulo="Pilares" sub="Nota de 0 a 4 · peso de cada pilar no índice" />
+            <ul className="space-y-3.5">
               {r.pilares.map((p) => (
-                <li key={p.pilar.numero} className="mb-2.5 flex items-center gap-2">
-                  <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-[3px]"
-                    style={{ backgroundColor: p.pilar.cor }}
-                  />
-                  <span className="text-cinza">Pilar {p.pilar.numero}</span>
-                  <span className="ml-auto pl-4 font-bold text-petroleo">
-                    {p.respondidas ? fmt(p.media) : '—'}
-                  </span>
+                <li key={p.pilar.numero}>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span className="text-corpo font-bold text-noite">{p.pilar.curto}</span>
+                    <span className="text-corpo font-extrabold text-noite">{p.respondidas ? fmt(p.media) : '—'}</span>
+                  </div>
+                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-linha" aria-hidden>
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${(p.media / 4) * 100}%`, backgroundColor: p.pilar.cor, transition: 'width 700ms cubic-bezier(0.2,0.9,0.25,1)' }}
+                    />
+                  </div>
+                  <div className="mt-1 text-legenda text-cinza">
+                    peso {Math.round(p.pilar.peso * 100)}% · {p.respondidas}/{p.total} respondidas
+                  </div>
                 </li>
               ))}
             </ul>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
 
-      {/* --------------------------------------------------------- mini-cards */}
-      <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-5">
-        {r.pilares.map((p) => (
-          <div
-            key={p.pilar.numero}
-            className="rounded-xl border border-linha border-t-[3px] bg-white p-4"
-            style={{ borderTopColor: p.pilar.cor }}
-          >
-            <div className="min-h-8 text-[11px] font-semibold text-cinza">
-              Pilar {p.pilar.numero} · {p.pilar.nome}
-            </div>
-            <div className="my-1.5 text-3xl font-extrabold text-petroleo">
-              {p.respondidas ? fmt(p.media) : '—'}
-            </div>
-            <div className="text-[11px] text-cinza-cl">
-              peso {Math.round(p.pilar.peso * 100)}% · {p.respondidas}/{p.total}{' '}
-              respondidas
-            </div>
-            <div className="mt-2.5 h-1.5 overflow-hidden rounded bg-linha">
-              <div
-                className="h-full rounded"
-                style={{
-                  width: `${(p.media / 4) * 100}%`,
-                  backgroundColor: p.pilar.cor,
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+      <Card className="mt-4">
+        <CardTitulo titulo="Visão em radar" sub="Os 5 pilares lado a lado · nota de 0 a 4" />
+        <div className="mx-auto max-w-[420px]">
+          <RadarChart valores={r.pilares.map((p) => p.media)} rotulos={PILARES.map((p) => p.curto)} />
+        </div>
+      </Card>
     </>
   )
 }
