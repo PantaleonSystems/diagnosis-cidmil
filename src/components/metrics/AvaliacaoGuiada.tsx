@@ -22,13 +22,19 @@ export function AvaliacaoGuiada({
   respostas,
   aoResponder,
   concluir,
+  inicial,
 }: {
   respostas: RespostasPorMetrica
   aoResponder: (metrica: Metrica, valor: RespostaLocal, imediato?: boolean) => void
   /** cartão de concluir, mostrado na última métrica */
   concluir: ReactNode
+  /** número da métrica em que abrir (senão, a primeira pendente) */
+  inicial?: number
 }) {
-  const [indice, setIndice] = useState(() => primeiraPendente(respostas))
+  const [indice, setIndice] = useState(() => {
+    const i = inicial === undefined ? -1 : TODAS.findIndex((t) => t.metrica.numero === inicial)
+    return i >= 0 ? i : primeiraPendente(respostas)
+  })
   const [indiceAberto, setIndiceAberto] = useState(false)
   const { metrica, pilar } = TODAS[indice]
   const respondidas = Object.keys(respostas).length

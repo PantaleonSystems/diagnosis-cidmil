@@ -103,7 +103,7 @@ export function Dashboard() {
         {/* ------------------------------------------- dados + pilares + radar */}
         <div className="flex flex-col gap-4">
           <Link
-            to={caminhoCidade('avaliacao')}
+            to={caminhoCidade('dados')}
             className="toque flex items-center gap-4 rounded-card border border-linha bg-white px-4 py-3.5 shadow-card hover:border-marca-clara"
           >
             <div className="min-w-0 flex-1">

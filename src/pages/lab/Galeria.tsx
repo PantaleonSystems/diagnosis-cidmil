@@ -11,6 +11,8 @@ import { CartaoCidade } from '@/components/cidades/CartaoCidade'
 import { RedeReal, type ItemRede } from '@/components/cidades/RedeReal'
 import type { ResumoCidade } from '@/lib/cidadeAtiva'
 import type { Cidade } from '@/types/db'
+import { PainelDados } from '@/pages/Dados'
+import { PILARES } from '@/data/metricas'
 import { Button } from '@/components/ui'
 import { useNoindex } from './useNoindex'
 
@@ -51,6 +53,10 @@ const EXEMPLOS: ItemRede[] = [
   { cidade: cid('5', 'Serra de Teste', 'RS'), resumo: res(1.3, 0) },
   { cidade: cid('6', 'Porto Teste', 'RN'), resumo: res(1.9, 1) },
 ]
+
+const RESPONDIDAS_EXEMPLO: Record<number, unknown> = Object.fromEntries(
+  [...PILARES[0].metricas.slice(0, 7), ...PILARES[1].metricas.slice(0, 5), ...PILARES[3].metricas.slice(0, 5)].map((m) => [m.numero, { nota: 2 }]),
+)
 
 function Bloco({ titulo, nota, children }: { titulo: string; nota?: string; children: React.ReactNode }) {
   return (
@@ -109,6 +115,10 @@ export function Galeria() {
             <GaugeIndice isps={isps} nivel={nivel} travado={isps > 2.5 && isps < 3} className="mx-auto" />
             <input type="range" min={0} max={4} step={0.05} value={isps} onChange={(e) => setIsps(Number(e.target.value))} aria-label="Valor do índice" className="faixa mt-3 w-full" style={{ ['--cor' as string]: '#0A5A96', ['--pct' as string]: `${(isps / 4) * 100}%` }} />
           </div>
+        </Bloco>
+
+        <Bloco titulo="Painel de dados da cidade" nota="Andamento, origem dos dados e pendências por impacto no índice (17 de 43 respondidas, exemplo).">
+          <PainelDados nome="Cidade Exemplo" respostas={RESPONDIDAS_EXEMPLO} concluida={false} linkMetrica={(n) => `/app?m=${n}`} linkLista="/app" />
         </Bloco>
 
         <Bloco titulo="Cartões de cidade" nota="Estados: concluída, travada pela Regra de Ouro, em andamento e sem dados. Cidades fictícias.">

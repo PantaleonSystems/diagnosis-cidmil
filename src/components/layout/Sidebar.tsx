@@ -1,4 +1,4 @@
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { useCidades } from '@/lib/cidadeAtiva'
 import { ehDemonstracao, nomeCurto, ufVisivel } from '@/lib/cidades'
@@ -10,6 +10,8 @@ interface Secao {
   fim?: boolean
   rotulo: string
   icone: ReactNode
+  /** subpágina que também deixa este item ativo */
+  tambem?: string
 }
 
 function Cabecalho() {
@@ -31,6 +33,7 @@ function Rodape() {
 }
 
 function Lista({ titulo, secoes }: { titulo: string; secoes: Secao[] }) {
+  const { pathname } = useLocation()
   return (
     <nav className="flex-1 px-3 py-3.5" aria-label={titulo}>
       <div className="px-3.5 pb-1.5 pt-3.5 text-[10px] font-bold uppercase tracking-[1.5px] text-lateral-5">
@@ -41,13 +44,14 @@ function Lista({ titulo, secoes }: { titulo: string; secoes: Secao[] }) {
           key={s.to}
           to={s.to}
           end={s.fim}
-          className={({ isActive }) =>
-            cx(
+          className={({ isActive }) => {
+            const ativo = isActive || (!!s.tambem && pathname.endsWith(`/${s.tambem}`))
+            return cx(
               'mb-[3px] flex w-full items-center gap-3 rounded-[9px] px-3.5 py-3',
               'text-sm font-semibold transition-colors duration-100',
-              isActive ? 'bg-marca text-white' : 'text-lateral-1 hover:bg-white/[0.07] hover:text-white',
+              ativo ? 'bg-marca text-white' : 'text-lateral-1 hover:bg-white/[0.07] hover:text-white',
             )
-          }
+          }}
         >
           <span className="shrink-0" aria-hidden>
             {s.icone}
@@ -79,7 +83,7 @@ export function SidebarCidade() {
   const { cidadeAtiva, avaliacaoAtiva, caminhoCidade } = useCidades()
   const secoes: Secao[] = [
     { to: caminhoCidade(), fim: true, rotulo: 'Visão geral', icone: <IconeGrid /> },
-    { to: caminhoCidade('avaliacao'), rotulo: 'Dados', icone: <IconeCheck /> },
+    { to: caminhoCidade('dados'), rotulo: 'Dados', icone: <IconeCheck />, tambem: 'avaliacao' },
     { to: caminhoCidade('resultados'), rotulo: 'Resultados por pilar', icone: <IconeBarras /> },
     { to: caminhoCidade('plano'), rotulo: 'Plano de ação', icone: <IconePlano /> },
     { to: caminhoCidade('conexoes'), rotulo: 'Conexões', icone: <IconeRede /> },

@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import { Link, Outlet, useLocation, useMatch } from 'react-router-dom'
 import { SidebarCidade, SidebarInicio } from '@/components/layout/Sidebar'
 import { Marca } from '@/components/layout/Marca'
@@ -50,7 +50,9 @@ function Conteudo() {
         )}
 
         <div className="pt-5 lg:pt-0">
-          <Outlet />
+          <Suspense fallback={<p className="py-16 text-center text-corpo text-cinza">Carregando…</p>}>
+            <Outlet />
+          </Suspense>
         </div>
 
         <footer className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-linha pt-4.5 text-[11.5px] text-cinza">
@@ -118,13 +120,13 @@ function AbasMobile({ naCidade }: { naCidade: boolean }) {
 
   const itens: ItemAba[] = [
     { id: 'geral', rotulo: 'Geral', icone: IcoVisaoGeral, to: caminhoCidade(), fim: true },
-    { id: 'avaliacao', rotulo: 'Dados', icone: IcoAvaliar, to: caminhoCidade('avaliacao') },
+    { id: 'dados', rotulo: 'Dados', icone: IcoAvaliar, to: caminhoCidade('dados') },
     { id: 'resultados', rotulo: 'Resultados', icone: IcoResultados, to: caminhoCidade('resultados') },
     { id: 'plano', rotulo: 'Plano', icone: IcoPlano, to: caminhoCidade('plano') },
     { id: 'conexoes', rotulo: 'Conexões', icone: IcoRede, to: caminhoCidade('conexoes') },
   ]
   const ultimo = pathname.split('/').filter(Boolean).pop() ?? ''
-  const ativo = itens.some((i) => i.id === ultimo) ? ultimo : 'geral'
+  const ativo = ultimo === 'avaliacao' ? 'dados' : itens.some((i) => i.id === ultimo) ? ultimo : 'geral'
   return <BarraAbas itens={itens} ativoId={ativo} className="lg:hidden" />
 }
 

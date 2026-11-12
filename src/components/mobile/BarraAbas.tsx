@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { cx } from '@/components/ui'
 
 export interface ItemAba {
   id: string
   rotulo: string
   icone: (p: { ativo?: boolean }) => ReactNode
-  /** rota (usa <NavLink>); sem `to` vira botão e usa `aoEscolher` */
+  /** rota (usa <Link>); sem `to` vira botão e usa `aoEscolher` */
   to?: string
   fim?: boolean
   /** botão redondo em evidência (ação principal, ex.: nova cidade) */
@@ -81,16 +81,15 @@ export function BarraAbas({
             </>
           )
           return item.to ? (
-            <NavLink
+            <Link
               key={item.id}
               to={item.to}
-              end={item.fim}
               className={classe}
               aria-current={ativo ? 'page' : undefined}
               onClick={() => aoEscolher?.(item.id)}
             >
               {conteudo}
-            </NavLink>
+            </Link>
           ) : (
             <button
               key={item.id}

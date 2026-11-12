@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Topbar } from '@/components/layout/AppShell'
 import { AvaliacaoGuiada } from '@/components/metrics/AvaliacaoGuiada'
 import { MetricField } from '@/components/metrics/MetricField'
@@ -22,9 +22,12 @@ export function Avaliacao() {
   const [concluindo, setConcluindo] = useState(false)
   const [erroConclusao, setErroConclusao] = useState<string | null>(null)
   // celular: uma métrica por vez; computador: lista completa (a pessoa pode trocar)
+  const [params] = useSearchParams()
+  const metricaPedida = Number(params.get('m')) || undefined
   const noComputador = useMediaQuery('(min-width: 1024px)')
   const [escolhaModo, setEscolhaModo] = useState<'guiado' | 'lista' | null>(null)
-  const modo = escolhaModo ?? (noComputador ? 'lista' : 'guiado')
+  // vindo de uma pendência (?m=NN) abre direto na métrica, no modo guiado
+  const modo = escolhaModo ?? (metricaPedida ? 'guiado' : noComputador ? 'lista' : 'guiado')
 
   if (!cidadeAtiva) return null
   if (!avaliacaoAtiva) {
@@ -153,7 +156,7 @@ export function Avaliacao() {
       </div>
 
       {modo === 'guiado' && (
-        <AvaliacaoGuiada respostas={respostas} aoResponder={(metrica, valor, imediato) => registrar(metrica, valor, imediato)} concluir={cartaoConcluir} />
+        <AvaliacaoGuiada inicial={metricaPedida} respostas={respostas} aoResponder={(metrica, valor, imediato) => registrar(metrica, valor, imediato)} concluir={cartaoConcluir} />
       )}
 
       {/* ---------------------------------------------------- grupos por pilar */}

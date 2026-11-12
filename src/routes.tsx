@@ -1,16 +1,22 @@
+import { lazy } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Landing } from '@/pages/Landing'
-import { Dashboard } from '@/pages/Dashboard'
-import { Avaliacao } from '@/pages/Avaliacao'
-import { Resultados } from '@/pages/Resultados'
-import { Plano } from '@/pages/Plano'
-import { Inicio } from '@/pages/Inicio'
-import { Rede } from '@/pages/Rede'
-import { Conexoes } from '@/pages/Conexoes'
-import { AmbienteCidade, RedirecionaCidadeAntiga } from '@/pages/AmbienteCidade'
-import { AppShell } from '@/components/layout/AppShell'
-import { Galeria } from '@/pages/lab/Galeria'
-import { Jornada } from '@/pages/lab/Jornada'
+
+// A landing é a primeira tela e abre direto; o resto carrega sob demanda,
+// para quem chega pelo celular baixar só o que vai usar.
+const AreaDoApp = lazy(() => import('@/pages/AreaDoApp'))
+const Inicio = lazy(() => import('@/pages/Inicio').then((m) => ({ default: m.Inicio })))
+const Rede = lazy(() => import('@/pages/Rede').then((m) => ({ default: m.Rede })))
+const AmbienteCidade = lazy(() => import('@/pages/AmbienteCidade').then((m) => ({ default: m.AmbienteCidade })))
+const RedirecionaCidadeAntiga = lazy(() => import('@/pages/AmbienteCidade').then((m) => ({ default: m.RedirecionaCidadeAntiga })))
+const Dashboard = lazy(() => import('@/pages/Dashboard').then((m) => ({ default: m.Dashboard })))
+const Dados = lazy(() => import('@/pages/Dados').then((m) => ({ default: m.Dados })))
+const Avaliacao = lazy(() => import('@/pages/Avaliacao').then((m) => ({ default: m.Avaliacao })))
+const Resultados = lazy(() => import('@/pages/Resultados').then((m) => ({ default: m.Resultados })))
+const Plano = lazy(() => import('@/pages/Plano').then((m) => ({ default: m.Plano })))
+const Conexoes = lazy(() => import('@/pages/Conexoes').then((m) => ({ default: m.Conexoes })))
+const Galeria = lazy(() => import('@/pages/lab/Galeria').then((m) => ({ default: m.Galeria })))
+const Jornada = lazy(() => import('@/pages/lab/Jornada').then((m) => ({ default: m.Jornada })))
 
 /**
  * BETA: sem rotas de autenticação. "Acessar" leva direto ao dashboard.
@@ -21,7 +27,7 @@ export function AppRoutes() {
     <Routes>
       <Route path="/" element={<Landing />} />
 
-      <Route path="/app" element={<AppShell />}>
+      <Route path="/app" element={<AreaDoApp />}>
         {/* Início: nenhuma cidade aberta */}
         <Route index element={<Inicio />} />
         <Route path="rede" element={<Rede />} />
@@ -29,6 +35,7 @@ export function AppRoutes() {
         {/* Ambiente de uma cidade */}
         <Route path="cidades/:cidadeId" element={<AmbienteCidade />}>
           <Route index element={<Dashboard />} />
+          <Route path="dados" element={<Dados />} />
           <Route path="avaliacao" element={<Avaliacao />} />
           <Route path="resultados" element={<Resultados />} />
           <Route path="plano" element={<Plano />} />
