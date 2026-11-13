@@ -269,10 +269,9 @@ export function SimuladorIndice() {
         Das fontes da cidade ao diagnóstico
       </h2>
       <p className="mx-auto mb-6 max-w-[660px] text-center text-cinza">
-        O que vem dos portais, dos cadastros e dos projetos da cidade passa por uma conferência
-        antes de virar nota. Role para ver a conferência acontecer; depois ajuste os pilares e veja o índice reagir.{' '}
+        Role para ver a conferência acontecer; depois ajuste os pilares.{' '}
         <span className="text-cinza-cl">
-          Ilustração do fluxo; a coleta automática das fontes está em desenvolvimento.
+          Ilustração: a coleta automática das fontes está em desenvolvimento.
         </span>
       </p>
 
@@ -373,8 +372,8 @@ export function SimuladorIndice() {
           {res.travado ? (
             <>
               <strong>Regra de Ouro:</strong> o índice renderia o Nível {res.nivelReal + 1} (
-              {NIVEIS[res.nivelReal]}), mas a Governança está abaixo de {fmt(MINIMO_GOVERNANCA, 1)}. Sem participação
-              não há Cidade MIL: suba a Governança para destravar.
+              {NIVEIS[res.nivelReal]}), mas a Governança está abaixo de {fmt(MINIMO_GOVERNANCA, 1)}. Suba a
+              Governança para destravar.
             </>
           ) : (
             <>
