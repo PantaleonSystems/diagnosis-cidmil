@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calcularZoom, caminhoSvg, enquadrar, projetar, simplificar, type Vista } from './mapaLanding'
+import { bboxDe, calcularZoom, caminhoSvg, enquadrar, projetar, simplificar, type Vista } from './mapaLanding'
 
 const ASPECTO = 1540 / 1620
 
@@ -54,5 +54,11 @@ describe('calcularZoom', () => {
   it('a escala não depende do tamanho da tela', () => {
     const V1: Vista = [400, 500, 385, 405]
     expect(calcularZoom(V0, V1, 320, 336).s).toBeCloseTo(calcularZoom(V0, V1, 1000, 1052).s)
+  })
+})
+
+describe('bboxDe', () => {
+  it('lê o retângulo de um caminho SVG', () => {
+    expect(bboxDe('M10 20 30 5 15 40Z')).toEqual([10, 5, 20, 35])
   })
 })

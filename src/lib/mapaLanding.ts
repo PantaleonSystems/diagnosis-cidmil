@@ -69,3 +69,14 @@ export function calcularZoom(de: Vista, para: Vista, largura: number, altura: nu
   const cx = largura / 2, cy = altura / 2
   return { s, tx: -cx - s * (px - cx), ty: -cy - s * (py - cy) }
 }
+
+/** Retângulo que contém todos os números de um caminho SVG (pares x y). */
+export function bboxDe(d: string): Vista {
+  const v = (d.match(/-?\d+(\.\d+)?/g) ?? []).map(Number)
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity
+  for (let i = 0; i + 1 < v.length; i += 2) {
+    x0 = Math.min(x0, v[i]); x1 = Math.max(x1, v[i])
+    y0 = Math.min(y0, v[i + 1]); y1 = Math.max(y1, v[i + 1])
+  }
+  return [x0, y0, x1 - x0, y1 - y0]
+}

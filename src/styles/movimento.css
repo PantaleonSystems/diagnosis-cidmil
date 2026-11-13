@@ -44,3 +44,11 @@
   .clique-convite:active, .clique-escolha:hover, .clique-escolha[aria-expanded="true"], .clique-escolha[aria-pressed="true"] { transform: none; }
   .clique-convite:active::after { transform: none; }
 }
+
+/* Mapa que se aproxima (camadas) */
+.mapa-aprox { position: relative; aspect-ratio: 1540 / 1620; overflow: hidden; }
+.mapa-aprox__camadas, .mapa-aprox .camada { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mapa-aprox .camada { will-change: transform, opacity; transform-origin: 50% 50%; }
+.mapa-aprox .uf { fill: #d7e8f4; stroke: #fff; stroke-width: 3; }
+.mapa-aprox .uf.dest { fill: var(--color-marca); }
+.mapa-aprox .cidade { fill: var(--color-marca-fundo); stroke: var(--color-marca); stroke-linejoin: round; }
