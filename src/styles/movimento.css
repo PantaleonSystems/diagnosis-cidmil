@@ -1,0 +1,46 @@
+/* Movimento da marca: tokens, famílias de clique e entrada na rolagem. */
+:root {
+  --dur-micro: 40ms;
+  --dur-rapida: 80ms;
+  --dur-curta: 150ms;
+  --dur-media: 250ms;
+  --dur-longa: 350ms;
+  --dur-lenta: 400ms;
+  --dur-enorme: 500ms;
+  --ease-smooth-out: cubic-bezier(.22,1,.36,1);
+  --ease-bounce: cubic-bezier(.34,1.36,.64,1);
+  --ease-zoom: cubic-bezier(.65,0,.35,1);
+}
+
+/* Convite: onda que se expande do botão ao pressionar */
+.clique-convite { position: relative; overflow: hidden; transition: transform var(--dur-curta) var(--ease-smooth-out), background-color var(--dur-media) var(--ease-smooth-out); }
+.clique-convite::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at 50% 50%, rgb(255 255 255 / .35), transparent 60%); opacity: 0; transform: scale(.4); pointer-events: none; }
+.clique-convite:active { transform: scale(.97); }
+.clique-convite:active::after { opacity: 1; transform: scale(1.6); transition: transform var(--dur-lenta) var(--ease-smooth-out), opacity var(--dur-rapida) linear; }
+
+/* Escolha: o item selecionado sobe e ganha anel */
+.clique-escolha { transition: transform var(--dur-media) var(--ease-smooth-out), box-shadow var(--dur-media) var(--ease-smooth-out), background-color var(--dur-media) var(--ease-smooth-out); }
+.clique-escolha:hover { transform: translateY(-1px); }
+.clique-escolha[aria-expanded="true"], .clique-escolha[aria-pressed="true"] { transform: translateY(-2px); box-shadow: 0 0 0 2px var(--color-marca), 0 8px 18px -8px rgb(10 90 150 / .45); }
+
+/* Detalhe: painel que abre sem saltos */
+.clique-detalhe { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows var(--dur-longa) var(--ease-smooth-out), opacity var(--dur-media) var(--ease-smooth-out); }
+.clique-detalhe > * { overflow: hidden; min-height: 0; }
+.clique-detalhe[data-aberto="true"] { grid-template-rows: 1fr; opacity: 1; }
+
+/* Controle: chave que desliza com leve mola */
+.clique-controle { position: relative; transition: background-color var(--dur-media) var(--ease-smooth-out); }
+.clique-controle > .pino-chave { transition: transform var(--dur-longa) var(--ease-bounce); }
+.clique-controle[aria-pressed="true"] > .pino-chave { transform: translateX(var(--curso, 20px)); }
+
+/* Entrada na rolagem */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity var(--dur-enorme) var(--ease-smooth-out), transform var(--dur-enorme) var(--ease-smooth-out); }
+.reveal.visivel { opacity: 1; transform: none; }
+@media (scripting: none) { .reveal { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transform: none; transition: opacity 150ms linear; }
+  .clique-convite, .clique-escolha, .clique-detalhe, .clique-controle, .clique-controle > .pino-chave { transition-duration: 150ms; }
+  .clique-convite:active, .clique-escolha:hover, .clique-escolha[aria-expanded="true"], .clique-escolha[aria-pressed="true"] { transform: none; }
+  .clique-convite:active::after { transform: none; }
+}
