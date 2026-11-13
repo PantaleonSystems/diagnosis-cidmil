@@ -52,3 +52,25 @@
 .mapa-aprox .uf { fill: #d7e8f4; stroke: #fff; stroke-width: 3; }
 .mapa-aprox .uf.dest { fill: var(--color-marca); }
 .mapa-aprox .cidade { fill: var(--color-marca-fundo); stroke: var(--color-marca); stroke-linejoin: round; }
+
+/* Botão "Ver a minha cidade": o mapa se aproxima e o pino cai */
+.btn-cidade { position: relative; display: inline-flex; align-items: center; min-height: 64px; padding: 0 28px 0 84px; border: 2px solid var(--color-marca); border-radius: 18px; background: #fff; color: var(--color-marca); font-weight: 800; font-size: 18px; line-height: 1; overflow: hidden; text-decoration: none; transition: color var(--dur-longa) ease, background-color var(--dur-longa) ease, transform var(--dur-media) var(--ease-smooth-out); }
+.btn-cidade__mapa { position: absolute; left: -10px; top: -14px; width: 150px; height: 110px; transform-origin: 60px 60px; opacity: .55; transition: transform 800ms var(--ease-smooth-out); }
+.btn-cidade__mapa path { fill: var(--color-marca-fundo); stroke: #9ccbea; stroke-width: 1.4; transition: fill 500ms ease, stroke 500ms ease; }
+.btn-cidade__pino { position: absolute; left: 44px; top: 6px; width: 26px; height: 34px; opacity: 0; transform: translateY(-70px); transition: transform 550ms var(--ease-bounce) 120ms, opacity 200ms ease 120ms; }
+.btn-cidade__pino path { fill: var(--color-marca); transition: fill var(--dur-longa) ease; }
+.btn-cidade__texto { position: relative; display: inline-block; transition: transform 500ms var(--ease-smooth-out); }
+.btn-cidade:hover, .btn-cidade:focus-visible, .btn-cidade:active { background: var(--color-marca); color: #fff; }
+.btn-cidade:hover .btn-cidade__mapa, .btn-cidade:focus-visible .btn-cidade__mapa { transform: scale(1.55); }
+.btn-cidade:hover .btn-cidade__mapa path, .btn-cidade:focus-visible .btn-cidade__mapa path { fill: #0e6ab0; stroke: #5bb4da; }
+.btn-cidade:hover .btn-cidade__pino, .btn-cidade:focus-visible .btn-cidade__pino, .btn-cidade:active .btn-cidade__pino { opacity: 1; transform: translateY(16px); }
+.btn-cidade:hover .btn-cidade__pino path, .btn-cidade:focus-visible .btn-cidade__pino path, .btn-cidade:active .btn-cidade__pino path { fill: #fff; }
+.btn-cidade:hover .btn-cidade__texto { transform: translateX(4px); }
+.btn-cidade:active { transform: scale(.97); }
+.btn-cidade:active .btn-cidade__pino { transform: translateY(22px) scaleY(.9); }
+.btn-cidade:focus-visible { outline: 3px solid var(--color-marca-clara); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .btn-cidade__mapa, .btn-cidade__pino, .btn-cidade__texto { transition-duration: 150ms; }
+  .btn-cidade:hover .btn-cidade__mapa, .btn-cidade:focus-visible .btn-cidade__mapa, .btn-cidade:hover .btn-cidade__texto, .btn-cidade:active { transform: none; }
+  .btn-cidade__pino { transform: translateY(16px); }
+}

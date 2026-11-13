@@ -1,14 +1,11 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MODULOS, PILARES } from '@/data/metricas'
-import { RadarChart } from '@/components/charts/RadarChart'
 import { Marca } from '@/components/layout/Marca'
 import { SimuladorIndice } from '@/components/landing/SimuladorIndice'
-import { useAnimado } from '@/lib/movimento'
 import { Button, Eyebrow, SeloBeta, cx } from '@/components/ui'
-import { fmt } from '@/lib/theme'
-
-/** Valores ilustrativos do card do hero — exemplo, não dado de cidade real. */
-const EXEMPLO = [1.9, 2.8, 3.2, 3.5, 2.5]
+import { BotaoVerCidade } from '@/components/landing/BotaoVerCidade'
+import { MapaAproximacao, type FaseMapa } from '@/components/landing/MapaAproximacao'
 
 const COMO = [
   {
@@ -32,9 +29,8 @@ const COMO = [
 ]
 
 export function Landing() {
+  const [fase, setFase] = useState<FaseMapa>('brasil')
   const ativos = MODULOS.filter((m) => m.ativo).length
-  const valores = useAnimado(EXEMPLO, 1400)
-  const isps = valores.reduce((s, v, i) => s + v * PILARES[i].peso, 0)
 
   return (
     <div className="min-h-screen bg-white">
@@ -64,58 +60,29 @@ export function Landing() {
 
       <main>
       {/* ------------------------------------------------------------ hero */}
-      <header className="bg-[radial-gradient(1200px_500px_at_80%_-10%,#E4F8FC_0%,transparent_60%),linear-gradient(180deg,#fff_0%,#F4FAFC_100%)] px-[6vw] pb-20 pt-[90px]">
-        <div className="mx-auto grid max-w-[1200px] items-center gap-[60px] lg:grid-cols-[1.15fr_0.85fr]">
+      <header className="bg-[radial-gradient(1200px_500px_at_80%_-10%,#E4F8FC_0%,transparent_60%),linear-gradient(180deg,#fff_0%,#F4FAFC_100%)] px-[6vw] pb-16 pt-[56px] md:pt-[80px]">
+        <div className="mx-auto grid max-w-[1200px] items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <Eyebrow>Plataforma de Diagnóstico · Cidades MIL</Eyebrow>
-            <h1 className="my-5 text-[clamp(32px,5vw,46px)] tracking-[-0.5px] text-noite">
-              Medir o impacto social de uma cidade com{' '}
-              <span className="text-marca">rigor e transparência</span>
+            <h1 className="my-5 text-[clamp(32px,5.4vw,52px)] leading-[1.08] tracking-[-0.5px] text-noite">
+              A sua cidade, entendida <span className="text-marca">de ponta a ponta</span>
             </h1>
-            <p className="mb-7 max-w-[520px] text-lg text-cinza">
-              A plataforma do CIIDCMIL que transforma o framework das Cidades MIL em
-              diagnósticos objetivos: dados entram, notas são calculadas, e a cidade
-              enxerga exatamente onde evoluir.{' '}
-              <strong className="font-bold text-marca-escura">
-                Começando pelo módulo Saúde.
-              </strong>
+            <p className="mb-8 max-w-[520px] text-lg text-cinza">
+              Reunimos os dados que já existem na prefeitura, conferimos e mostramos,
+              em linguagem simples, onde agir primeiro.{' '}
+              <strong className="font-bold text-marca-escura">Começando pela Saúde.</strong>
             </p>
-            <div className="flex flex-wrap items-center gap-3.5">
-              <Link to="/app">
-                <Button>Abrir o diagnóstico →</Button>
-              </Link>
-              <a href="#fluxo">
-                <Button variante="ghost">Ver como funciona</Button>
-              </a>
-            </div>
+            <BotaoVerCidade />
           </div>
 
-          <div className="rounded-[18px] border border-linha bg-white p-[26px] shadow-card">
-            <div className="mb-4 flex items-start justify-between gap-3">
-              <div>
-                <div className="text-[11px] font-bold uppercase tracking-[1.5px] text-cinza">
-                  Índice · Módulo Saúde
-                </div>
-                <div className="mt-0.5 text-[13px] text-cinza">Exemplo ilustrativo</div>
-              </div>
-              <span className="rounded-lg bg-marca-fundo px-3 py-1.5 text-[13px] font-bold text-marca-escura">
-                Nível 2 · Concessiva
-              </span>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-[52px] font-extrabold leading-none text-noite">
-                {fmt(isps, 2)}
-              </span>
-              <span className="font-bold text-cinza-cl">/ 4,0</span>
-            </div>
-            <div className="mt-1.5 flex justify-center">
-              <RadarChart
-                valores={valores}
-                rotulos={PILARES.map((p) => p.curto.slice(0, 6) + '.')}
-                tamanho={300}
-                padding={58}
-              />
-            </div>
+          <div className="relative mx-auto w-full max-w-[420px]">
+            <MapaAproximacao className="rounded-[28px]" onFase={setFase} />
+            <span
+              className="absolute left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-marca-escura shadow-card transition-[top,opacity] duration-500 ease-[cubic-bezier(.22,1,.36,1)]"
+              style={{ top: fase === 'brasil' ? '66%' : '50%', opacity: fase === 'estado' ? 0 : 1 }}
+            >
+              Sua cidade
+            </span>
           </div>
         </div>
       </header>

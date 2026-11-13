@@ -76,7 +76,7 @@ export function MapaAproximacao({ className, onFase, ciclo = true }: Props) {
             fase.current?.('municipio')
             await Promise.all([
               anima(L2, [{ transform: id, opacity: 1 }, { opacity: 0.9, offset: 0.35 }, { transform: T(z23), opacity: 0 }]),
-              ...(dest2 ? [anima(dest2, [{ opacity: 1 }, { opacity: 0.3, offset: 0.45 }, { opacity: 0.3 }])] : []),
+              ...(dest2 ? [anima(dest2, [{ opacity: 1 }, { opacity: 0.3, offset: 0.3 }, { opacity: 0.3 }])] : []),
               anima(L3, [{ transform: Ti(z23), opacity: 0 }, { opacity: 0, offset: 0.2 }, { transform: id, opacity: 1 }]),
             ]); if (!vivo()) return
             await espera(2400); if (!vivo()) return
