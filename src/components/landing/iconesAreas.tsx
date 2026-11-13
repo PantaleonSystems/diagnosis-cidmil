@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 const TRACOS: Record<string, ReactNode> = {
-  saude: (<><circle cx="12" cy="12" r="9" /><path d="M12 7.5v9M7.5 12h9" /></>),
+  saude: (<><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" /><path d="M7.5 12.2h2.3l1.4-3 1.8 5.4 1.4-2.4H17" /></>),
   educacao: (<><path d="m2 9 10-5 10 5-10 5z" /><path d="M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5" /></>),
   gov: (<><path d="M3 10 12 4l9 6" /><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8" /><path d="M3 20h18" /></>),
   bibliotecas: (<><path d="M5 4v16M10 4v16M15 6.5l4 13.5" /><path d="M3 20h18" /></>),

@@ -37,3 +37,13 @@ describe('Areas', () => {
     }
   })
 })
+
+describe('símbolo da Saúde', () => {
+  it('é o coração com pulsação', () => {
+    const { container } = render(<IconeArea id="saude" />)
+    const paths = container.querySelectorAll('path')
+    expect(paths).toHaveLength(2)
+    expect(paths[0].getAttribute('d')).toMatch(/^M12 20s-7-4\.4-7-10/)
+    expect(paths[1].getAttribute('d')).toContain('h2.3l1.4-3')
+  })
+})
