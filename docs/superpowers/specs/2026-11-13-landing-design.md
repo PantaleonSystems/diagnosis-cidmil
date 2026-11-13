@@ -1,0 +1,49 @@
+# Landing Cidades MIL — design da nova história
+
+Data: 2026-11-13 · Status: implementado na branch `landing-nova-historia` (plano em docs/superpowers/plans)
+
+## Objetivo
+Tirar a "cara de IA" da landing e entregar uma página leve, dinâmica e profissional para gestor, secretário e prefeito acima de 40 anos, distantes da tecnologia: entendível, viva, moderna. A ferramenta é um sistema conectado (dados, cadastros, vários lugares) que centraliza e calcula e entrega **consistência**, não só um índice.
+
+Fora de escopo: o app interno (fica para outra etapa), além da tela de carregamento ao entrar.
+
+## Princípios
+- Pouca informação por vez; o que é clicável revela mais.
+- Ambientes limpos, gráficos elegantes, um número em destaque por vez.
+- Seções com sequência de história, uma levando à outra.
+- Cada clique e cada rolagem têm uma sensação própria; nada igual.
+- Referência de linguagem: IPS Brasil e normas visuais do IBGE.
+
+## Espinha da história: "A cidade do gestor"
+1. **Primeira tela:** mapa que se aproxima (Brasil → estado → município) em camadas (`transform` e `opacity`, WAAPI), sem recalcular o desenho a cada quadro. Botão "Ver a minha cidade": o mapa se aproxima dentro do botão e o pino cai (variante B aprovada). Mapas reais das malhas do IBGE.
+2. **Os dados chegam:** território com fontes (cadastros, órgãos, secretarias) ligadas à cidade; pontos clicáveis abrem uma frase humana. Substitui o grafo frio da Rede.
+3. **O cálculo:** o dado entra, é conferido e vira um selo de consistência junto com o índice; um número em destaque por vez.
+4. **As cinco frentes:** ícones; cada um abre um painel ao clicar.
+5. **A decisão:** "o que fazer primeiro", fechando a história e levando ao botão.
+
+## Componentes e movimento
+- **Nav:** translúcida e fina, marca + um botão; marcadores de capítulo que acompanham a rolagem.
+- **Cliques em quatro famílias:** convite, escolha, detalhe, controle, cada uma com movimento próprio.
+- **Rolagem em capítulos:** texto entra subindo suave; número do capítulo marca o ponto da história.
+- **Carregamento ao entrar no sistema:** o mapa se desenhando + "Preparando a sua cidade".
+- **Acessibilidade:** `prefers-reduced-motion` troca movimento por dissolvência; foco visível; contraste AA.
+
+## Construção
+- CSS puro com os tokens do transitions.dev (40/80/150/250/350/400/500 ms; `cubic-bezier(.22,1,.36,1)`; bounce `cubic-bezier(.34,1.36,.64,1)`) e molas de `src/lib/movimento.ts`.
+- GSAP + ScrollTrigger só na rolagem em capítulos.
+- react-bits: 3 a 5 componentes pequenos copiados; sem instalar o pacote.
+- taste-skill: só como lista de ideias, sem instalação.
+- transitions.dev: tokens e 3 a 4 transições grátis.
+- Criar skill do projeto `cidades-mil-design` com estas regras, depois da aprovação.
+- Alvos de código: `src/pages/Landing.tsx`, `src/components/landing/*` (RedeCidades, SimuladorIndice, indice).
+
+## Critérios de pronto
+- Animação do mapa a 60 qps no celular real, sem salto nem quadro vazio.
+- Nenhuma seção com mais de um número em destaque ou mais de três cards visíveis de uma vez.
+- Cada família de clique com movimento distinto e `reduced-motion` funcionando.
+- Mobile primeiro (375 px) sem rolagem horizontal; testado em produção na Vercel.
+
+## Riscos
+- Desempenho em celular fraco: validar com a página `mapa-liso` e em aparelho real antes de fechar.
+- Excesso de movimento: limitar a um movimento principal por tela.
+- Licença react-bits (MIT + Commons Clause): usar só componentes copiados e conferir o uso.
