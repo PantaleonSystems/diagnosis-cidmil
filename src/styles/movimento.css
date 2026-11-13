@@ -139,3 +139,18 @@
 .motivo { animation: motivo-entra 450ms var(--ease-smooth-out); }
 @keyframes motivo-entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .motivo { animation: none; } }
+
+/* Carrossel */
+.carrossel { position: relative; touch-action: pan-y; }
+.carrossel__janela { overflow: hidden; border-radius: inherit; }
+.carrossel__trilho { display: flex; transition: transform 700ms var(--ease-smooth-out); will-change: transform; }
+.carrossel__item { flex: 0 0 100%; min-width: 0; }
+.carrossel__controles { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; }
+.carrossel__seta { width: 44px; height: 44px; border-radius: 999px; border: 1px solid var(--color-linha); background: #fff; color: var(--color-marca); font-size: 18px; line-height: 1; cursor: pointer; transition: transform var(--dur-media) var(--ease-bounce), border-color var(--dur-media) ease; }
+.carrossel__seta:hover { transform: scale(1.08); border-color: var(--color-marca); }
+.carrossel__seta:focus-visible, .carrossel__bolinha:focus-visible { outline: 3px solid var(--color-marca-clara); outline-offset: 2px; }
+.carrossel__bolinhas { display: flex; align-items: center; }
+.carrossel__bolinha { position: relative; width: 28px; height: 44px; border: 0; background: transparent; cursor: pointer; padding: 0; }
+.carrossel__bolinha::before { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 999px; background: #b7cbd9; transition: width var(--dur-longa) var(--ease-smooth-out), margin var(--dur-longa) var(--ease-smooth-out), background-color var(--dur-media) ease; }
+.carrossel__bolinha[aria-current="true"]::before { width: 26px; margin-left: -13px; background: var(--color-marca); }
+@media (prefers-reduced-motion: reduce) { .carrossel__trilho { transition-duration: 150ms; } }
