@@ -28,11 +28,11 @@ export const NOTICIAS: Noticia[] = [
   {
     id: 'mcid-cidades-mais-inteligentes',
     tema: 'cidade',
-    titulo: 'Governo vai selecionar 20 municípios para estratégias digitais',
-    resumo: 'O projeto Cidades + Inteligentes dará assessoria técnica a municípios ou consórcios, sem repasse financeiro direto.',
+    titulo: 'Cidades Mais Inteligentes seleciona 20 municípios em todo o país',
+    resumo: 'Classificação preliminar: 20 municípios receberão assessoria técnica para estratégias de transformação digital urbana.',
     conexao: 'Se relaciona com diagnóstico, planejamento e governança da informação nas cidades.',
-    fonte: { nome: 'Ministério das Cidades', url: 'https://www.gov.br/cidades/pt-br/assuntos/noticias-1/noticia-mcid-n-2093/' },
-    data: '2026-04-10',
+    fonte: { nome: 'Ministério das Cidades', url: 'https://www.gov.br/cidades/pt-br/assuntos/noticias-1/noticia-mcid-n-2191' },
+    data: '2026-05-20',
     verificada: true,
   },
   {
