@@ -154,3 +154,25 @@
 .carrossel__bolinha::before { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 999px; background: #b7cbd9; transition: width var(--dur-longa) var(--ease-smooth-out), margin var(--dur-longa) var(--ease-smooth-out), background-color var(--dur-media) ease; }
 .carrossel__bolinha[aria-current="true"]::before { width: 26px; margin-left: -13px; background: var(--color-marca); }
 @media (prefers-reduced-motion: reduce) { .carrossel__trilho { transition-duration: 150ms; } }
+
+/* Ilustrações das notícias: movem só quando o cartão está em cena */
+.cena-fio { fill: none; stroke: #7fbbdf; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.cena-pop, .cena-brilho, .cena-batida { transform-box: fill-box; transform-origin: center; }
+.cena-pop { transform: scale(0); }
+.cena-janela { opacity: .25; }
+.carrossel__item.is-ativo .cena-fio, .cena--sempre .cena-fio { animation: cena-desenha 1.2s var(--ease-smooth-out) forwards; }
+.carrossel__item.is-ativo .cena-pop, .cena--sempre .cena-pop { animation: cena-pop .6s var(--ease-bounce) forwards; }
+.carrossel__item.is-ativo .cena-brilho { animation: cena-bate 1.8s ease-in-out infinite; }
+.carrossel__item.is-ativo .cena-batida { animation: cena-bate 1.4s ease-in-out infinite; }
+.carrossel__item.is-ativo .cena-janela { animation: cena-acende 3s ease-in-out infinite; }
+@keyframes cena-desenha { to { stroke-dashoffset: 0; } }
+@keyframes cena-pop { to { transform: scale(1); } }
+@keyframes cena-bate { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+@keyframes cena-acende { 0%, 100% { opacity: .25; } 40%, 70% { opacity: 1; } }
+.ponto-vivo { width: 8px; height: 8px; border-radius: 999px; background: #3db18c; animation: cena-bate 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .cena-fio { stroke-dashoffset: 0; animation: none !important; }
+  .cena-pop { transform: scale(1); animation: none !important; }
+  .cena-janela { opacity: 1; animation: none !important; }
+  .cena-brilho, .cena-batida, .ponto-vivo { animation: none !important; }
+}
