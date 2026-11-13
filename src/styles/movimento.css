@@ -74,3 +74,16 @@
   .btn-cidade:hover .btn-cidade__mapa, .btn-cidade:focus-visible .btn-cidade__mapa, .btn-cidade:hover .btn-cidade__texto, .btn-cidade:active { transform: none; }
   .btn-cidade__pino { transform: translateY(16px); }
 }
+.btn-cidade--compacto { min-height: 44px; padding: 0 18px; font-size: 14px; border-radius: 12px; }
+.btn-cidade--compacto .btn-cidade__mapa, .btn-cidade--compacto .btn-cidade__pino { display: none; }
+
+/* Nav da landing: vidro leve e marcadores de capítulo */
+.nav-landing { background: rgb(255 255 255 / .72); backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); }
+.nav-landing::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: linear-gradient(90deg, transparent, var(--color-linha) 20%, var(--color-linha) 80%, transparent); }
+.marcador { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 10px 6px; font-size: 13px; font-weight: 600; color: var(--color-cinza); }
+.marcador__ponto { width: 8px; height: 8px; border-radius: 999px; background: #b7cbd9; transition: transform var(--dur-longa) var(--ease-bounce), background-color var(--dur-media) ease; }
+.marcador__rotulo { max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width var(--dur-longa) var(--ease-smooth-out), opacity var(--dur-media) ease; }
+.marcador:hover .marcador__rotulo, .marcador:focus-visible .marcador__rotulo, .marcador[aria-current="true"] .marcador__rotulo { max-width: 110px; opacity: 1; }
+.marcador[aria-current="true"] { color: var(--color-marca-escura); }
+.marcador[aria-current="true"] .marcador__ponto { background: var(--color-marca); transform: scale(1.5); }
+@media (prefers-reduced-motion: reduce) { .marcador__ponto { transition-duration: 150ms; } .marcador[aria-current="true"] .marcador__ponto { transform: none; } }

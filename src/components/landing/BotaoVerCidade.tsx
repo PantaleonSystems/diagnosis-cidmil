@@ -2,9 +2,9 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
 /** Botão principal: o mapa se aproxima e o pino cai (ver `.btn-cidade` em movimento.css). */
-export function BotaoVerCidade({ to = '/app', children = 'Ver a minha cidade' }: { to?: string; children?: ReactNode }) {
+export function BotaoVerCidade({ to = '/app', children = 'Ver a minha cidade', compacto = false }: { to?: string; children?: ReactNode; compacto?: boolean }) {
   return (
-    <Link to={to} className="btn-cidade">
+    <Link to={to} className={compacto ? 'btn-cidade btn-cidade--compacto' : 'btn-cidade'}>
       <svg className="btn-cidade__mapa" viewBox="0 0 150 110" aria-hidden="true" focusable="false">
         <path d="M20 62 L30 38 L52 30 L64 14 L86 22 L96 40 L120 46 L128 66 L110 84 L84 80 L70 98 L46 90 L30 78 Z" />
       </svg>

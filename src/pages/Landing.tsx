@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MODULOS, PILARES } from '@/data/metricas'
-import { Marca } from '@/components/layout/Marca'
 import { SimuladorIndice } from '@/components/landing/SimuladorIndice'
-import { Button, Eyebrow, SeloBeta, cx } from '@/components/ui'
+import { Button, Eyebrow, cx } from '@/components/ui'
+import { Capitulo } from '@/components/landing/Capitulo'
+import { NavLanding } from '@/components/landing/NavLanding'
 import { BotaoVerCidade } from '@/components/landing/BotaoVerCidade'
 import { MapaAproximacao, type FaseMapa } from '@/components/landing/MapaAproximacao'
 
@@ -34,33 +35,11 @@ export function Landing() {
 
   return (
     <div className="min-h-screen bg-white">
-      <nav className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-linha bg-white/95 px-[5vw] py-3 backdrop-blur md:px-[6vw]">
-        <div className="flex min-w-0 items-center gap-2">
-          <Marca />
-          <SeloBeta className="max-[460px]:hidden" />
-        </div>
-        <div className="flex shrink-0 items-center gap-4 text-sm font-semibold text-cinza md:gap-6">
-          <a href="#fluxo" className="hidden hover:text-marca-escura md:inline">
-            Como funciona
-          </a>
-          <a href="#conceito" className="hidden hover:text-marca-escura md:inline">
-            O conceito
-          </a>
-          <a href="#pilares" className="hidden hover:text-marca-escura md:inline">
-            Pilares
-          </a>
-          <Link to="/app">
-            <Button variante="ghost" className="alvo whitespace-nowrap !px-4 !py-2 text-[13px] sm:!px-[22px] sm:!py-[11px] sm:text-sm">
-              Acessar
-              <span className="hidden sm:inline">o sistema</span>
-            </Button>
-          </Link>
-        </div>
-      </nav>
+      <NavLanding />
 
       <main>
       {/* ------------------------------------------------------------ hero */}
-      <header className="bg-[radial-gradient(1200px_500px_at_80%_-10%,#E4F8FC_0%,transparent_60%),linear-gradient(180deg,#fff_0%,#F4FAFC_100%)] px-[6vw] pb-16 pt-[56px] md:pt-[80px]">
+      <Capitulo id="cidade" as="header" revelar={false} className="bg-[radial-gradient(1200px_500px_at_80%_-10%,#E4F8FC_0%,transparent_60%),linear-gradient(180deg,#fff_0%,#F4FAFC_100%)] px-[6vw] pb-16 pt-[56px] md:pt-[80px]">
         <div className="mx-auto grid max-w-[1200px] items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <Eyebrow>Plataforma de Diagnóstico · Cidades MIL</Eyebrow>
@@ -85,10 +64,10 @@ export function Landing() {
             </span>
           </div>
         </div>
-      </header>
+      </Capitulo>
 
       {/* ------------------------------------------------------------ fluxo */}
-      <SimuladorIndice />
+      <Capitulo id="calculo" as="div"><SimuladorIndice /></Capitulo>
 
       {/* --------------------------------------------------------- conceito */}
       <section id="conceito" className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
@@ -116,7 +95,7 @@ export function Landing() {
       </section>
 
       {/* ---------------------------------------------------------- pilares */}
-      <section id="pilares" className="mx-auto max-w-[1200px] px-[6vw] pb-[70px]">
+      <Capitulo id="frentes" className="mx-auto max-w-[1200px] px-[6vw] pb-[70px]">
         <Eyebrow className="block text-center">
           Módulo Saúde · a estrutura da avaliação
         </Eyebrow>
@@ -178,7 +157,7 @@ export function Landing() {
         <p className="mt-3 text-center text-xs text-cinza-cl">
           ↳ {ativos} de {MODULOS.length} indicadores ativos nesta fase.
         </p>
-      </section>
+      </Capitulo>
 
       {/* --------------------------------------------------- acesso restrito */}
       <section className="mx-auto max-w-[1200px] px-[6vw] pb-[70px]">
