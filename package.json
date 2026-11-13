@@ -12,7 +12,8 @@
     "seed:demo": "tsx --tsconfig tsconfig.app.json --env-file=.env.local scripts/seed-cidade-demo.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "mapa:gen": "tsx scripts/gen-mapa-landing.ts"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
