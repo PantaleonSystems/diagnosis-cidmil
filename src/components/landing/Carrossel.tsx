@@ -64,12 +64,13 @@ export function Carrossel({ rotulo, itens, autoavancoMs, indiceInicial = 0, indi
       onFocusCapture={() => setPausaTemporaria(true)}
       onBlurCapture={() => setPausaTemporaria(false)}
       onPointerDown={(e) => { x0.current = e.clientX }}
+      onPointerCancel={() => { x0.current = null }}
       onPointerUp={(e) => {
         if (x0.current !== null && Math.abs(e.clientX - x0.current) > 40) passo(e.clientX < x0.current ? 1 : -1)
         x0.current = null
       }}
     >
-      <div className="carrossel__janela" aria-live={automatico && rodando ? 'off' : 'polite'}>
+      <div className="carrossel__janela" aria-live={andando ? 'off' : 'polite'}>
         <div className="carrossel__trilho" style={{ transform: `translateX(${-100 * atual}%)` }}>
           {itens.map((item, i) => (
             <div

@@ -58,7 +58,7 @@ export const NOTICIAS: Noticia[] = [
     tema: 'mil',
     titulo: 'Ramallah lança iniciativa de cidade amiga do letramento midiático',
     resumo: 'Prefeitura e UNESCO lançaram a iniciativa em evento da Semana Global de Letramento Midiático e Informacional.',
-    conexao: 'Mostra o paradigma Cidades MIL sendo aplicado por uma prefeitura.',
+    conexao: 'Mostra o conceito de cidade MIL, da UNESCO, aplicado por uma prefeitura.',
     fonte: { nome: 'UNESCO', url: 'https://www.unesco.org/en/articles/ramallah-municipality-launches-media-and-information-literacy-friendly-city-initiative-partnership' },
     data: '2026-11-06',
     verificada: true,
@@ -82,6 +82,12 @@ export function rotuloRecencia(data: string, hoje: Date): string {
   if (dias >= 2 && dias <= 45) return `Há ${dias} dias`
   const [a, m, d] = partes(data)
   return `${d} ${MESES[m - 1]} ${a}`
+}
+
+/** Recente = hoje, ontem ou até 45 dias: é o que autoriza mostrar "agora" (ponto pulsante). */
+export function ehRecente(data: string, hoje: Date): boolean {
+  const dias = diasDesde(data, hoje)
+  return dias >= 0 && dias <= 45
 }
 
 /** Só verificadas, sem datas futuras, da mais nova para a mais antiga. */

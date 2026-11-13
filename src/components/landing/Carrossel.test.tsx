@@ -74,3 +74,12 @@ describe('Carrossel controlado', () => {
     expect(atual()).toBe(2)
   })
 })
+
+describe('Carrossel pausado', () => {
+  it('vira polite quando o autoavanço está parado por foco', () => {
+    const { container } = render(<Carrossel rotulo="N" itens={itens} autoavancoMs={1000} />)
+    expect(container.querySelector('[aria-live]')?.getAttribute('aria-live')).toBe('off')
+    fireEvent.focusIn(screen.getByRole('region'))
+    expect(container.querySelector('[aria-live]')?.getAttribute('aria-live')).toBe('polite')
+  })
+})

@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { TEMAS, rotuloRecencia, type Noticia } from '@/data/noticias'
+import { TEMAS, ehRecente, rotuloRecencia, type Noticia } from '@/data/noticias'
 import { CenaTema } from './CenasTema'
 
 /** Cartão de notícia: ilustração, tema, recência, fonte e título; a conexão e o link abrem ao clicar. */
 export function CartaoNoticia({ noticia: n, hoje = new Date() }: { noticia: Noticia; hoje?: Date }) {
   const [aberto, setAberto] = useState(false)
   const recencia = rotuloRecencia(n.data, hoje)
-  const recente = recencia === 'Hoje' || recencia === 'Ontem' || recencia.startsWith('Há')
+  const recente = ehRecente(n.data, hoje)
   const id = `cartao-${n.id}`
   return (
     <article className="overflow-hidden rounded-3xl border border-linha bg-white shadow-card">

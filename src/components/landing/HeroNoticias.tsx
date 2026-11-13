@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { NOTICIAS, TEMAS, noticiasVisiveis, type TemaNoticia } from '@/data/noticias'
+import { NOTICIAS, TEMAS, ehRecente, noticiasVisiveis, type TemaNoticia } from '@/data/noticias'
 import { CONTATO_URL } from '@/data/contato'
 import { BotaoVerCidade } from './BotaoVerCidade'
 import { CartaoNoticia } from './CartaoNoticia'
@@ -40,8 +40,8 @@ export function HeroNoticias({ hoje = new Date() }: { hoje?: Date }) {
             Governos, universidades e cidades já transformam informação em decisão. A Cidades MIL torna isso visível e medível.
           </p>
           {noticias.length > 0 && (
-            <p className="mb-6 flex items-center gap-2 text-[13px] font-bold text-marca-escura">
-              <span aria-hidden="true" className="ponto-vivo" />
+            <p className="selo-atualizado mb-6 flex items-center gap-2 text-[13px] font-bold text-marca-escura">
+              {ehRecente(noticias[0].data, hoje) && <span aria-hidden="true" className="ponto-vivo" />}
               Atualizado em {dataBr(noticias[0].data)}
             </p>
           )}

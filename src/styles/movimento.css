@@ -141,7 +141,7 @@
 @media (prefers-reduced-motion: reduce) { .motivo { animation: none; } }
 
 /* Carrossel */
-.carrossel { position: relative; touch-action: pan-y; }
+.carrossel { position: relative; touch-action: pan-y pinch-zoom; }
 .carrossel__janela { overflow: hidden; border-radius: inherit; }
 .carrossel__trilho { display: flex; transition: transform 700ms var(--ease-smooth-out); will-change: transform; }
 .carrossel__item { flex: 0 0 100%; min-width: 0; }

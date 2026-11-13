@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { NOTICIAS, TEMAS, noticiasVisiveis, rotuloRecencia, type Noticia } from './noticias'
+import { NOTICIAS, TEMAS, ehRecente, noticiasVisiveis, rotuloRecencia, type Noticia } from './noticias'
 
 const HOJE = new Date('2026-11-13T12:00:00')
 const base: Noticia = {
@@ -47,5 +47,14 @@ describe('NOTICIAS (conteúdo)', () => {
   })
   it('todo tema tem rótulo', () => {
     for (const n of NOTICIAS) expect(TEMAS[n.tema].rotulo.length).toBeGreaterThan(0)
+  })
+})
+
+describe('ehRecente', () => {
+  it('só considera recente até 45 dias', () => {
+    expect(ehRecente('2026-11-13', HOJE)).toBe(true)
+    expect(ehRecente('2026-09-29', HOJE)).toBe(true)
+    expect(ehRecente('2026-09-28', HOJE)).toBe(false)
+    expect(ehRecente('2027-01-01', HOJE)).toBe(false)
   })
 })

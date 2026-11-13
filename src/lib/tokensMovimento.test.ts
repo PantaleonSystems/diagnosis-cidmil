@@ -16,4 +16,7 @@ describe('tokens de movimento', () => {
     expect(css).toContain('--ease-smooth-out: cubic-bezier(.22,1,.36,1)')
     expect(css).toContain('--ease-bounce: cubic-bezier(.34,1.36,.64,1)')
   })
+  it('o carrossel deixa o pinch-zoom livre', () => {
+    expect(css).toContain('touch-action: pan-y pinch-zoom')
+  })
 })

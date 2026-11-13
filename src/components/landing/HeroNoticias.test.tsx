@@ -26,6 +26,14 @@ describe('HeroNoticias', () => {
     fireEvent.click(mil)
     expect(mil.getAttribute('aria-pressed')).toBe('true')
   })
+  it('o ponto pulsante do selo some quando a notícia mais nova já não é recente', () => {
+    const { container, unmount } = render(<MemoryRouter><HeroNoticias hoje={HOJE} /></MemoryRouter>)
+    expect(container.querySelector('p.selo-atualizado .ponto-vivo')).toBeTruthy()
+    unmount()
+    const velho = render(<MemoryRouter><HeroNoticias hoje={new Date('2027-06-01T12:00:00')} /></MemoryRouter>)
+    expect(velho.container.querySelector('p.selo-atualizado')).toBeTruthy()
+    expect(velho.container.querySelector('p.selo-atualizado .ponto-vivo')).toBeNull()
+  })
   it('não mostra "Falar com a equipe" sem contato configurado', () => {
     montar()
     expect(screen.queryByRole('link', { name: /falar com a equipe/i })).toBeNull()
