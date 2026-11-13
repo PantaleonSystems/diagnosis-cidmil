@@ -9,6 +9,10 @@ Público da landing: instituições com missão em cidades, tecnologia e ética 
 
 Doc de origem: `docs/superpowers/specs/2026-11-13-landing-design.md`.
 
+## Skills que valem neste projeto (ordem de uso)
+1. `cidades-mil-linguagem`: o que dizer e como nomear. 2. Esta skill: regras visuais e de movimento do produto. 3. `transitions-dev` (receitas e tokens) e `transitions-polish` (afinar tempos). 4. `design-taste-frontend` (só guias: voz sem "cara de IA", cartões, ícones; não segue o "uma seção por tela"). 5. `react-bits` (componente pronto antes de escrever do zero). 6. `dataviz` (gráficos, fichas de evidência), `apple-design` (gestos, materiais), `gsap-*` (rolagem guiada). Processo: brainstorming → writing-plans → executing-plans.
+Conflito entre skills: o projeto (esta e a de linguagem) vence.
+
 ## Pouco texto, muito símbolo
 - Nenhum parágrafo da landing com mais de 25 palavras (há teste: `src/pages/Landing.texto.test.tsx`).
 - Cada cena tem uma palavra ou expressão curta de rótulo; o resto é símbolo e movimento.
