@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview",
-    "mapa:gen": "tsx scripts/gen-mapa-landing.ts"
+    "mapa:gen": "tsx scripts/gen-mapa-landing.ts",
+    "noticias:verificar": "tsx scripts/verificar-noticias.ts"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
