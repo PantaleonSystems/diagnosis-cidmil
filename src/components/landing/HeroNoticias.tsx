@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { NOTICIAS, TEMAS, ehRecente, noticiasVisiveis, type TemaNoticia } from '@/data/noticias'
 import { CONTATO_URL } from '@/data/contato'
 import { BotaoVerCidade } from './BotaoVerCidade'
@@ -47,6 +48,10 @@ export function HeroNoticias({ hoje = new Date() }: { hoje?: Date }) {
           )}
           <div className="flex flex-wrap items-center gap-3">
             <BotaoVerCidade />
+            <Link to="/app" className="inline-flex min-h-[64px] flex-col justify-center rounded-[18px] border-2 border-marca bg-marca px-6 text-white transition-colors hover:bg-marca-escura">
+              <span className="text-[16px] font-extrabold leading-tight">Testar a beta</span>
+              <span className="text-[11.5px] font-semibold text-sobre-marca-2">Sistema aberto, sem cadastro</span>
+            </Link>
             {CONTATO_URL && (
               <a href={CONTATO_URL} className="inline-flex min-h-[64px] items-center rounded-[18px] border-2 border-linha bg-white px-6 text-[16px] font-bold text-marca-escura">
                 Falar com a equipe

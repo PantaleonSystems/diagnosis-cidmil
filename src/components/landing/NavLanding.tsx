@@ -31,7 +31,7 @@ export function NavLanding() {
           </li>
         ))}
       </ul>
-      <BotaoVerCidade compacto>Ver a demonstração</BotaoVerCidade>
+      <BotaoVerCidade compacto to="/app">Testar a beta</BotaoVerCidade>
     </nav>
   )
 }

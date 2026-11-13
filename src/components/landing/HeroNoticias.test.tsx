@@ -15,6 +15,10 @@ describe('HeroNoticias', () => {
     expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/o futuro das cidades já começou/i)
     expect(screen.getByRole('link', { name: /ver uma cidade em demonstração/i }).getAttribute('href')).toBe('#demonstracao')
   })
+  it('leva à beta em /app, o sistema que a pessoa pode testar', () => {
+    montar()
+    expect(screen.getByRole('link', { name: /testar a beta/i }).getAttribute('href')).toBe('/app')
+  })
   it('mostra o selo com a data da notícia mais nova e um slide por notícia verificada', () => {
     montar()
     expect(screen.getByText(/atualizado em 09\/11\/2026/i)).toBeTruthy()
