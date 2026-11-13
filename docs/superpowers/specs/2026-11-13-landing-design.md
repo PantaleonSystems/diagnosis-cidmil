@@ -47,3 +47,11 @@ Fora de escopo: o app interno (fica para outra etapa), além da tela de carregam
 - Desempenho em celular fraco: validar com a página `mapa-liso` e em aparelho real antes de fechar.
 - Excesso de movimento: limitar a um movimento principal por tela.
 - Licença react-bits (MIT + Commons Clause): usar só componentes copiados e conferir o uso.
+
+## Revisão 1 (após teste do usuário)
+- **Hero:** linguagem "reunimos dados da rede, de plataformas e de portais de transparência e os processamos"; verbos Analisar · Diagnosticar · Medir · Propor · Ajudar.
+- **Fontes:** o diagrama virou um caminho legível em três etapas (1 De onde vem → 2 Reunimos e conferimos → 3 O que a cidade recebe), com nomes sempre visíveis e linhas que fluem. Linguagem de lugares (portais, cadastros públicos, projetos, valores da cidade), sem "bases" soltas.
+- **Cálculo:** mesma troca de linguagem (fontes, não "dados"/"bases").
+- **13 áreas:** cartões inclinados com símbolo; o nome aparece no hover, foco ou toque.
+- **Prioridades:** quadro de gestão com urgência, complexidade, prazo e o porquê de cada posição.
+- **Pendente (decidido adiar):** deixar o usuário escolher onde observar no mapa durante a ampliação.

@@ -115,3 +115,27 @@
   .splash-uf { animation: none; stroke-dashoffset: 0; fill: rgb(10 90 150 / .14); }
   .splash-mapa { animation: none; }
 }
+
+/* Fontes → cidade → diagnóstico */
+.fluxo-linha { fill: none; stroke: #6fb0d8; stroke-width: 2; stroke-dasharray: 3 6; stroke-linecap: round; animation: fluxo-corre 1.4s linear infinite; transition: stroke var(--dur-media) ease; }
+.fluxo-linha[data-ativa="true"] { stroke: var(--color-marca); stroke-width: 2.4; }
+@keyframes fluxo-corre { to { stroke-dashoffset: -9; } }
+.seta-fluxo { display: inline-block; font-size: 22px; font-weight: 800; animation: seta-desce 1.2s var(--ease-smooth-out) infinite; }
+@keyframes seta-desce { 0% { transform: translateY(-4px); opacity: .3; } 60% { opacity: 1; } 100% { transform: translateY(6px); opacity: .3; } }
+.pulso-cidade { transform-box: fill-box; transform-origin: center; animation: pulso 2s ease-in-out infinite; }
+@keyframes pulso { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.7); opacity: .5; } }
+@media (prefers-reduced-motion: reduce) { .fluxo-linha, .seta-fluxo, .pulso-cidade { animation: none; } .fluxo-linha { stroke-dasharray: none; } }
+
+/* Cartões das 13 áreas */
+.area-card { position: relative; display: grid; place-items: center; width: 84px; height: 84px; border-radius: 22px; border: 1px solid var(--color-linha); background: #fff; color: var(--color-marca); box-shadow: 0 10px 22px -14px rgb(5 47 77 / .45); transform: translateY(var(--desce)) rotate(var(--giro)); transition: transform 450ms var(--ease-bounce), box-shadow var(--dur-media) ease, background-color var(--dur-media) ease; cursor: pointer; }
+.area-card[data-ativa="true"] { background: var(--color-marca); color: #fff; border-color: var(--color-marca); }
+.area-card:hover, .area-card:focus-visible, .area-card[aria-pressed="true"] { transform: translateY(calc(var(--desce) - 8px)) rotate(0deg) scale(1.12); box-shadow: 0 18px 28px -14px rgb(5 47 77 / .55); z-index: 2; }
+.area-card:focus-visible { outline: 3px solid var(--color-marca-clara); outline-offset: 3px; }
+.area-card__nome { position: absolute; left: 50%; top: calc(100% + 10px); transform: translate(-50%, -4px); opacity: 0; pointer-events: none; white-space: nowrap; border-radius: 999px; background: var(--color-noite); color: #fff; padding: 5px 12px; font-size: 12px; font-weight: 700; transition: opacity var(--dur-media) ease, transform var(--dur-longa) var(--ease-smooth-out); }
+.area-card__nome em { font-style: normal; color: var(--color-sobre-marca); }
+.area-card:hover .area-card__nome, .area-card:focus-visible .area-card__nome, .area-card[aria-pressed="true"] .area-card__nome { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 480px) { .area-card { width: 72px; height: 72px; } }
+@media (prefers-reduced-motion: reduce) { .area-card { transition-duration: 150ms; } .area-card:hover, .area-card:focus-visible, .area-card[aria-pressed="true"] { transform: translateY(var(--desce)) rotate(var(--giro)); box-shadow: 0 0 0 3px var(--color-marca-clara); } }
+.motivo { animation: motivo-entra 450ms var(--ease-smooth-out); }
+@keyframes motivo-entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .motivo { animation: none; } }

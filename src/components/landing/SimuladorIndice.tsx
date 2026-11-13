@@ -16,8 +16,8 @@ const PRESETS = [
   { nome: 'Cidade MIL', valores: [3.6, 3.4, 3.5, 3.7, 3.2] },
 ]
 
-const FONTES_LARGO = ['Bases públicas', 'Cadastros municipais', 'Pesquisas locais', 'Declaração do avaliador']
-const FONTES_ALTO = ['Bases', 'Cadastros', 'Pesquisas', 'Avaliador']
+const FONTES_LARGO = ['Portais de transparência', 'Cadastros públicos', 'Projetos da cidade', 'Valores e relatos locais']
+const FONTES_ALTO = ['Portais', 'Cadastros', 'Projetos', 'Valores']
 
 type Pt = [number, number]
 
@@ -81,7 +81,7 @@ function Fluxo({ notas, foco, setFoco }: { notas: number[]; foco: number | null;
       className="mx-auto block h-auto w-full"
       style={{ maxWidth: alto ? 420 : 1000 }}
       role="img"
-      aria-label={`Fluxo: quatro fontes de dados entram no cálculo, geram cinco pilares e um índice de ${fmt(isps, 2)} de 4, nível ${nivel + 1}, ${NIVEIS[nivel]}.`}
+      aria-label={`Fluxo: quatro fontes da cidade entram no cálculo, geram cinco pilares e um índice de ${fmt(isps, 2)} de 4, nível ${nivel + 1}, ${NIVEIS[nivel]}.`}
     >
       {/* fontes -> cálculo */}
       {fontes.map((nome, i) => {
@@ -255,22 +255,22 @@ export function SimuladorIndice() {
   const conferidas = Math.round(progresso * FONTES_LARGO.length)
   const consistencia = nivelConsistencia(conferidas, FONTES_LARGO.length)
   const SELO = {
-    inicial: 'Reunindo os dados',
-    parcial: 'Conferindo os dados',
-    completa: 'Dados conferidos',
+    inicial: 'Reunindo as fontes',
+    parcial: 'Conferindo as fontes',
+    completa: 'Fontes conferidas',
   }[consistencia]
 
   return (
     <div ref={raiz} className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
       <span className="block text-center text-[11px] font-bold uppercase tracking-[2px] text-marca-escura">
-        Dados em movimento
+        Fontes em movimento
       </span>
       <h2 className="mx-auto mb-3 mt-2.5 max-w-3xl text-center text-[clamp(26px,4vw,32px)] tracking-[-0.3px] text-noite">
-        Do dado à nota, com consistência
+        Das fontes da cidade ao diagnóstico
       </h2>
       <p className="mx-auto mb-6 max-w-[660px] text-center text-cinza">
-        Os dados passam por uma conferência antes de virar nota. Role para ver a conferência
-        acontecer; depois ajuste os pilares e veja o índice reagir.{' '}
+        O que vem dos portais, dos cadastros e dos projetos da cidade passa por uma conferência
+        antes de virar nota. Role para ver a conferência acontecer; depois ajuste os pilares e veja o índice reagir.{' '}
         <span className="text-cinza-cl">
           Ilustração do fluxo; a coleta automática das fontes está em desenvolvimento.
         </span>

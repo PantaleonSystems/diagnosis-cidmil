@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { FONTES } from './fontes'
 import { TerritorioFontes } from './TerritorioFontes'
@@ -7,22 +7,21 @@ import { TerritorioFontes } from './TerritorioFontes'
 afterEach(cleanup)
 
 describe('TerritorioFontes', () => {
-  it('mostra um botão por fonte, todos fechados', () => {
+  it('mostra o nome e a frase de cada fonte sem precisar clicar', () => {
     render(<TerritorioFontes />)
-    for (const f of FONTES) expect(screen.getByRole('button', { name: f.nome }).getAttribute('aria-expanded')).toBe('false')
+    for (const f of FONTES) {
+      expect(screen.getByText(f.nome)).toBeTruthy()
+      expect(screen.getByText(f.frase)).toBeTruthy()
+    }
   })
-  it('abre a frase da fonte clicada e fecha a anterior', () => {
+  it('numera as três etapas do caminho', () => {
     render(<TerritorioFontes />)
-    fireEvent.click(screen.getByRole('button', { name: FONTES[0].nome }))
-    expect(screen.getByText(FONTES[0].frase)).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: FONTES[1].nome }))
-    expect(screen.getByRole('button', { name: FONTES[0].nome }).getAttribute('aria-expanded')).toBe('false')
-    expect(screen.getByRole('button', { name: FONTES[1].nome }).getAttribute('aria-expanded')).toBe('true')
+    for (const t of [/1 · de onde vem/i, /2 · reunimos e conferimos/i, /3 · o que a cidade recebe/i]) {
+      expect(screen.getByText(t)).toBeTruthy()
+    }
   })
-  it('clicar de novo na fonte aberta fecha o painel', () => {
-    render(<TerritorioFontes />)
-    const b = screen.getByRole('button', { name: FONTES[2].nome })
-    fireEvent.click(b); fireEvent.click(b)
-    expect(b.getAttribute('aria-expanded')).toBe('false')
+  it('tem o caminho descrito para leitores de tela', () => {
+    const { container } = render(<TerritorioFontes />)
+    expect(container.querySelector('[role="group"]')?.getAttribute('aria-label')).toMatch(/fontes.*cidade.*diagnóstico/i)
   })
 })

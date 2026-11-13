@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { MODULOS } from '@/data/metricas'
 import { SimuladorIndice } from '@/components/landing/SimuladorIndice'
-import { Eyebrow, cx } from '@/components/ui'
+import { Eyebrow } from '@/components/ui'
 import { Capitulo } from '@/components/landing/Capitulo'
+import { Areas } from '@/components/landing/Areas'
 import { Decisao } from '@/components/landing/Decisao'
 import { Frentes } from '@/components/landing/Frentes'
 import { TerritorioFontes } from '@/components/landing/TerritorioFontes'
@@ -26,11 +27,18 @@ export function Landing() {
             <h1 className="my-5 text-[clamp(32px,5.4vw,52px)] leading-[1.08] tracking-[-0.5px] text-noite">
               A sua cidade, entendida <span className="text-marca">de ponta a ponta</span>
             </h1>
-            <p className="mb-8 max-w-[520px] text-lg text-cinza">
-              Reunimos os dados que já existem na prefeitura, conferimos e mostramos,
-              em linguagem simples, onde agir primeiro.{' '}
+            <p className="mb-5 max-w-[540px] text-lg text-cinza">
+              Reunimos dados da rede, de plataformas e de portais de transparência e os
+              processamos para ajudar a sua cidade.{' '}
               <strong className="font-bold text-marca-escura">Começando pela Saúde.</strong>
             </p>
+            <ul className="mb-8 flex flex-wrap gap-2" aria-label="O que fazemos com as informações">
+              {['Analisar', 'Diagnosticar', 'Medir', 'Propor', 'Ajudar'].map((v) => (
+                <li key={v} className="rounded-full border border-linha bg-white/80 px-3.5 py-1.5 text-[13px] font-bold text-marca-escura">
+                  {v}
+                </li>
+              ))}
+            </ul>
             <BotaoVerCidade />
           </div>
 
@@ -48,12 +56,12 @@ export function Landing() {
 
       {/* ------------------------------------------------------------ dados */}
       <Capitulo id="dados" className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
-        <Eyebrow className="block text-center">Os dados</Eyebrow>
+        <Eyebrow className="block text-center">Os lugares da informação</Eyebrow>
         <h2 className="mx-auto mb-3 mt-2.5 max-w-3xl text-center text-[clamp(26px,4vw,36px)] tracking-[-0.3px] text-noite">
-          Os dados chegam de onde já estão
+          A informação chega de onde já está
         </h2>
         <p className="mx-auto mb-10 max-w-[560px] text-center text-cinza">
-          Nada de planilha nova: a ferramenta reúne o que a prefeitura já registra, em vários lugares, e junta tudo num só.
+          Nada de planilha nova: reunimos o que já existe nos portais, nos cadastros e nos projetos da própria cidade, e juntamos tudo num só lugar.
         </p>
         <TerritorioFontes />
       </Capitulo>
@@ -72,22 +80,13 @@ export function Landing() {
         </p>
         <Frentes />
 
-        <p className="mx-auto mb-4 mt-14 max-w-[560px] text-center text-sm text-cinza">
-          A plataforma começa pela Saúde e cresce para as {MODULOS.length} áreas da vida urbana do framework das Cidades MIL.
+        <h3 className="mx-auto mb-2 mt-16 max-w-[560px] text-center text-xl text-noite">
+          E essa é só a primeira das {MODULOS.length} áreas
+        </h3>
+        <p className="mx-auto mb-4 max-w-[480px] text-center text-sm text-cinza">
+          Passe o mouse ou toque num cartão para ver a área.
         </p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {MODULOS.map((m) => (
-            <span
-              key={m.id}
-              className={cx(
-                'rounded-full border px-3 py-1 text-xs font-semibold',
-                m.ativo ? 'border-marca bg-marca text-white' : 'border-linha bg-white text-cinza-cl',
-              )}
-            >
-              {m.nome}
-            </span>
-          ))}
-        </div>
+        <Areas />
       </Capitulo>
 
       {/* ----------------------------------------------------------- decisão */}
