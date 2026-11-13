@@ -12,7 +12,7 @@ describe('escolherCapituloAtivo', () => {
   it('em empate fica com o primeiro da lista', () => {
     expect(escolherCapituloAtivo({ dados: 0.5, cidade: 0.5 })).toBe('cidade')
   })
-  it('tem os cinco capítulos da história', () => {
-    expect(CAPITULOS.map((c) => c.id)).toEqual(['cidade', 'dados', 'calculo', 'frentes', 'decisao'])
+  it('tem os seis capítulos da história, com a demonstração logo depois do momento', () => {
+    expect(CAPITULOS.map((c) => c.id)).toEqual(['cidade', 'demonstracao', 'dados', 'calculo', 'frentes', 'decisao'])
   })
 })

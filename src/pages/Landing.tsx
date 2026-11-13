@@ -3,6 +3,7 @@ import { SimuladorIndice } from '@/components/landing/SimuladorIndice'
 import { Eyebrow } from '@/components/ui'
 import { Capitulo } from '@/components/landing/Capitulo'
 import { Areas } from '@/components/landing/Areas'
+import { Demonstracao } from '@/components/landing/Demonstracao'
 import { Decisao } from '@/components/landing/Decisao'
 import { Frentes } from '@/components/landing/Frentes'
 import { TerritorioFontes } from '@/components/landing/TerritorioFontes'
@@ -19,6 +20,11 @@ export function Landing() {
       <main>
       {/* ------------------------------------------------------------ hero */}
       <HeroNoticias />
+
+      {/* ------------------------------------------------------- demonstração */}
+      <Capitulo id="demonstracao" className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
+        <Demonstracao />
+      </Capitulo>
 
       {/* ------------------------------------------------------------ dados */}
       <Capitulo id="dados" className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">

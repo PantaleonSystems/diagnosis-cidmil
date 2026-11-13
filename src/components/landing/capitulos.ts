@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 
 export const CAPITULOS = [
-  { id: 'cidade', rotulo: 'A cidade' },
+  { id: 'cidade', rotulo: 'O momento' },
+  { id: 'demonstracao', rotulo: 'A demonstração' },
   { id: 'dados', rotulo: 'Os dados' },
   { id: 'calculo', rotulo: 'O cálculo' },
   { id: 'frentes', rotulo: 'As frentes' },
