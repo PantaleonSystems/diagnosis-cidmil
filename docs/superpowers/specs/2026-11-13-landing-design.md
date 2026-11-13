@@ -55,3 +55,13 @@ Fora de escopo: o app interno (fica para outra etapa), além da tela de carregam
 - **13 áreas:** cartões inclinados com símbolo; o nome aparece no hover, foco ou toque.
 - **Prioridades:** quadro de gestão com urgência, complexidade, prazo e o porquê de cada posição.
 - **Pendente (decidido adiar):** deixar o usuário escolher onde observar no mapa durante a ampliação.
+
+## Revisão 2 (hero em notícias e blocos visuais)
+- **Público:** instituições com missão em cidades, tecnologia e ética para o cidadão (além do gestor municipal). Botão principal: "Ver uma cidade em demonstração".
+- **Hero:** "O futuro das cidades já começou." com um carrossel de notícias verificadas (IA, cidade, cidadão, fundamentos MIL), selo "Atualizado em" e recência ("Há 3 dias"). Cada cartão tem ilustração própria, data, fonte e um "Ver conexão" que abre o resumo e o link.
+- **Política de notícias:** só entram verificadas na fonte; textos nossos; linguagem de relação, nunca de afiliação ou endosso; sem imagens de terceiros; sem `utm_*`.
+- **Demonstração:** o mapa que se aproxima passa para um capítulo próprio, com quatro números ilustrativos e o plano de ação em ícones.
+- **Blocos novos:** fontes que compartilham com a cidade (fios e bolinhas que vão e voltam); "O que a cidade recebe" vira carrossel de cenas (Avaliação, Pessoas no centro com tecnologia em órbita e a balança da ética, Atividades).
+- **Pouco texto:** nenhum parágrafo com mais de 25 palavras; símbolo e movimento no lugar de frases.
+- **Saúde:** coração com pulsação.
+- **Depois:** notícias atualizáveis sem deploy (tabela no Supabase) e escolha de onde observar no mapa.
