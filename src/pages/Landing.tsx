@@ -6,7 +6,8 @@ import { Areas } from '@/components/landing/Areas'
 import { Demonstracao } from '@/components/landing/Demonstracao'
 import { Decisao } from '@/components/landing/Decisao'
 import { Frentes } from '@/components/landing/Frentes'
-import { TerritorioFontes } from '@/components/landing/TerritorioFontes'
+import { FontesCompartilham } from '@/components/landing/FontesCompartilham'
+import { RecebeCena } from '@/components/landing/RecebeCena'
 import { NavLanding } from '@/components/landing/NavLanding'
 import { CONTATO_DESENVOLVIMENTO } from '@/data/contato'
 import { HeroNoticias } from '@/components/landing/HeroNoticias'
@@ -29,13 +30,19 @@ export function Landing() {
       {/* ------------------------------------------------------------ dados */}
       <Capitulo id="dados" className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
         <Eyebrow className="block text-center">Os lugares da informação</Eyebrow>
-        <h2 className="mx-auto mb-3 mt-2.5 max-w-3xl text-center text-[clamp(26px,4vw,36px)] tracking-[-0.3px] text-noite">
+        <h2 className="mx-auto mb-10 mt-2.5 max-w-3xl text-center text-[clamp(26px,4vw,36px)] tracking-[-0.3px] text-noite">
           A informação chega de onde já está
         </h2>
-        <p className="mx-auto mb-10 max-w-[560px] text-center text-cinza">
-          Nada de planilha nova: reunimos o que já existe nos portais, nos cadastros e nos projetos da própria cidade, e juntamos tudo num só lugar.
-        </p>
-        <TerritorioFontes />
+        <div className="grid items-start gap-10 lg:grid-cols-2">
+          <div className="min-w-0">
+            <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[1.5px] text-marca-escura">1 · Reunimos e conferimos</p>
+            <FontesCompartilham />
+          </div>
+          <div className="min-w-0">
+            <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[1.5px] text-marca-escura">2 · A cidade recebe</p>
+            <RecebeCena />
+          </div>
+        </div>
       </Capitulo>
 
       {/* ------------------------------------------------------------ fluxo */}

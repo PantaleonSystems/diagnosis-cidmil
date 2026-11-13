@@ -1,13 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useAnimado } from '@/lib/movimento'
 import { MapaAproximacao } from './MapaAproximacao'
+import { NUMEROS_DEMO } from './numerosDemo'
 
-export const NUMEROS_DEMO = [
-  { id: 'fontes', valor: 24, rotulo: 'fontes analisadas' },
-  { id: 'indicadores', valor: 18, rotulo: 'indicadores avaliados' },
-  { id: 'lacunas', valor: 7, rotulo: 'lacunas identificadas' },
-  { id: 'acoes', valor: 12, rotulo: 'ações propostas' },
-] as const
+
 
 const ICONES: Record<string, ReactNode> = {
   fontes: (<><circle cx="12" cy="12" r="2.5" /><circle cx="5" cy="6" r="2" /><circle cx="19" cy="6" r="2" /><circle cx="12" cy="20" r="2" /><path d="m6.5 7.5 3.5 3M17.5 7.5l-3.5 3M12 14.5V18" /></>),

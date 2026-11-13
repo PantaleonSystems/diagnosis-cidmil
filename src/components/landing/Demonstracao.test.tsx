@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Demonstracao, NUMEROS_DEMO } from './Demonstracao'
+import { Demonstracao } from './Demonstracao'
+import { NUMEROS_DEMO } from './numerosDemo'
 
 beforeEach(() => {
   vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))
