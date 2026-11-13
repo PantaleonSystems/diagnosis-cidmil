@@ -1,5 +1,8 @@
 /** Peças visuais reutilizáveis, com a identidade CIIDCMIL do protótipo. */
 import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from 'react'
+import mapaUfs from '@/data/mapa-ufs.json'
+
+const MAPA_UFS = mapaUfs as Record<string, string>
 
 export const cx = (...cls: (string | false | null | undefined)[]) =>
   cls.filter(Boolean).join(' ')
@@ -204,11 +207,15 @@ export function Erro({ children }: { children: ReactNode }) {
 
 /* -------------------------------------------------------------- Estado -- */
 
-export function Splash({ texto = 'Carregando…' }: { texto?: string }) {
+export function Splash({ texto = 'Preparando a sua cidade…' }: { texto?: string }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-app-bg">
-      <div className="flex flex-col items-center gap-3 text-cinza">
-        <span className="h-8 w-8 animate-spin rounded-full border-[3px] border-linha border-t-marca" />
+      <div role="status" className="flex flex-col items-center gap-4 text-cinza">
+        <svg viewBox="0 30 1540 1620" className="splash-mapa h-[150px] w-auto" aria-hidden="true" focusable="false">
+          {Object.entries(MAPA_UFS).map(([codigo, d], i) => (
+            <path key={codigo} d={d} pathLength={1} className="splash-uf" style={{ animationDelay: `${(i % 9) * 90}ms` }} />
+          ))}
+        </svg>
         <span className="text-sm">{texto}</span>
       </div>
     </div>

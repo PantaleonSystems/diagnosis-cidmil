@@ -6,7 +6,7 @@ import { Splash } from '@/components/ui'
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<Splash texto="Carregando…" />}>
+      <Suspense fallback={<Splash />}>
         <AppRoutes />
       </Suspense>
     </BrowserRouter>

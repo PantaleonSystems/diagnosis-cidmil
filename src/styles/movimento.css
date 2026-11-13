@@ -104,3 +104,14 @@
 /* Lista de prioridades que se reordena */
 .lista-prior { transition: transform var(--dur-enorme) var(--ease-smooth-out); will-change: transform; }
 @media (prefers-reduced-motion: reduce) { .lista-prior { transition: none; } }
+
+/* Carregamento: o mapa se desenha */
+.splash-uf { fill: rgb(10 90 150 / 0); stroke: var(--color-marca); stroke-width: 3; stroke-dasharray: 1; stroke-dashoffset: 1; animation: splash-desenha 1100ms var(--ease-smooth-out) forwards, splash-enche 700ms ease 1000ms forwards; }
+.splash-mapa { animation: splash-respira 2400ms ease-in-out 1800ms infinite; }
+@keyframes splash-desenha { to { stroke-dashoffset: 0; } }
+@keyframes splash-enche { to { fill: rgb(10 90 150 / .14); } }
+@keyframes splash-respira { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
+@media (prefers-reduced-motion: reduce) {
+  .splash-uf { animation: none; stroke-dashoffset: 0; fill: rgb(10 90 150 / .14); }
+  .splash-mapa { animation: none; }
+}
