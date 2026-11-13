@@ -26,6 +26,10 @@ export function Decisao() {
         </button>
       </div>
 
+      <p role="status" className="sr-only">
+        Agora em primeiro lugar: {ordenar(PRIORIDADES, criterio)[0].titulo}
+      </p>
+
       <ol className="relative" style={{ height: ALTURA * PRIORIDADES.length }}>
         {PRIORIDADES.map((p) => {
           const pos = posicao.get(p.id) ?? 0
@@ -37,7 +41,10 @@ export function Decisao() {
               style={{ height: ALTURA - 10, transform: `translateY(${pos * ALTURA}px)` }}
             >
               <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-marca text-base font-extrabold text-white">{pos + 1}</span>
-              <span className="text-[15px] font-semibold text-noite">{p.titulo}</span>
+              <span className="text-[15px] font-semibold text-noite">
+                <span className="sr-only">Posição {pos + 1}: </span>
+                {p.titulo}
+              </span>
             </li>
           )
         })}

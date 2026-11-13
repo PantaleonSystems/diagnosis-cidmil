@@ -3,6 +3,7 @@ import ufs from '@/data/mapa-ufs.json'
 import cidade from '@/data/mapa-cidade-demo.json'
 import { useReducedMotion } from '@/lib/movimento'
 import { CURVAS } from '@/lib/tokensMovimento'
+import { pausarEmAndamento } from '@/lib/pausaAnimacoes'
 import { bboxDe, calcularZoom, enquadrar, type Vista } from '@/lib/mapaLanding'
 
 export type FaseMapa = 'brasil' | 'estado' | 'municipio'
@@ -98,7 +99,11 @@ export function MapaAproximacao({ className, onFase, ciclo = true }: Props) {
         })
       : null
     ro?.observe(el)
-    const visib = () => todos.forEach((e) => e.getAnimations?.().forEach((a) => (document.hidden ? a.pause() : a.play())))
+    let retomar: (() => void) | null = null
+    const visib = () => {
+      if (document.hidden) retomar = pausarEmAndamento(todos.flatMap((e) => e.getAnimations?.() ?? []))
+      else { retomar?.(); retomar = null }
+    }
     document.addEventListener('visibilitychange', visib)
     return () => {
       gen++

@@ -22,4 +22,12 @@ describe('Decisao', () => {
     const capacitar = screen.getAllByRole('listitem').find((li) => /capacitar/i.test(li.textContent ?? ''))!
     expect(capacitar.getAttribute('data-posicao')).toBe('1')
   })
+  it('anuncia a posição para leitores de tela e avisa a nova ordem', () => {
+    montar()
+    const chave = screen.getByRole('button', { name: /começar pelo mais rápido/i })
+    fireEvent.click(chave)
+    const capacitar = screen.getAllByRole('listitem').find((li) => /capacitar/i.test(li.textContent ?? ''))!
+    expect(capacitar.textContent).toMatch(/posição 1/i)
+    expect(screen.getByRole('status').textContent).toMatch(/capacitar as equipes/i)
+  })
 })

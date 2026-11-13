@@ -324,7 +324,7 @@ export function SimuladorIndice() {
             {ajustando ? 'Fechar ajuste dos pilares' : 'Ajustar os cinco pilares'}
           </button>
         </div>
-        <div id="ajuste-pilares" className="clique-detalhe" data-aberto={ajustando ? 'true' : 'false'}>
+        <div id="ajuste-pilares" className="clique-detalhe" data-aberto={ajustando ? 'true' : 'false'} inert={!ajustando}>
          <div>
           <div className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-5">
           {PILARES.map((p, i) => (
