@@ -50,6 +50,18 @@ describe('NOTICIAS (conteúdo)', () => {
   })
 })
 
+const arquivos = Object.keys(import.meta.glob('../../public/noticias/*'))
+describe('imagens das notícias', () => {
+  it('toda imagem tem arquivo local, texto alternativo e crédito', () => {
+    for (const n of NOTICIAS.filter((x) => x.imagem)) {
+      expect(n.imagem!.src.startsWith('/noticias/'), n.id).toBe(true)
+      expect(arquivos.some((a) => a.endsWith(n.imagem!.src.replace('/noticias/', '/noticias/'))), n.id).toBe(true)
+      expect(n.imagem!.alt.length, n.id).toBeGreaterThan(10)
+      expect(n.imagem!.credito.length, n.id).toBeGreaterThan(5)
+    }
+  })
+})
+
 describe('ehRecente', () => {
   it('só considera recente até 45 dias', () => {
     expect(ehRecente('2026-11-13', HOJE)).toBe(true)

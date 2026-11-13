@@ -65,3 +65,8 @@ Fora de escopo: o app interno (fica para outra etapa), além da tela de carregam
 - **Pouco texto:** nenhum parágrafo com mais de 25 palavras; símbolo e movimento no lugar de frases.
 - **Saúde:** coração com pulsação.
 - **Depois:** notícias atualizáveis sem deploy (tabela no Supabase) e escolha de onde observar no mapa.
+
+## Revisão 3 (fotos nas notícias)
+- O cartão de notícia mostra a foto da própria notícia, com crédito, e o cartão inteiro abre a fonte em nova aba. Sem foto na fonte, fica a ilustração do tema.
+- Fotos copiadas sem alteração para `public/noticias/` (nada de terceiros no carregamento da página). Páginas do gov.br publicam sob CC BY-ND 3.0 (atribuição, sem derivações); a foto da UNESCO não traz licença na página e deve ser confirmada com a fonte.
+

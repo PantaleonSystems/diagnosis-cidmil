@@ -21,16 +21,37 @@ describe('CartaoNoticia', () => {
     expect(screen.getByText(/Ministério da Saúde/)).toBeTruthy()
     expect(screen.getByRole('button', { name: /ver conexão/i }).getAttribute('aria-expanded')).toBe('false')
   })
-  it('ao abrir mostra a conexão e o link seguro para a fonte', () => {
-    render(<CartaoNoticia noticia={n} hoje={HOJE} />)
-    fireEvent.click(screen.getByRole('button', { name: /ver conexão/i }))
-    expect(screen.getByRole('button', { name: /fechar/i }).getAttribute('aria-expanded')).toBe('true')
-    const a = screen.getByRole('link', { name: /ler na fonte/i })
+  it('o cartão inteiro leva à notícia em nova aba, por um único link seguro', () => {
+    const { container } = render(<CartaoNoticia noticia={n} hoje={HOJE} />)
+    const links = screen.getAllByRole('link')
+    expect(links).toHaveLength(1)
+    const a = links[0]
     expect(a.getAttribute('href')).toBe('https://www.gov.br/saude/x')
     expect(a.getAttribute('target')).toBe('_blank')
     expect(a.getAttribute('rel')).toContain('noopener')
+    expect(a.textContent).toMatch(/Título da notícia/)
+    expect(a.textContent).toMatch(/abre em nova aba/i)
+    expect(container.querySelector('a.cartao-noticia__link')).toBeTruthy()
+  })
+  it('ao abrir mostra o resumo e a conexão', () => {
+    render(<CartaoNoticia noticia={n} hoje={HOJE} />)
+    fireEvent.click(screen.getByRole('button', { name: /ver conexão/i }))
+    expect(screen.getByRole('button', { name: /fechar/i }).getAttribute('aria-expanded')).toBe('true')
     expect(screen.getByText(/conexão com cidades mil/i)).toBeTruthy()
     expect(screen.getByText('Se relaciona com a saúde.')).toBeTruthy()
+  })
+  it('com imagem mostra a foto com texto alternativo e crédito, sem a ilustração', () => {
+    const com = { ...n, imagem: { src: '/noticias/x.jpg', alt: 'Pessoas em um evento', credito: 'Foto: Fulana/MDHC' } }
+    const { container } = render(<CartaoNoticia noticia={com} hoje={HOJE} />)
+    const img = screen.getByRole('img', { name: 'Pessoas em um evento' })
+    expect(img.getAttribute('src')).toBe('/noticias/x.jpg')
+    expect(img.getAttribute('loading')).toBe('lazy')
+    expect(screen.getByText('Foto: Fulana/MDHC')).toBeTruthy()
+    expect(container.querySelector('svg.cena')).toBeNull()
+  })
+  it('sem imagem usa a ilustração do tema', () => {
+    const { container } = render(<CartaoNoticia noticia={n} hoje={HOJE} />)
+    expect(container.querySelector('svg.cena')).toBeTruthy()
   })
   it('o painel fechado não recebe foco (inert)', () => {
     const { container } = render(<CartaoNoticia noticia={n} hoje={HOJE} />)

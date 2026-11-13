@@ -17,7 +17,7 @@ Doc de origem: `docs/superpowers/specs/2026-11-13-landing-design.md`.
 
 ## Notícias e a hero
 - A hero é um carrossel de notícias verificadas ("o futuro das cidades já começou"). Dados em `src/data/noticias.ts`; só aparece quem tem `verificada: true`.
-- Conferir cada fonte com `npm run noticias:verificar` e lendo a página; texto de resumo e conexão é nosso; link `https` sem `utm_*`; nenhuma imagem de terceiros.
+- Conferir cada fonte com `npm run noticias:verificar` e lendo a página; texto de resumo e conexão é nosso; link `https` sem `utm_*`; foto só quando a página da fonte traz a foto da própria notícia (nunca o logotipo do órgão, que sugeriria endosso): copiada sem alteração para `public/noticias/`, com `alt` e crédito visível no cartão; sem foto, a ilustração do tema. O cartão inteiro abre a fonte em nova aba (link esticado no título).
 - Linguagem de relação ("se relaciona com", "conecta com"), nunca "faz parte" nem endosso da UNESCO, de ministério ou do BNDES.
 - Recência: "Hoje", "Ontem", "Há N dias" até 45 dias; depois a data.
 - Contato: `CONTATO_URL` (equipe que coordena as Cidades MIL) fica vazio até haver endereço; o e-mail de `src/data/contato.ts` (`CONTATO_DESENVOLVIMENTO`) é de quem desenvolve o software.

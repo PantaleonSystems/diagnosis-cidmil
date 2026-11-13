@@ -22,6 +22,7 @@ export function Carrossel({ rotulo, itens, autoavancoMs, indiceInicial = 0, indi
   const [pausaTemporaria, setPausaTemporaria] = useState(false)
   const [oculta, setOculta] = useState(typeof document !== 'undefined' && document.hidden)
   const x0 = useRef<number | null>(null)
+  const arrastou = useRef(false)
   const total = itens.length
 
   const ir = useCallback(
@@ -63,10 +64,16 @@ export function Carrossel({ rotulo, itens, autoavancoMs, indiceInicial = 0, indi
       onMouseLeave={() => setPausaTemporaria(false)}
       onFocusCapture={() => setPausaTemporaria(true)}
       onBlurCapture={() => setPausaTemporaria(false)}
-      onPointerDown={(e) => { x0.current = e.clientX }}
+      onPointerDown={(e) => { x0.current = e.clientX; arrastou.current = false }}
+      onClickCapture={(e) => {
+        if (arrastou.current) { e.preventDefault(); e.stopPropagation(); arrastou.current = false }
+      }}
       onPointerCancel={() => { x0.current = null }}
       onPointerUp={(e) => {
-        if (x0.current !== null && Math.abs(e.clientX - x0.current) > 40) passo(e.clientX < x0.current ? 1 : -1)
+        if (x0.current !== null && Math.abs(e.clientX - x0.current) > 40) {
+          arrastou.current = true
+          passo(e.clientX < x0.current ? 1 : -1)
+        }
         x0.current = null
       }}
     >

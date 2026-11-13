@@ -13,6 +13,8 @@ export interface Noticia {
   data: string
   /** Só aparece na página depois de conferida na fonte (npm run noticias:verificar). */
   verificada: boolean
+  /** Foto da própria notícia, copiada sem alteração para public/noticias/ e sempre com crédito. Sem ela, o cartão usa a ilustração do tema. */
+  imagem?: { src: string; alt: string; credito: string }
 }
 
 export const TEMAS: Record<TemaNoticia, { rotulo: string }> = {
@@ -52,6 +54,7 @@ export const NOTICIAS: Noticia[] = [
     fonte: { nome: 'Ministério dos Direitos Humanos e da Cidadania', url: 'https://www.gov.br/mdh/pt-br/assuntos/noticias/2026/novembro/viva-mais-cidadania-a-tecnologia-para-e-a-favor-de-todos-os-brasileiros' },
     data: '2026-11-09',
     verificada: true,
+    imagem: { src: '/noticias/mdhc-viva-mais-cidadania.jpg', alt: 'Participante do Viva Mais Cidadania sorri e mostra a camiseta do programa', credito: 'Foto: Ludmila Duarte/MDHC' },
   },
   {
     id: 'unesco-ramallah-mil',
@@ -62,6 +65,7 @@ export const NOTICIAS: Noticia[] = [
     fonte: { nome: 'UNESCO', url: 'https://www.unesco.org/en/articles/ramallah-municipality-launches-media-and-information-literacy-friendly-city-initiative-partnership' },
     data: '2026-11-06',
     verificada: true,
+    imagem: { src: '/noticias/unesco-ramallah-mil.webp', alt: 'Participantes do lançamento da iniciativa reunidos em um auditório em Ramallah', credito: 'Imagem: UNESCO' },
   },
 ]
 

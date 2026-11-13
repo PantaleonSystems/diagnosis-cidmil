@@ -83,3 +83,24 @@ describe('Carrossel pausado', () => {
     expect(container.querySelector('[aria-live]')?.getAttribute('aria-live')).toBe('polite')
   })
 })
+
+describe('Carrossel: deslizar não abre o link', () => {
+  it('um arrasto de mais de 40 px cancela o clique seguinte no conteúdo', () => {
+    const onClick = vi.fn((e: React.MouseEvent) => e.preventDefault())
+    render(<Carrossel rotulo="N" itens={[<a key="a" href="#x" onClick={onClick}>Link</a>, <p key="b">B</p>]} />)
+    const regiao = screen.getByRole('region')
+    fireEvent.pointerDown(regiao, { clientX: 200 })
+    fireEvent.pointerUp(regiao, { clientX: 100 })
+    fireEvent.click(screen.getByRole('link', { hidden: true, name: 'Link' }))
+    expect(onClick).not.toHaveBeenCalled()
+  })
+  it('um toque simples ainda clica', () => {
+    const onClick = vi.fn((e: React.MouseEvent) => e.preventDefault())
+    render(<Carrossel rotulo="N" itens={[<a key="a" href="#x" onClick={onClick}>Link</a>, <p key="b">B</p>]} />)
+    const regiao = screen.getByRole('region')
+    fireEvent.pointerDown(regiao, { clientX: 200 })
+    fireEvent.pointerUp(regiao, { clientX: 198 })
+    fireEvent.click(screen.getByRole('link', { name: 'Link' }))
+    expect(onClick).toHaveBeenCalledTimes(1)
+  })
+})
