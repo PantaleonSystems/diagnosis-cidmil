@@ -19,7 +19,7 @@ export function Landing() {
 
       <main>
       {/* ------------------------------------------------------------ hero */}
-      <Capitulo id="cidade" as="header" revelar={false} className="bg-[radial-gradient(1200px_500px_at_80%_-10%,#E4F8FC_0%,transparent_60%),linear-gradient(180deg,#fff_0%,#F4FAFC_100%)] px-[6vw] pb-16 pt-[56px] md:pt-[80px]">
+      <Capitulo id="cidade" as="header" revelar={false} className="bg-[radial-gradient(1200px_500px_at_80%_-10%,#E4F8FC_0%,transparent_60%),linear-gradient(180deg,#fff_0%,#F4FAFC_100%)] px-[6vw] pb-16 pt-6 md:pt-[80px]">
         <div className="mx-auto grid max-w-[1200px] items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <Eyebrow>Plataforma de Diagnóstico · Cidades MIL</Eyebrow>
@@ -34,7 +34,7 @@ export function Landing() {
             <BotaoVerCidade />
           </div>
 
-          <div className="relative mx-auto w-full max-w-[420px]">
+          <div className="relative order-first mx-auto w-full max-w-[250px] sm:max-w-[420px] lg:order-none">
             <MapaAproximacao className="rounded-[28px]" onFase={setFase} />
             <span
               className="absolute left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-marca-escura shadow-card transition-[top,opacity] duration-500 ease-[cubic-bezier(.22,1,.36,1)]"
