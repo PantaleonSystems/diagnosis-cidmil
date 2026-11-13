@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calcular } from './indice'
+import { calcular, nivelConsistencia } from './indice'
 
 describe('índice da landing', () => {
   it('cenário padrão: ISPS 2,66 travado no Nível 2 pela Regra de Ouro', () => {
@@ -21,5 +21,14 @@ describe('índice da landing', () => {
     const r = calcular([0.8, 1.1, 1.0, 1.4, 0.6])
     expect(r.travado).toBe(false)
     expect(r.nivel).toBe(0)
+  })
+})
+
+describe('nivelConsistencia', () => {
+  it.each([
+    [0, 10, 'inicial'], [4, 10, 'inicial'], [5, 10, 'parcial'], [9, 10, 'parcial'],
+    [10, 10, 'completa'], [12, 10, 'completa'], [-3, 10, 'inicial'], [0, 0, 'inicial'],
+  ] as const)('%i de %i → %s', (pre, total, esperado) => {
+    expect(nivelConsistencia(pre, total)).toBe(esperado)
   })
 })

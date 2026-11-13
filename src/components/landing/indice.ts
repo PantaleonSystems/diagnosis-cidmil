@@ -12,3 +12,13 @@ export function calcular(notas: number[]) {
   const travado = notas[0] < MINIMO_GOVERNANCA && nivelReal > 1
   return { isps, nivel: travado ? 1 : nivelReal, nivelReal, travado }
 }
+
+export type NivelConsistencia = 'inicial' | 'parcial' | 'completa'
+
+/** Quão completa está a conferência dos dados: metade ou mais é parcial; tudo é completa. */
+export function nivelConsistencia(preenchidas: number, total: number): NivelConsistencia {
+  if (total <= 0) return 'inicial'
+  const r = Math.max(0, Math.min(preenchidas, total)) / total
+  if (r >= 1) return 'completa'
+  return r >= 0.5 ? 'parcial' : 'inicial'
+}

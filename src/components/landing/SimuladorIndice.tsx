@@ -1,11 +1,11 @@
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useMemo, useRef, useState, type CSSProperties } from 'react'
 import { PILARES } from '@/data/metricas'
 import { MINIMO_GOVERNANCA, NIVEIS } from '@/lib/isps'
 import { fmt } from '@/lib/theme'
 import { cx } from '@/components/ui'
 import { useAnimado, useMediaQuery, useReducedMotion } from '@/lib/movimento'
-import { calcular } from './indice'
-import { RedeCidades } from './RedeCidades'
+import { calcular, nivelConsistencia } from './indice'
+import { useScrubCalculo } from './useScrubCalculo'
 
 const CLARO = '#2395C6'
 const NOITE = '#052F4D'
@@ -247,23 +247,48 @@ function Fluxo({ notas, foco, setFoco }: { notas: number[]; foco: number | null;
 export function SimuladorIndice() {
   const [notas, setNotas] = useState<number[]>(PRESETS[1].valores)
   const [foco, setFoco] = useState<number | null>(null)
+  const [ajustando, setAjustando] = useState(false)
+  const [progresso, setProgresso] = useState(0)
+  const raiz = useRef<HTMLDivElement>(null)
+  useScrubCalculo(raiz, setProgresso)
   const res = useMemo(() => calcular(notas), [notas])
+  const conferidas = Math.round(progresso * FONTES_LARGO.length)
+  const consistencia = nivelConsistencia(conferidas, FONTES_LARGO.length)
+  const SELO = {
+    inicial: 'Reunindo os dados',
+    parcial: 'Conferindo os dados',
+    completa: 'Dados conferidos',
+  }[consistencia]
 
   return (
-    <section id="fluxo" className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
+    <div ref={raiz} className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
       <span className="block text-center text-[11px] font-bold uppercase tracking-[2px] text-marca-escura">
         Dados em movimento
       </span>
       <h2 className="mx-auto mb-3 mt-2.5 max-w-3xl text-center text-[clamp(26px,4vw,32px)] tracking-[-0.3px] text-noite">
-        Do dado à nota, ao vivo
+        Do dado à nota, com consistência
       </h2>
-      <p className="mx-auto mb-9 max-w-[660px] text-center text-cinza">
-        Mexa nos pilares e veja o índice, o nível e a Regra de Ouro reagirem. É assim
-        que os dados passam pelo cálculo e viram o retrato da cidade.{' '}
+      <p className="mx-auto mb-6 max-w-[660px] text-center text-cinza">
+        Os dados passam por uma conferência antes de virar nota. Role para ver a conferência
+        acontecer; depois ajuste os pilares e veja o índice reagir.{' '}
         <span className="text-cinza-cl">
           Ilustração do fluxo; a coleta automática das fontes está em desenvolvimento.
         </span>
       </p>
+
+      <div className="mb-4 flex justify-center">
+        <span
+          role="status"
+          data-nivel={consistencia}
+          className={cx(
+            'inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[13px] font-bold transition-colors duration-500',
+            consistencia === 'completa' ? 'border-ok-borda bg-ok-bg text-ok-txt' : 'border-linha bg-white text-marca-escura',
+          )}
+        >
+          <span aria-hidden="true">{consistencia === 'completa' ? '✓' : '…'}</span>
+          {SELO} · {conferidas} de {FONTES_LARGO.length} fontes
+        </span>
+      </div>
 
       <div className="rounded-[18px] border border-linha bg-white p-4 shadow-card sm:p-7">
         <Fluxo notas={notas} foco={foco} setFoco={setFoco} />
@@ -288,7 +313,20 @@ export function SimuladorIndice() {
           })}
         </div>
 
-        <div className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-5 flex justify-center">
+          <button
+            type="button"
+            aria-expanded={ajustando}
+            aria-controls="ajuste-pilares"
+            onClick={() => setAjustando((a) => !a)}
+            className="clique-escolha min-h-11 rounded-full border-[1.5px] border-linha bg-white px-4 py-1.5 text-[13px] font-bold text-marca-escura"
+          >
+            {ajustando ? 'Fechar ajuste dos pilares' : 'Ajustar os cinco pilares'}
+          </button>
+        </div>
+        <div id="ajuste-pilares" className="clique-detalhe" data-aberto={ajustando ? 'true' : 'false'}>
+         <div>
+          <div className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-5">
           {PILARES.map((p, i) => (
             <label
               key={p.numero}
@@ -322,6 +360,8 @@ export function SimuladorIndice() {
               <span className="text-[11px] text-cinza-cl">peso {Math.round(p.peso * 100)}%</span>
             </label>
           ))}
+          </div>
+         </div>
         </div>
 
         <p
@@ -345,7 +385,6 @@ export function SimuladorIndice() {
         </p>
       </div>
 
-      <RedeCidades isps={res.isps} />
-    </section>
+    </div>
   )
 }
