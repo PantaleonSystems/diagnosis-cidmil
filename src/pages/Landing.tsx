@@ -4,6 +4,7 @@ import { MODULOS, PILARES } from '@/data/metricas'
 import { SimuladorIndice } from '@/components/landing/SimuladorIndice'
 import { Button, Eyebrow, cx } from '@/components/ui'
 import { Capitulo } from '@/components/landing/Capitulo'
+import { TerritorioFontes } from '@/components/landing/TerritorioFontes'
 import { NavLanding } from '@/components/landing/NavLanding'
 import { BotaoVerCidade } from '@/components/landing/BotaoVerCidade'
 import { MapaAproximacao, type FaseMapa } from '@/components/landing/MapaAproximacao'
@@ -64,6 +65,18 @@ export function Landing() {
             </span>
           </div>
         </div>
+      </Capitulo>
+
+      {/* ------------------------------------------------------------ dados */}
+      <Capitulo id="dados" className="mx-auto max-w-[1200px] px-[6vw] py-[70px]">
+        <Eyebrow className="block text-center">Os dados</Eyebrow>
+        <h2 className="mx-auto mb-3 mt-2.5 max-w-3xl text-center text-[clamp(26px,4vw,36px)] tracking-[-0.3px] text-noite">
+          Os dados chegam de onde já estão
+        </h2>
+        <p className="mx-auto mb-10 max-w-[560px] text-center text-cinza">
+          Nada de planilha nova: a ferramenta reúne o que a prefeitura já registra, em vários lugares, e junta tudo num só.
+        </p>
+        <TerritorioFontes />
       </Capitulo>
 
       {/* ------------------------------------------------------------ fluxo */}

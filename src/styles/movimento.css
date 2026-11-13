@@ -87,3 +87,16 @@
 .marcador[aria-current="true"] { color: var(--color-marca-escura); }
 .marcador[aria-current="true"] .marcador__ponto { background: var(--color-marca); transform: scale(1.5); }
 @media (prefers-reduced-motion: reduce) { .marcador__ponto { transition-duration: 150ms; } .marcador[aria-current="true"] .marcador__ponto { transform: none; } }
+
+/* Território de fontes */
+.ponto-fonte { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; display: grid; place-items: center; border-radius: 999px; background: transparent; border: 0; cursor: pointer; }
+.ponto-fonte__miolo { width: 14px; height: 14px; border-radius: 999px; background: var(--color-marca); box-shadow: 0 0 0 4px rgb(10 90 150 / .18); transition: transform var(--dur-longa) var(--ease-bounce), box-shadow var(--dur-media) ease; }
+.ponto-fonte:hover .ponto-fonte__miolo { transform: scale(1.25); }
+.ponto-fonte[aria-expanded="true"] .ponto-fonte__miolo { transform: scale(1.5); box-shadow: 0 0 0 7px rgb(10 90 150 / .25); }
+.ponto-fonte:focus-visible { outline: 3px solid var(--color-marca-clara); }
+.ponto-fonte.clique-escolha[aria-expanded="true"] { box-shadow: none; transform: none; }
+.linha-fonte { stroke: #9ccbea; stroke-width: .7; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 900ms var(--ease-smooth-out), stroke var(--dur-media) ease, stroke-width var(--dur-media) ease; }
+.reveal.visivel .linha-fonte { stroke-dashoffset: 0; }
+.linha-fonte[data-ativa="true"] { stroke: var(--color-marca); stroke-width: 1.2; }
+@media (scripting: none) { .linha-fonte { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .linha-fonte { stroke-dashoffset: 0; transition-duration: 150ms; } }
