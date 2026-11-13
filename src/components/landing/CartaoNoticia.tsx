@@ -11,7 +11,7 @@ export function CartaoNoticia({ noticia: n, hoje = new Date() }: { noticia: Noti
   return (
     <article className="overflow-hidden rounded-3xl border border-linha bg-white shadow-card">
       <div className="bg-marca-fundo px-4 pt-4">
-        <CenaTema tema={n.tema} className="mx-auto block h-[150px] w-full max-w-[340px]" />
+        <CenaTema tema={n.tema} className="mx-auto block h-[170px] w-full max-w-[360px]" />
       </div>
       <div className="px-5 pb-5 pt-4">
         <div className="mb-2 flex flex-wrap items-center gap-2 text-[12px] font-bold">

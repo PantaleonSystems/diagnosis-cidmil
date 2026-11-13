@@ -176,3 +176,4 @@
   .cena-janela { opacity: 1; animation: none !important; }
   .cena-brilho, .cena-batida, .ponto-vivo { animation: none !important; }
 }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }

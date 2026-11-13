@@ -8,12 +8,14 @@ interface Props {
   /** Avanço automático em ms; sem valor, só avança por clique, bolinha ou arrasto. */
   autoavancoMs?: number
   indiceInicial?: number
+  /** Controle externo: quando muda, o carrossel vai para esse item. */
+  indice?: number
   onMudar?: (indice: number) => void
   className?: string
 }
 
 /** Carrossel acessível: slides com rótulo, só o atual alcançável pelo teclado, pausa por foco, mouse, aba oculta e botão. */
-export function Carrossel({ rotulo, itens, autoavancoMs, indiceInicial = 0, onMudar, className = '' }: Props) {
+export function Carrossel({ rotulo, itens, autoavancoMs, indiceInicial = 0, indice, onMudar, className = '' }: Props) {
   const reduzido = useReducedMotion()
   const [atual, setAtual] = useState(indiceInicial)
   const [rodando, setRodando] = useState(true)
@@ -31,6 +33,10 @@ export function Carrossel({ rotulo, itens, autoavancoMs, indiceInicial = 0, onMu
     [total, onMudar],
   )
   const passo = useCallback((d: number) => ir(proximoIndice(atual, total, d)), [atual, total, ir])
+
+  useEffect(() => {
+    if (indice !== undefined) setAtual(indice)
+  }, [indice])
 
   const automatico = !!autoavancoMs && !reduzido
   const andando = automatico && rodando && !pausaTemporaria && !oculta && total > 1

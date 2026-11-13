@@ -65,3 +65,12 @@ describe('Carrossel', () => {
     expect(container.querySelector('[aria-live]')?.getAttribute('aria-live')).toBe('off')
   })
 })
+
+describe('Carrossel controlado', () => {
+  it('segue a prop indice quando ela muda', () => {
+    const { rerender } = render(<Carrossel rotulo="N" itens={itens} indice={0} />)
+    expect(atual()).toBe(0)
+    rerender(<Carrossel rotulo="N" itens={itens} indice={2} />)
+    expect(atual()).toBe(2)
+  })
+})

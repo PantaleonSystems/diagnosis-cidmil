@@ -10,10 +10,10 @@ const montar = () => render(<MemoryRouter><Decisao /></MemoryRouter>)
 const linha = (re: RegExp) => screen.getAllByRole('listitem').find((li) => re.test(li.textContent ?? ''))!
 
 describe('Decisao', () => {
-  it('marca o exemplo como ilustrativo e leva a /app', () => {
+  it('marca o exemplo como ilustrativo e leva à demonstração', () => {
     montar()
     expect(screen.getByText(/exemplo ilustrativo/i)).toBeTruthy()
-    expect(screen.getByRole('link', { name: /ver a minha cidade/i }).getAttribute('href')).toBe('/app')
+    expect(screen.getByRole('link', { name: /ver uma cidade em demonstração/i }).getAttribute('href')).toBe('#demonstracao')
   })
   it('cada tarefa mostra urgência, complexidade, prazo e o porquê da posição', () => {
     montar()
