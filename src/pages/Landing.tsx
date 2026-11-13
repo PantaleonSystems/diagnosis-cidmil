@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { MODULOS } from '@/data/metricas'
 import { SimuladorIndice } from '@/components/landing/SimuladorIndice'
-import { Button, Eyebrow, cx } from '@/components/ui'
+import { Eyebrow, cx } from '@/components/ui'
 import { Capitulo } from '@/components/landing/Capitulo'
+import { Decisao } from '@/components/landing/Decisao'
 import { Frentes } from '@/components/landing/Frentes'
 import { TerritorioFontes } from '@/components/landing/TerritorioFontes'
 import { NavLanding } from '@/components/landing/NavLanding'
@@ -90,27 +90,20 @@ export function Landing() {
         </div>
       </Capitulo>
 
-      {/* --------------------------------------------------- acesso restrito */}
-      <section className="mx-auto max-w-[1200px] px-[6vw] pb-[70px]">
-        <div className="flex flex-wrap items-center justify-between gap-8 rounded-[18px] bg-[linear-gradient(120deg,#052F4D,#0A5A96)] px-12 py-11 text-white">
-          <div>
-            <span className="text-[11px] font-bold uppercase tracking-[2px] text-sobre-marca">
-              Versão beta · acesso aberto
-            </span>
-            <h3 className="mb-2 mt-1 text-2xl">
-              A plataforma está aberta para testes
-            </h3>
-            <p className="max-w-[520px] text-[14.5px] text-sobre-marca-2">
-              Nesta fase não há cadastro nem senha: entre, cadastre uma cidade e percorra
-              o diagnóstico. Os dados são de teste e podem ser reiniciados a qualquer
-              momento enquanto o instrumento está sendo validado.
-            </p>
-          </div>
-          <Link to="/app">
-            <Button variante="claro">Abrir o diagnóstico →</Button>
-          </Link>
-        </div>
-      </section>
+      {/* ----------------------------------------------------------- decisão */}
+      <Capitulo id="decisao" className="mx-auto max-w-[1200px] px-[6vw] pb-[90px] pt-[30px]">
+        <Eyebrow className="block text-center">A decisão</Eyebrow>
+        <h2 className="mx-auto mb-3 mt-2.5 max-w-3xl text-center text-[clamp(26px,4vw,36px)] tracking-[-0.3px] text-noite">
+          E então: o que fazer primeiro?
+        </h2>
+        <p className="mx-auto mb-10 max-w-[560px] text-center text-cinza">
+          No fim do diagnóstico a cidade recebe uma ordem de prioridades. Mude o critério e veja a lista se reorganizar.
+        </p>
+        <Decisao />
+        <p className="mx-auto mt-10 max-w-[520px] text-center text-xs text-cinza-cl">
+          Versão beta, de acesso aberto: não há cadastro nem senha, e os dados são de teste e podem ser reiniciados.
+        </p>
+      </Capitulo>
 
       </main>
 

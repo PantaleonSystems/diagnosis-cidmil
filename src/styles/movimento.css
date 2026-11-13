@@ -100,3 +100,7 @@
 .linha-fonte[data-ativa="true"] { stroke: var(--color-marca); stroke-width: 1.2; }
 @media (scripting: none) { .linha-fonte { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .linha-fonte { stroke-dashoffset: 0; transition-duration: 150ms; } }
+
+/* Lista de prioridades que se reordena */
+.lista-prior { transition: transform var(--dur-enorme) var(--ease-smooth-out); will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .lista-prior { transition: none; } }
